@@ -25,8 +25,12 @@ const companyService = {
    */
   getAggregatedStats: async () => {
     try {
-      const res = await companyService.getMyDrives();
-      const drives = res.data || [];
+      const [drivesRes, profileRes] = await Promise.all([
+        companyService.getMyDrives(),
+        companyService.getProfile(),
+      ]);
+      const drives = drivesRes.data || [];
+      const profile = profileRes.data || {};
 
       return {
         data: {
@@ -36,6 +40,9 @@ const companyService = {
             0,
           ),
           active_drives: drives.filter((d) => d.status === "live").length,
+          plan: profile.plan || "free",
+          drives_limit: profile.drives_limit,
+          company_name: profile.company_name,
         },
       };
     } catch (err) {
@@ -51,9 +58,10 @@ const companyService = {
   getGroups: () => companyApi.get("/student-groups"),
   createDrive: (data) => companyApi.post("/drives", data),
   updateDrive: (id, data) => companyApi.put(`/drives/${id}`, data),
+  deleteDrive: (id) => companyApi.delete(`/drives/${id}`),
   updateDriveStatus: (id, status) =>
     companyApi.put(`/drives/${id}/status`, { status }),
-  submitDrive: (id) => companyApi.put(`/drives/${id}/submit`),
+  publishDrive: (id) => companyApi.put(`/drives/${id}/publish`),
   startExam: (id) => companyApi.post(`/drives/${id}/start`),
   endExam: (id) => companyApi.post(`/drives/${id}/end`),
   getDriveExamStatus: (id) => companyApi.get(`/drives/${id}/exam-status`),
@@ -82,15 +90,19 @@ const companyService = {
   getDriveEmailProgress: (id) => companyApi.get(`/drives/${id}/email-progress`),
   verifyProgress: (progressId) =>
     companyApi.get(`/broadcasts/progress/${progressId}`),
+  previewEmailTemplate: (data) =>
+    companyApi.post("/email-template/preview", data),
+  getNotifications: () => companyApi.get("/notifications"),
 
   // Search
   search: (query) => companyApi.get(`/search?q=${query}`),
   sendEmails: (id) => companyApi.post(`/drives/${id}/email-students`),
 
   // Support Tickets
-  getTickets: () => companyApi.get("tickets/my-tickets"),
-  raiseTicket: (data) => companyApi.post("tickets/raise", data),
-  createTicket: (data) => companyApi.post("tickets/raise", data),
+  getTickets: () => companyApi.get("/tickets/my-tickets"),
+  getTicketDetail: (id) => companyApi.get(`/tickets/my-tickets/${id}`),
+  raiseTicket: (data) => companyApi.post("/tickets/raise", data),
+  createTicket: (data) => companyApi.post("/tickets/raise", data),
 
   // Questions Management (keeping legacy name if used)
   uploadQuestionsCSV: (id, formData) =>

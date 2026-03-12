@@ -24,7 +24,20 @@ export default function CompanyHeader({ onSearchSelect }) {
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [plan, setPlan] = useState(user?.claims?.plan || "free");
   const searchRef = useRef(null);
+
+  useEffect(() => {
+    const fetchPlan = async () => {
+      try {
+        const res = await companyService.getProfile();
+        if (res.data?.plan) setPlan(res.data.plan);
+      } catch (err) {
+        console.error("Failed to fetch plan in header:", err);
+      }
+    };
+    fetchPlan();
+  }, []);
 
   // Close search results when clicking outside
   useEffect(() => {
@@ -180,9 +193,14 @@ export default function CompanyHeader({ onSearchSelect }) {
         <div className="relative group">
           <button className="flex items-center gap-4 py-2 hover:opacity-80 transition-opacity">
             <div className="text-right hidden sm:block">
-              <p className="text-sm font-semibold text-slate-900 leading-tight">
-                {companyName}
-              </p>
+              <div className="flex items-center gap-2 justify-end">
+                <span className="px-2 py-0.5 bg-blue-50 text-blue-600 rounded-md text-[10px] font-bold uppercase tracking-wider border border-blue-100">
+                  {plan}
+                </span>
+                <p className="text-sm font-semibold text-slate-900 leading-tight">
+                  {companyName}
+                </p>
+              </div>
               <p className="text-[10px] font-bold text-slate-400 lowercase tracking-wide mt-0.5">
                 {user?.email || "admin@company.com"}
               </p>

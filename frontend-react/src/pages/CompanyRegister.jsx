@@ -1,18 +1,19 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import companyService from "../services/companyService";
 import {
   Mail,
   Lock,
-  Eye,
-  EyeOff,
   ArrowRight,
   Building2,
-  User,
-  Link as LinkIcon,
+  AtSign,
+  ChevronDown,
+  Key,
+  Upload,
+  X,
 } from "lucide-react";
-import { getErrorMessage } from "../utils/errorHelpers";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 export default function CompanyRegister() {
   const [formData, setFormData] = useState({
@@ -21,29 +22,43 @@ export default function CompanyRegister() {
     email: "",
     password: "",
     confirmPassword: "",
-    logo: null,
+    logo: null, // Changed from logo_url to logo file
+    plan: "Premium(Drives-20)",
+    agree: false,
   });
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [logoPreview, setLogoPreview] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
+    const { name, value, type, checked, files } = e.target;
+
     if (name === "logo") {
-      setFormData((prev) => ({
-        ...prev,
-        logo: files[0],
-      }));
+      const file = files[0];
+      if (file) {
+        if (file.size > 2 * 1024 * 1024) {
+          toast.error("File size must be less than 2MB");
+          return;
+        }
+        setFormData((prev) => ({ ...prev, logo: file }));
+        setLogoPreview(URL.createObjectURL(file));
+      }
     } else {
       setFormData((prev) => ({
         ...prev,
-        [name]: value,
+        [name]: type === "checkbox" ? checked : value,
       }));
     }
   };
 
+  const removeLogo = (e) => {
+    e.stopPropagation();
+    setFormData((prev) => ({ ...prev, logo: null }));
+    setLogoPreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
   const submit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -77,7 +92,7 @@ export default function CompanyRegister() {
       const res = await companyService.register(payload);
       const data = res.data;
       toast.success(
-        data.message || "Registered successfully. Waiting for admin approval.",
+        data.message || "Registered successfully. Waiting for admin approval."
       );
       setTimeout(() => navigate("/company/login"), 1200);
     } catch (err) {
@@ -89,206 +104,208 @@ export default function CompanyRegister() {
       setLoading(false);
     }
   };
+  const InputWrapper = ({ label, icon: Icon, children }) => (
+    <div className="flex flex-col gap-2">
+      <label className="text-[11px] font-[600] text-slate-500 uppercase tracking-[0.1em] ml-1">
+        {label}
+      </label>
+      <div className="relative group">
+        <Icon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+        {children}
+      </div>
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-[#F0F2F5] flex items-center justify-center p-6 font-['Poppins']">
-      <div className="w-full max-w-[540px] bg-white rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden animate-in fade-in zoom-in duration-500 my-8">
-        {/* Header Section with Logo */}
-        <Link
-          to="/"
-          className="bg-[#EBF2FF] py-8 flex flex-col items-center justify-center hover:bg-[#dfe9ff] transition-colors duration-300 w-full"
-        >
-          <img
-            src="/assessFlowLogo.png"
-            alt="Assessflow Logo"
-            className="h-14 object-contain mb-2"
-          />
-        </Link>
-
-        {/* Content Section */}
-        <div className="px-10 py-12">
-          <div className="text-center mb-10">
-            <h1 className="text-3xl font-semibold text-[#1e293b] tracking-tight mb-2">
-              Company Registration
+    <>
+    <Navbar/>
+      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-6">
+        <div className="w-full max-w-[580px] bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-10 md:p-14 animate-in fade-in zoom-in duration-500">
+          <div className="mb-10">
+            <h1 className="text-3xl font-[600] text-slate-900 mb-2">
+              Register Company
             </h1>
-            <p className="text-slate-500 font-medium text-sm">
-              Create your account to start managing recruitment drives
+            <p className="text-slate-500 text-[15px] font-[300] leading-relaxed">
+              Create your ExamPortal account to start managing hiring drives and
+              tracking performance.
             </p>
           </div>
 
           <form onSubmit={submit} className="space-y-6">
+            <InputWrapper label="Company Name" icon={Building2}>
+              <input
+                name="company_name"
+                value={formData.company_name}
+                onChange={handleChange}
+                type="text"
+                className="w-full h-[56px] pl-12 pr-4 bg-slate-50/50 border border-slate-100 rounded-xl text-slate-700 placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
+                placeholder="Enter registered company name"
+                required
+              />
+            </InputWrapper>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 uppercase tracking-widest mb-2.5 ml-1">
-                  Company Name
-                </label>
-                <div className="relative group">
-                  <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300 group-focus-within:text-blue-500 transition-colors" />
-                  <input
-                    name="company_name"
-                    value={formData.company_name}
-                    onChange={handleChange}
-                    type="text"
-                    className="w-full h-[60px] pl-12 pr-6 bg-white border border-slate-100 rounded-xl text-base font-bold text-slate-600 placeholder:text-slate-300 focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 outline-none transition-all"
-                    placeholder="Acme Corp"
-                    required
-                  />
-                </div>
-              </div>
+              <InputWrapper label="Company Username" icon={AtSign}>
+                <input
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  type="text"
+                  className="w-full h-[56px] pl-12 pr-4 bg-slate-50/50 border border-slate-100 rounded-xl text-slate-700 placeholder:text-slate-400 focus:bg-white outline-none transition-all"
+                  placeholder="company_handle"
+                  required
+                />
+              </InputWrapper>
 
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 uppercase tracking-widest mb-2.5 ml-1">
-                  Username
-                </label>
-                <div className="relative group">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300 group-focus-within:text-blue-500 transition-colors" />
-                  <input
-                    name="username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    type="text"
-                    className="w-full h-[60px] pl-12 pr-6 bg-white border border-slate-100 rounded-xl text-base font-bold text-slate-600 placeholder:text-slate-300 focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 outline-none transition-all"
-                    placeholder="acme_corp"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 uppercase tracking-widest mb-2.5 ml-1">
-                Email Address
-              </label>
-              <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300 group-focus-within:text-blue-500 transition-colors" />
+              <InputWrapper label="Email Address" icon={Mail}>
                 <input
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
                   type="email"
-                  className="w-full h-[60px] pl-12 pr-6 bg-white border border-slate-100 rounded-xl text-base font-bold text-slate-600 placeholder:text-slate-300 focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 outline-none transition-all"
-                  placeholder="admin@acme.com"
+                  className="w-full h-[56px] pl-12 pr-4 bg-slate-50/50 border border-slate-100 rounded-xl text-slate-700 placeholder:text-slate-400 focus:bg-white outline-none transition-all"
+                  placeholder="admin@company.com"
                   required
                 />
-              </div>
+              </InputWrapper>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 uppercase tracking-widest mb-2.5 ml-1">
-                  Password
-                </label>
-                <div className="relative group">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300 group-focus-within:text-blue-500 transition-colors" />
-                  <input
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    type={showPassword ? "text" : "password"}
-                    className="w-full h-[60px] pl-12 pr-14 bg-white border border-slate-100 rounded-xl text-base font-bold text-slate-600 placeholder:text-slate-300 focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 outline-none transition-all"
-                    placeholder="••••••••"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-slate-300 hover:text-slate-600 transition-colors"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-5 w-5" />
-                    ) : (
-                      <Eye className="h-5 w-5" />
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 uppercase tracking-widest mb-2.5 ml-1">
-                  Confirm
-                </label>
-                <div className="relative group">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300 group-focus-within:text-blue-500 transition-colors" />
-                  <input
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    type={showConfirmPassword ? "text" : "password"}
-                    className="w-full h-[60px] pl-12 pr-14 bg-white border border-slate-100 rounded-xl text-base font-bold text-slate-600 placeholder:text-slate-300 focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 outline-none transition-all"
-                    placeholder="••••••••"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-slate-300 hover:text-slate-600 transition-colors"
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-5 w-5" />
-                    ) : (
-                      <Eye className="h-5 w-5" />
-                    )}
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-slate-700 uppercase tracking-widest mb-2.5 ml-1">
-                Company Logo
-              </label>
-              <div className="relative group">
-                <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300 group-focus-within:text-blue-500 transition-colors" />
+              <InputWrapper label="Password" icon={Lock}>
                 <input
-                  name="logo"
+                  name="password"
+                  value={formData.password}
                   onChange={handleChange}
-                  type="file"
-                  accept="image/*"
-                  className="w-full h-[60px] pl-12 pr-6 pt-4 bg-white border border-slate-100 rounded-xl text-base font-bold text-slate-600 placeholder:text-slate-300 focus:ring-4 focus:ring-blue-500/5 focus:border-blue-500 outline-none transition-all"
+                  type="password"
+                  className="w-full h-[56px] pl-12 pr-4 bg-slate-50/50 border border-slate-100 rounded-xl text-slate-700 placeholder:text-slate-400 focus:bg-white outline-none transition-all"
+                  placeholder="••••••••"
                   required
                 />
-              </div>
-              <p className="mt-2 text-xs text-slate-400 ml-1">
-                PNG or JPEG, max 2 MB
-              </p>
+              </InputWrapper>
+
+              <InputWrapper label="Confirm Password" icon={Key}>
+                <input
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  type="password"
+                  className="w-full h-[56px] pl-12 pr-4 bg-slate-50/50 border border-slate-100 rounded-xl text-slate-700 placeholder:text-slate-400 focus:bg-white outline-none transition-all"
+                  placeholder="••••••••"
+                  required
+                />
+              </InputWrapper>
             </div>
 
-            {error && (
-              <div className="p-4 bg-red-50 border border-red-100 rounded-xl animate-in fade-in slide-in-from-top-2">
-                <p className="text-sm font-bold text-red-600">{error}</p>
+            <div className="flex flex-col gap-2">
+              <label className="text-[11px] font-[600] text-slate-500 uppercase tracking-wider ml-1">
+                Drives Plan
+              </label>
+              <div className="relative group">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 bg-blue-50 rounded flex items-center justify-center">
+                  <Lock className="h-3 w-3 text-blue-500" />
+                </div>
+                <select
+                  name="plan"
+                  value={formData.plan}
+                  onChange={handleChange}
+                  className="w-full h-[56px] pl-12 pr-10 bg-slate-50/50 border border-slate-100 rounded-xl text-slate-700 appearance-none outline-none focus:bg-white"
+                >
+                  <option>Basic(Drives-5)</option>
+                  <option>Pro(Drives-10)</option>
+                  <option>Premium(Drives-20)</option>
+                  <option>Custom(Unlimited)</option>
+                </select>
+                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
               </div>
-            )}
+            </div>
+
+            {/* New Logo Upload UI */}
+            <div className="flex flex-col gap-2">
+              <label className="text-[11px] font-[600] text-slate-500 uppercase tracking-wider ml-1">
+                Company Logo
+              </label>
+              <div
+                onClick={() => fileInputRef.current.click()}
+                className="relative w-full h-[120px] border-2 border-dashed border-slate-200 rounded-xl bg-slate-50/50 flex flex-col items-center justify-center cursor-pointer hover:border-blue-400 hover:bg-blue-50/30 transition-all overflow-hidden"
+              >
+                <input
+                  type="file"
+                  name="logo"
+                  ref={fileInputRef}
+                  onChange={handleChange}
+                  accept="image/*"
+                  className="hidden"
+                />
+
+                {!logoPreview ? (
+                  <div className="flex flex-col items-center gap-2">
+                    <Upload className="h-6 w-6 text-slate-400" />
+                    <span className="text-xs font-medium text-slate-500">
+                      Upload Logo (Max 2MB)
+                    </span>
+                  </div>
+                ) : (
+                  <div className="relative w-full h-full flex items-center justify-center p-4">
+                    <img
+                      src={logoPreview}
+                      alt="Preview"
+                      className="h-full object-contain"
+                    />
+                    <button
+                      type="button"
+                      onClick={removeLogo}
+                      className="absolute top-2 right-2 p-1.5 bg-white border border-slate-200 rounded-full text-slate-400 hover:text-red-500 hover:border-red-200 transition-all shadow-sm"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <label className="flex items-center gap-3 cursor-pointer group mt-4">
+              <div className="relative">
+                <input
+                  type="checkbox"
+                  name="agree"
+                  checked={formData.agree}
+                  onChange={handleChange}
+                  className="peer hidden"
+                />
+                <div className="w-6 h-6 rounded-full border-2 border-slate-200 peer-checked:border-blue-500 peer-checked:bg-blue-500 transition-all"></div>
+                <div className="absolute inset-0 flex items-center justify-center text-white scale-0 peer-checked:scale-100 transition-transform">
+                  <svg className="w-3 h-3 fill-current" viewBox="0 0 20 20">
+                    <path d="M0 11l2-2 5 5L18 3l2 2L7 18z" />
+                  </svg>
+                </div>
+              </div>
+              <span className="text-[14px] text-slate-500">
+                I agree to the company's{" "}
+                <span className="font-semibold text-slate-700">
+                  Terms and Conditions
+                </span>{" "}
+                and{" "}
+                <span className="font-semibold text-slate-700">
+                  Privacy Policy
+                </span>
+                .
+              </span>
+            </label>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-[64px] bg-blue-600 hover:bg-blue-700 disabled:bg-slate-100 text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98] flex items-center justify-center gap-3 group px-4"
+              className="w-full h-[60px] bg-slate-50 hover:bg-slate-100 disabled:opacity-50 text-slate-400 hover:text-slate-600 font-[600] rounded-2xl transition-all flex items-center justify-center gap-3 mt-4"
             >
-              <span className="text-lg uppercase tracking-widest">
-                {loading ? "Registering..." : "Register"}
+              <span className="text-[16px]">
+                {loading ? "Registering..." : "Register Company"}
               </span>
-              {!loading && (
-                <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-              )}
+              {!loading && <ArrowRight className="h-5 w-5 opacity-40" />}
             </button>
           </form>
-
-          <div className="mt-8 flex items-center justify-between px-2">
-            <Link
-              to="/company/login"
-              className="text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors tracking-tight"
-            >
-              Already have an account?
-            </Link>
-            <Link
-              to="/"
-              className="text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors tracking-tight"
-            >
-              Back to Home
-            </Link>
-          </div>
         </div>
       </div>
-    </div>
+      <Footer/>
+    </>
   );
 }

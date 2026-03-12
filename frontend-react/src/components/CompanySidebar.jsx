@@ -26,7 +26,7 @@ export default function CompanySidebar() {
   const activeTab = location.pathname;
 
   return (
-    <div className="w-80 bg-[#1e293b] text-white flex flex-col h-screen sticky top-0 border-r border-white/5 shadow-2xl z-50">
+    <div className=" bg-[#1e293b] text-white flex flex-col h-screen sticky top-0 border-r border-white/5 shadow-2xl z-50">
       {/* Logo */}
       <div className="p-6">
         <div className="rounded-xl  flex items-start justify-start shadow-sm mb-4">

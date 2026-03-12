@@ -140,6 +140,16 @@ export default function CompanyDriveDetail() {
     }
   };
 
+  const handlePublishDrive = async () => {
+    try {
+      await companyService.publishDrive(driveId);
+      toast.success("Drive published successfully!");
+      loadDriveData();
+    } catch (err) {
+      toast.error(getErrorMessage(err));
+    }
+  };
+
   // Modal state
   const [modalConfig, setModalConfig] = useState({
     isOpen: false,
@@ -278,6 +288,7 @@ export default function CompanyDriveDetail() {
       pending: "bg-orange-50 text-orange-600 border-orange-100",
       approved: "bg-emerald-50 text-emerald-600 border-emerald-100",
       submitted: "bg-blue-50 text-blue-600 border-blue-100",
+      published: "bg-emerald-50 text-emerald-600 border-emerald-100",
       draft: "bg-slate-50 text-slate-400 border-slate-100",
     };
     return styles[status] || "bg-blue-50 text-blue-600 border-blue-100";
@@ -329,18 +340,6 @@ export default function CompanyDriveDetail() {
                   </p>
                 </div>
               </div>
-
-              {drive?.status === "draft" && (
-                <button
-                  onClick={() =>
-                    navigate(`/company-create-drive?id=${driveId}`)
-                  }
-                  className="flex items-center gap-3 bg-blue-600 text-white px-8 py-3 rounded-xl font-semibold text-[12px] uppercase tracking-widest shadow-xl shadow-blue-500/30 hover:bg-blue-700 transition-all active:scale-95 group"
-                >
-                  <Settings className="h-4 w-4 group-hover:rotate-90 transition-transform" />
-                  Configure Drive
-                </button>
-              )}
             </div>
 
             {/* Premium Tabs Design */}
@@ -449,8 +448,10 @@ export default function CompanyDriveDetail() {
                           Questions
                         </p>
                         <div className="flex items-center justify-center">
-                          <span className="bg-blue-50 text-blue-600 px-4 py-1 rounded-full text-[10px] font-[600] uppercase tracking-widest">
-                            {drive.is_approved ? "Approved" : "Pending"}
+                          <span
+                            className={`px-4 py-1 rounded-full text-[10px] font-[600] uppercase tracking-widest border ${getStatusDisplay(drive.status)}`}
+                          >
+                            {drive.status}
                           </span>
                         </div>
                       </div>
@@ -577,7 +578,8 @@ export default function CompanyDriveDetail() {
                           : "Exam has not started yet"}
                     </p>
 
-                    {drive.is_approved &&
+                    {drive.status !== "draft" &&
+                      drive.status !== "pending" &&
                       examStatus?.exam_state !== "ongoing" &&
                       examStatus?.exam_state !== "completed" && (
                         <button

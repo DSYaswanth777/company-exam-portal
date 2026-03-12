@@ -12,10 +12,8 @@ const studentService = {
   getQuestions: () => studentApi.get("/exam/questions"),
 
   // Proctored Actions
-  recordViolation: (violation_type) =>
-    studentApi.post("/exam/violation", { violation_type }),
-  disqualify: (violation_type, reason) =>
-    studentApi.post("/exam/disqualify", { violation_type, reason }),
+  recordViolation: (reason) =>
+    studentApi.post("/exam/violation", { disqualification_reason: reason }),
 
   // Submission
   submitExam: (answers) => studentApi.post("/exam/submit", { answers }),

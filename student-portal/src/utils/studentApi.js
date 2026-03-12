@@ -46,6 +46,11 @@ studentApi.interceptors.response.use(
       if (!window.location.pathname.includes("/login")) {
         window.location.href = "/login";
       }
+    } else if (error.response?.status === 403) {
+      // Disqualified or Forbidden
+      if (!window.location.pathname.includes("/disqualified")) {
+        window.location.href = "/disqualified";
+      }
     }
     return Promise.reject(error);
   },

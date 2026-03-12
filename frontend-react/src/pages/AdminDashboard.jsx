@@ -31,6 +31,7 @@ import {
   Filter,
   MoveRight,
   X,
+  Loader2,
 } from "lucide-react";
 import { TbTargetArrow } from "react-icons/tb";
 import { IoIosFlash } from "react-icons/io";
@@ -145,6 +146,12 @@ export default function AdminDashboard() {
   const [resolutionModal, setResolutionModal] = useState({
     isOpen: false,
     ticketId: null,
+  });
+  const [planModal, setPlanModal] = useState({
+    isOpen: false,
+    company: null,
+    currentPlan: "free",
+    drivesLimit: null,
   });
 
   // ============= COMPANIES TAB EFFECTS =============
@@ -404,7 +411,33 @@ export default function AdminDashboard() {
     return () => clearInterval(interval);
   }, [allDrivesList, activeTab]); // Re-evaluate when drives or tab changes
 
-  // ============= COMPANIES TAB FUNCTIONS =============
+  const handleConfirmPlan = async () => {
+    if (!planModal.company) return;
+    setIsActionLoading(true);
+    try {
+      await adminService.setCompanyPlan(planModal.company.id, {
+        plan: planModal.currentPlan,
+        drives_limit: planModal.drivesLimit,
+      });
+      toast.success(`Plan updated to ${planModal.currentPlan}`);
+      setPlanModal({ ...planModal, isOpen: false, company: null });
+      await loadCompanies();
+    } catch (err) {
+      toast.error(getErrorMessage(err));
+    } finally {
+      setIsActionLoading(false);
+    }
+  };
+
+  const openPlanModal = (company) => {
+    setPlanModal({
+      isOpen: true,
+      company,
+      currentPlan: company.plan || "free",
+      drivesLimit: company.drives_limit || null,
+    });
+  };
+
   const loadCompanies = async () => {
     setIsLoading(true);
     try {
@@ -547,28 +580,6 @@ export default function AdminDashboard() {
     }
   };
 
-  const approveDrive = async (id, notes = "") => {
-    try {
-      await adminService.approveDrive(id, notes);
-      toast.success("Drive approved successfully");
-      await loadAllDrives();
-      setDriveDetailModal({ ...driveDetailModal, open: false });
-    } catch (err) {
-      toast.error(getErrorMessage(err));
-    }
-  };
-
-  const rejectDrive = async (id, reason = "") => {
-    try {
-      await adminService.rejectDrive(id, reason);
-      toast.success("Drive rejected successfully");
-      await loadAllDrives();
-      setDriveDetailModal({ ...driveDetailModal, open: false });
-    } catch (err) {
-      toast.error(getErrorMessage(err));
-    }
-  };
-
   const suspendDrive = async (id, reason = "") => {
     try {
       await adminService.suspendDrive(id, reason);
@@ -582,7 +593,7 @@ export default function AdminDashboard() {
 
   const reactivateDrive = async (id) => {
     try {
-      await adminService.approveDrive(id);
+      await adminService.reactivateDrive(id);
       toast.success("Drive reactivated");
       await loadAllDrives();
       setDriveDetailModal({ ...driveDetailModal, open: false });
@@ -648,10 +659,7 @@ export default function AdminDashboard() {
       {
         label: "Active Drives",
         value: dashboardStats?.drives?.active || "0",
-        change:
-          dashboardStats?.drives?.pending > 0
-            ? `${dashboardStats.drives.pending} Pending`
-            : "Stable",
+        change: "Active",
         icon: Rocket,
         color: "text-orange-600",
         bg: "bg-orange-50",
@@ -722,7 +730,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Recent Activity Table */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+        {/* <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
           <div className="px-10 py-4 border-b bg-[#1e293b] border-slate-50 flex justify-between items-center">
             <h3 className="text-md  font-semibold  text-white tracking-tight">
               Recent Activity
@@ -813,7 +821,7 @@ export default function AdminDashboard() {
               </tbody>
             </table>
           </div>
-        </div>
+        </div> */}
 
         {/* Action Cards */}
         <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-8">
@@ -839,6 +847,13 @@ export default function AdminDashboard() {
                 bg: "bg-emerald-50",
                 color: "text-emerald-600",
                 tab: "companies",
+              },
+              {
+                label: "Manage Plans",
+                icon: Rocket,
+                bg: "bg-orange-50",
+                color: "text-orange-600",
+                tab: "plans",
               },
               {
                 label: "Drives Monitor",
@@ -1092,6 +1107,13 @@ export default function AdminDashboard() {
                                 title="Suspend"
                               >
                                 <ShieldCheck className="h-4 w-4" />
+                              </button>
+                              <button
+                                onClick={() => openPlanModal(company)}
+                                className="h-10 w-10 flex items-center justify-center bg-blue-50 text-blue-400 hover:bg-blue-600 hover:text-white rounded-xl transition-all shadow-sm active:scale-95"
+                                title="Manage Plan"
+                              >
+                                <Rocket className="h-4 w-4" />
                               </button>
                               <button
                                 onClick={() =>
@@ -1482,9 +1504,6 @@ export default function AdminDashboard() {
       (d) =>
         ["live", "ongoing", "approved"].includes(d.status) || d.is_approved,
     ).length;
-    const pendingCount = allDrivesList.filter((d) =>
-      ["pending", "submitted"].includes(d.status),
-    ).length;
     const completedCount = allDrivesList.filter(
       (d) => d.status === "completed",
     ).length;
@@ -1492,7 +1511,6 @@ export default function AdminDashboard() {
     const filters = [
       { id: "all", label: "All", count: allCount },
       { id: "active", label: "Active", count: activeCount },
-      { id: "pending", label: "Pending", count: pendingCount },
       { id: "completed", label: "Completed", count: completedCount },
     ];
 
@@ -1566,9 +1584,6 @@ export default function AdminDashboard() {
                   ["live", "ongoing", "approved"].includes(d.status) ||
                   d.is_approved
                 );
-              }
-              if (driveStatusFilter === "pending") {
-                return ["pending", "submitted"].includes(d.status);
               }
               if (driveStatusFilter === "completed") {
                 return d.status === "completed";
@@ -2222,6 +2237,120 @@ export default function AdminDashboard() {
     );
   };
 
+  const renderPlans = () => {
+    const filteredCompanies = companiesList.filter(
+      (c) =>
+        c.company_name?.toLowerCase().includes(companySearch.toLowerCase()) ||
+        c.email?.toLowerCase().includes(companySearch.toLowerCase()),
+    );
+
+    return (
+      <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <header className="flex justify-between items-end">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setActiveTab("overview")}
+              className="h-12 w-12 bg-white rounded-xl border border-slate-100 flex items-center justify-center text-slate-400 hover:text-blue-600 transition-all shadow-sm"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <div>
+              <h2 className="text-3xl font-semibold text-slate-900 tracking-tight">
+                Plan Management
+              </h2>
+              <p className="text-slate-500 text-sm mt-2">
+                Manage subscription tiers and drive limits for companies.
+              </p>
+            </div>
+          </div>
+        </header>
+
+        <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col md:flex-row gap-4 items-center">
+          <div className="relative flex-1 group">
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300 group-focus-within:text-blue-500" />
+            <input
+              type="text"
+              placeholder="Filter by company..."
+              value={companySearch}
+              onChange={(e) => setCompanySearch(e.target.value)}
+              className="w-full bg-slate-50 border-none rounded-xl py-3.5 pl-14 pr-6 text-sm font-bold text-slate-600 placeholder:text-slate-300 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition-all outline-none"
+            />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-[#1e293b] text-white">
+                <th className="px-8 py-4 text-left text-[14px] font-semibold uppercase tracking-[0.1em]">
+                  Company
+                </th>
+                <th className="px-8 py-4 text-left text-[14px] font-semibold uppercase tracking-[0.1em]">
+                  Current Plan
+                </th>
+                <th className="px-8 py-4 text-left text-[14px] font-semibold uppercase tracking-[0.1em]">
+                  Drive Limit
+                </th>
+                <th className="px-8 py-4 text-left text-[14px] font-semibold uppercase tracking-[0.1em]">
+                  Status
+                </th>
+                <th className="px-8 py-4 text-right text-[14px] font-semibold uppercase tracking-[0.1em]">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-50">
+              {filteredCompanies.map((company) => (
+                <tr
+                  key={company.id}
+                  className="hover:bg-slate-50/50 transition-colors group"
+                >
+                  <td className="px-8 py-4">
+                    <p className="font-semibold text-slate-900">
+                      {company.company_name}
+                    </p>
+                    <p className="text-xs text-slate-400">{company.email}</p>
+                  </td>
+                  <td className="px-8 py-4">
+                    <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] font-bold uppercase">
+                      {company.plan || "Free"}
+                    </span>
+                  </td>
+                  <td className="px-8 py-4">
+                    <span className="text-sm font-medium text-slate-600">
+                      {company.drives_limit === null
+                        ? "Unlimited"
+                        : company.drives_limit}
+                    </span>
+                  </td>
+                  <td className="px-8 py-4">
+                    <span
+                      className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${
+                        company.status === "approved"
+                          ? "bg-emerald-50 text-emerald-600"
+                          : "bg-orange-50 text-orange-600"
+                      }`}
+                    >
+                      {company.status}
+                    </span>
+                  </td>
+                  <td className="px-8 py-4 text-right">
+                    <button
+                      onClick={() => openPlanModal(company)}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold uppercase tracking-widest hover:bg-blue-700 transition-all shadow-sm"
+                    >
+                      Change Plan
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  };
+
   const renderDataManagement = () => {
     return <AdminColleges onBack={() => setActiveTab("overview")} />;
   };
@@ -2244,11 +2373,120 @@ export default function AdminDashboard() {
             renderActiveDrivesTable()}
           {activeTab === "data_management" && renderDataManagement()}
           {activeTab === "active_companies" && renderActiveCompaniesTotal()}
+          {activeTab === "plans" && renderPlans()}
           {activeTab === "tickets" && renderTickets()}
           {activeTab === "ticket_detail" && renderTicketDetail()}
           {activeTab === "colleges" && renderDataManagement()}
         </main>
       </div>
+
+      {/* Plan Management Modal */}
+      {planModal.isOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4 animate-in fade-in duration-300">
+          <div className="bg-white rounded-[32px] shadow-2xl max-w-lg w-full overflow-hidden border border-slate-100 animate-in zoom-in-95 duration-300">
+            <div className="p-8 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
+              <div>
+                <h3 className="text-xl font-bold text-slate-900 tracking-tight">
+                  Manage Company Plan
+                </h3>
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mt-1">
+                  {planModal.company?.company_name}
+                </p>
+              </div>
+              <button
+                onClick={() => setPlanModal({ ...planModal, isOpen: false })}
+                className="h-10 w-10 flex items-center justify-center rounded-full hover:bg-white hover:shadow-sm text-slate-400 transition-all"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="p-8 space-y-8">
+              {/* Plan Selection */}
+              <div className="space-y-4">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">
+                  Subscription Tier
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  {["free", "basic", "pro", "premium", "custom"].map((plan) => (
+                    <button
+                      key={plan}
+                      onClick={() =>
+                        setPlanModal({ ...planModal, currentPlan: plan })
+                      }
+                      className={`px-4 py-3 rounded-xl border text-sm font-semibold transition-all uppercase tracking-wider ${
+                        planModal.currentPlan === plan
+                          ? "bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-200"
+                          : "bg-white border-slate-100 text-slate-400 hover:border-blue-200 hover:text-blue-600"
+                      }`}
+                    >
+                      {plan}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Drive Limit - only show or enable for custom maybe? Postman says provide drives_limit for custom */}
+              <div className="space-y-4">
+                <div className="flex justify-between items-center ml-1">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    Drive Limit
+                  </label>
+                  <span className="text-[10px] font-bold text-blue-600 uppercase">
+                    {planModal.drivesLimit === null
+                      ? "Unlimited"
+                      : `${planModal.drivesLimit} Drives`}
+                  </span>
+                </div>
+                <div className="relative group">
+                  <input
+                    type="number"
+                    placeholder="Enter limit (leave empty for unlimited)"
+                    value={
+                      planModal.drivesLimit === null
+                        ? ""
+                        : planModal.drivesLimit
+                    }
+                    onChange={(e) =>
+                      setPlanModal({
+                        ...planModal,
+                        drivesLimit:
+                          e.target.value === ""
+                            ? null
+                            : parseInt(e.target.value),
+                      })
+                    }
+                    className="w-full bg-slate-50 border-none rounded-2xl py-4 flex px-6 text-sm font-semibold text-slate-700 placeholder:text-slate-300 focus:ring-2 focus:ring-blue-500/10 focus:bg-white transition-all outline-none"
+                  />
+                </div>
+                <p className="text-[10px] text-slate-400 italic ml-1">
+                  * Basic: 3, Pro: 10, Premium: Unlimited recommended.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-8 bg-slate-50/50 border-t border-slate-50 flex gap-4">
+              <button
+                onClick={() => setPlanModal({ ...planModal, isOpen: false })}
+                className="flex-1 py-4 px-6 bg-white border border-slate-200 text-slate-600 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-slate-50 transition-all active:scale-95"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmPlan}
+                disabled={isActionLoading}
+                className="flex-1 py-4 px-6 bg-blue-600 text-white rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-blue-700 transition-all shadow-xl shadow-blue-200 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {isActionLoading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  "Update Plan"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ============= MODALS ============= */}
 
@@ -2759,35 +2997,6 @@ export default function AdminDashboard() {
 
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-3 pt-6 border-t border-gray-200 dark:border-slate-700">
-                {(driveDetailData.status === "submitted" ||
-                  driveDetailData.status === "draft") && (
-                  <>
-                    <button
-                      onClick={() =>
-                        setApprovalModal({
-                          open: true,
-                          driveId: driveDetailData.id,
-                          action: "approve",
-                        })
-                      }
-                      className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition"
-                    >
-                      Approve
-                    </button>
-                    <button
-                      onClick={() =>
-                        setApprovalModal({
-                          open: true,
-                          driveId: driveDetailData.id,
-                          action: "reject",
-                        })
-                      }
-                      className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition"
-                    >
-                      Reject
-                    </button>
-                  </>
-                )}
                 {driveDetailData.status === "approved" && (
                   <button
                     onClick={() =>

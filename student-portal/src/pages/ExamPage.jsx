@@ -113,23 +113,30 @@ export default function ExamPage() {
   // Violation Detection Logic
   const handleViolation = useCallback(
     async (type) => {
-      try {
-        const res = await studentService.recordViolation(type);
-        const { total_violations } = res.data;
-        setViolationCount(total_violations);
+      // Increment count locally
+      const newCount = violationCount + 1;
+      setViolationCount(newCount);
+      SafeStorage.setItem("violation_count", newCount);
 
-        if (total_violations >= 4) {
-          const reason = `Exceeded violation limit (${type})`;
-          await studentService.disqualify(type, reason);
+      if (newCount >= 3) {
+        try {
+          const reason = `Disqualified due to multiple violations. Last action: ${type}`;
+          await studentService.recordViolation(reason);
+          SafeStorage.removeItem("violation_count");
+          SafeStorage.removeItem("exam_answers");
           navigate("/disqualified", { state: { reason } });
-        } else {
-          setIsViolationModalOpen(true);
+        } catch (err) {
+          console.error("Failed to record disqualification", err);
+          // Still navigate because the backend will block them anyway
+          navigate("/disqualified", {
+            state: { reason: "Security violation detected." },
+          });
         }
-      } catch (err) {
-        console.error("Failed to record violation", err);
+      } else {
+        setIsViolationModalOpen(true);
       }
     },
-    [navigate],
+    [violationCount, navigate],
   );
 
   useEffect(() => {
@@ -150,6 +157,10 @@ export default function ExamPage() {
 
     forceFullScreen();
 
+    // Violation tracking persistency
+    const savedViolations = SafeStorage.getItem("violation_count") || 0;
+    setViolationCount(Number(savedViolations));
+
     const handleVisibilityChange = () => {
       if (document.hidden) {
         handleViolation("tab_switch");
@@ -162,8 +173,28 @@ export default function ExamPage() {
       }
     };
 
+    const handleContextMenu = (e) => {
+      e.preventDefault();
+      handleViolation("right_click");
+    };
+
+    const handleCopy = (e) => {
+      toast.error("Copying is not allowed! This action is recorded.", {
+        icon: "⚠️",
+      });
+    };
+
+    const handlePaste = (e) => {
+      toast.error("Pasting is not allowed! This action is recorded.", {
+        icon: "⚠️",
+      });
+    };
+
     document.addEventListener("visibilitychange", handleVisibilityChange);
     document.addEventListener("fullscreenchange", handleFullScreenChange);
+    document.addEventListener("contextmenu", handleContextMenu);
+    document.addEventListener("copy", handleCopy);
+    document.addEventListener("paste", handlePaste);
 
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -189,6 +220,9 @@ export default function ExamPage() {
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       document.removeEventListener("fullscreenchange", handleFullScreenChange);
+      document.removeEventListener("contextmenu", handleContextMenu);
+      document.removeEventListener("copy", handleCopy);
+      document.removeEventListener("paste", handlePaste);
       clearInterval(timer);
     };
   }, [handleViolation]);

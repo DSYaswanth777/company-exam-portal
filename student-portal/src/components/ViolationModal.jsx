@@ -8,36 +8,28 @@ export default function ViolationModal({ isOpen, onClose, violationCount }) {
     switch (violationCount) {
       case 1:
         return {
-          title: "First Violation",
-          remaining: "3 violations remaining before disqualification.",
+          title: "First Warning",
+          remaining: "2 violations remaining before disqualification.",
+          message:
+            "You switched tabs, exited full screen, or right-clicked. This is your first warning.",
           buttonText: "Continue Exam",
           buttonClass: "bg-blue-600 hover:bg-blue-700 shadow-blue-500/30",
         };
       case 2:
         return {
-          title: "Violation #2",
-          remaining: "2 violations remaining before disqualification.",
-          buttonText: "Continue Exam",
-          buttonClass: "bg-blue-600 hover:bg-blue-700 shadow-blue-500/30",
-        };
-      case 3:
-        return {
-          title: "Violation #3",
+          title: "Final Warning",
           remaining: "1 violation remaining before disqualification.",
-          buttonText: "Continue Exam",
-          buttonClass: "bg-blue-600 hover:bg-blue-700 shadow-blue-500/30",
-        };
-      case 4:
-        return {
-          title: "Final Violation",
-          remaining: "No warnings left. Proceed carefully.",
+          message:
+            "This is your final warning. Any further violation will result in immediate disqualification.",
           buttonText: "Continue Exam",
           buttonClass: "bg-red-600 hover:bg-red-700 shadow-red-500/30",
         };
       default:
         return {
           title: "Violation Detected",
-          remaining: "Please maintain full-screen mode and stay on the tab.",
+          remaining: "Please maintain integrity to avoid disqualification.",
+          message:
+            "Please maintain full-screen mode and stay on the active exam tab.",
           buttonText: "Continue Exam",
           buttonClass: "bg-blue-600 hover:bg-blue-700 shadow-blue-500/30",
         };
@@ -72,9 +64,7 @@ export default function ViolationModal({ isOpen, onClose, violationCount }) {
           {/* Warning Content */}
           <div className="space-y-6 mb-10">
             <p className="text-gray-600 text-lg leading-relaxed font-medium">
-              {violationCount === 4
-                ? "This is your final warning. Any further violation will result in immediate disqualification."
-                : `You switched tabs or exited full screen. This is warning #${violationCount}.`}
+              {data.message}
             </p>
 
             <div className="flex items-center gap-3 py-3 px-4 bg-white border border-gray-100 rounded-xl">

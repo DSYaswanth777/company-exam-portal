@@ -20,7 +20,12 @@ const adminService = {
   rejectCompany: (id, reason = "Rejected by admin") =>
     api.put(`/admin/companies/${id}/reject`, { reason }),
   suspendCompany: (id, notes = "Suspended by admin") =>
-    api.put(`/admin/companies/${id}/approve`, { is_approved: false, notes }),
+    api.put(`/admin/companies/${id}/suspend`, { reason: notes }),
+  unsuspendCompany: (id) => api.put(`/admin/companies/${id}/unsuspend`),
+  setCompanyPlan: (id, data) =>
+    api.put(`/admin/companies/${id}/set-plan`, data),
+  notifyCompany: (id, data) => api.post(`/admin/companies/${id}/notify`, data),
+  deleteCompany: (id) => api.delete(`/admin/companies/${id}`),
 
   // Student Management
   getAllStudents: () => api.get("/admin/students/all"),
@@ -29,18 +34,9 @@ const adminService = {
   getDrives: (filter = "") =>
     api.get(`/admin/drives?status_filter=${filter}&limit=500`),
   getDriveDetail: (id) => api.get(`/admin/drives/${id}/detail`),
-  approveDrive: (id, notes = "Approved by admin") =>
-    api.put(`/admin/drives/${id}/approve`, {
-      is_approved: true,
-      admin_notes: notes,
-    }),
-  rejectDrive: (id, notes = "Rejected by admin") =>
-    api.put(`/admin/drives/${id}/approve`, {
-      is_approved: false,
-      admin_notes: notes,
-    }),
-  suspendDrive: (id, reason = "Suspended by admin") =>
-    api.put(`/admin/drives/${id}/suspend`, { reason }),
+  // Drive operations
+  suspendDrive: (id) => api.put(`/admin/drives/${id}/suspend`),
+  reactivateDrive: (id) => api.put(`/admin/drives/${id}/reactivate`),
   getDriveExamStatus: (id) => api.get(`/admin/drives/${id}/exam-status`),
 
   // College & Student Groups
@@ -48,16 +44,32 @@ const adminService = {
   getColleges: () => api.get("/admin/colleges"),
   approveCustomCollege: (data) =>
     api.put("/admin/colleges/approve-custom", data),
+  createCollege: (data) => api.post("/admin/colleges", data),
+  approveCollege: (id) => api.put(`/admin/colleges/${id}/approve`),
+  updateCollege: (id, data) => api.put(`/admin/colleges/${id}`, data),
+  deleteCollege: (id) => api.delete(`/admin/colleges/${id}`),
+
   getPendingGroups: () => api.get("/admin/student-groups/pending"),
   getGroups: () => api.get("/admin/student-groups"),
   approveCustomGroup: (data) =>
     api.put("/admin/student-groups/approve-custom", data),
+  createGroup: (data) => api.post("/admin/student-groups", data),
+  approveGroup: (id) => api.put(`/admin/student-groups/${id}/approve`),
+  updateGroup: (id, data) => api.put(`/admin/student-groups/${id}`, data),
+  deleteGroup: (id) => api.delete(`/admin/student-groups/${id}`),
 
   // Support Tickets
   getTickets: (filter = "") =>
-    api.get(`/admin/tickets${filter ? `?status=${filter}` : ""}`),
+    api.get(`/admin/tickets${filter ? `?status_filter=${filter}` : ""}`),
+  getTicketDetail: (id) => api.get(`/admin/tickets/${id}`),
   updateTicketStatus: (id, data) =>
     api.put(`/admin/tickets/${id}/status`, data),
+
+  // Notifications
+  getNotifications: (params = {}) =>
+    api.get("/admin/notifications", {
+      params: { skip: 0, limit: 100, ...params },
+    }),
 
   // Proxy Company Calls (Admin acting as Company)
   getCompanyDrives: (companyId) =>

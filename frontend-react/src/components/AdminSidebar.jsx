@@ -14,6 +14,7 @@ export default function AdminSidebar({ activeTab, setActiveTab, onLogout }) {
     { id: "overview", label: "Dashboard", icon: LayoutDashboard },
     { id: "companies", label: "Company Approvals", icon: Building2 },
     { id: "data_management", label: "Data Management", icon: Database },
+    { id: "plans", label: "Plan Management", icon: Rocket },
     { id: "tickets", label: "Support Tickets", icon: Ticket },
   ];
 
