@@ -202,7 +202,7 @@ export default function WaitingRoom() {
                   {regulations.map((reg, index) => (
                     <div key={index} className="flex gap-4">
                       <div className="h-1.5 w-1.5 rounded-full bg-blue-500 mt-2 shrink-0"></div>
-                      <p className={`text-sm leading-relaxed ${reg.color}`}>
+                      <p className={`text-[14px] leading-relaxed ${reg.color} font-[400]`}>
                         {reg.text}
                       </p>
                     </div>

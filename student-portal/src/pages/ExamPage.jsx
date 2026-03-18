@@ -120,7 +120,7 @@ export default function ExamPage() {
 
       if (newCount >= 3) {
         try {
-          const reason = `Disqualified due to multiple violations. Last action: ${type}`;
+          const reason = `System detected excessive tab switching beyond the permitted limit.`;
           await studentService.recordViolation(reason);
           SafeStorage.removeItem("violation_count");
           SafeStorage.removeItem("exam_answers");

@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { Slash, ShieldCheck, History, ArrowRight, Info } from "lucide-react";
+import { TbCancel } from "react-icons/tb";
 
 export default function DisqualifiedPage() {
   const navigate = useNavigate();
@@ -11,11 +12,12 @@ export default function DisqualifiedPage() {
 
   return (
     <div className="min-h-screen bg-[#FDFDFD] flex items-center justify-center p-6 font-poppins">
-      <div className="w-full max-w-5xl bg-white rounded-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] overflow-hidden border border-gray-100 flex flex-col md:flex-row min-h-[600px]">
+      <div className="w-full max-w-6xl bg-white rounded-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] overflow-hidden border border-gray-100 flex flex-col md:flex-row min-h-[600px]">
         {/* Left Side: Disqualification Info */}
-        <div className="flex-1 p-10 md:p-16 border-b md:border-b-0 md:border-r border-gray-50 flex flex-col items-center text-center justify-center">
-          <div className="h-24 w-24 bg-red-600 rounded-3xl flex items-center justify-center mb-10 shadow-lg shadow-red-200 rotate-3">
-            <Slash className="h-12 w-12 text-white -rotate-3" />
+        <div className="flex-1 p-10 md:p-16 border-b md:border-b-0 md:border-r border-gray-50 flex flex-col items-start text-start justify-center">
+          <div className="h-18 w-18 bg-red-600 rounded-3xl flex items-center justify-center mb-10 shadow-lg shadow-red-200">
+        <TbCancel className="text-white" size={38} />
+
           </div>
 
           <h1 className="text-4xl font-semibold text-gray-900 mb-4 tracking-tight">
@@ -49,7 +51,7 @@ export default function DisqualifiedPage() {
 
         {/* Right Side: Security Report */}
         <div className="flex-1 p-10 md:p-16 bg-white flex flex-col">
-          <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-[0.3em] mb-10">
+          <h2 className="text-[18px] font-[600] text-gray-900 uppercase tracking-[0.1em] mb-10">
             Session Security Report
           </h2>
 
@@ -57,7 +59,7 @@ export default function DisqualifiedPage() {
             {/* Help Note */}
             <div className="bg-gray-50/50 border border-gray-100 rounded-xl p-6 flex gap-4 items-start">
               <Info className="h-5 w-5 text-gray-400 shrink-0 mt-0.5" />
-              <p className="text-gray-500 text-sm leading-relaxed font-medium">
+              <p className="text-gray-500 text-[14px] leading-relaxed font-[400]">
                 If you believe this was a technical error, please contact your
                 company.
               </p>
@@ -67,10 +69,10 @@ export default function DisqualifiedPage() {
               {/* Integrity Info */}
               <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow">
                 <ShieldCheck className="h-6 w-6 text-red-500 mb-4" />
-                <h3 className="text-xs font-semibold text-gray-900 uppercase tracking-wider mb-2">
+                <h3 className="text-[16px] font-[600] text-gray-900 uppercase tracking-wider mb-2">
                   Integrity Info
                 </h3>
-                <p className="text-gray-400 text-[11px] leading-relaxed font-medium">
+                <p className="text-gray-400 text-[14px] leading-relaxed font-[400">
                   The system monitors tab switching and Screen manipulation.
                 </p>
               </div>
@@ -78,10 +80,10 @@ export default function DisqualifiedPage() {
               {/* Log Status */}
               <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow">
                 <History className="h-6 w-6 text-blue-500 mb-4" />
-                <h3 className="text-xs font-semibold text-gray-900 uppercase tracking-wider mb-2">
+                <h3 className="text-[16px] font-[600] text-gray-900 uppercase tracking-wider mb-2">
                   Log Status
                 </h3>
-                <p className="text-gray-400 text-[11px] leading-relaxed font-medium">
+                <p className="text-gray-400 text-[14px] leading-relaxed font-[400">
                   Session metrics logged and forwarded to examiners.
                 </p>
               </div>

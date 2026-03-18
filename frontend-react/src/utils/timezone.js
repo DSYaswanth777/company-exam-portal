@@ -1,7 +1,7 @@
 /**
- * IST (Asia/Kolkata) timezone utility functions
- * All times displayed in IST throughout the application
- * IMPORTANT: Backend stores in UTC, Frontend displays in IST
+ * UTC timezone utility functions
+ * All times displayed in UTC throughout the application
+ * IMPORTANT: Backend stores in UTC, Frontend displays in UTC
  */
 
 /**
@@ -24,11 +24,11 @@ const ensureUTC = (dateString) => {
 };
 
 /**
- * Format date in IST with readable format
+ * Format date in UTC with readable format
  * @param {string|Date} date - Date to format (UTC string from backend)
- * @returns {string} Formatted date string in IST (e.g., "07 Jan 2026, 14:30 IST")
+ * @returns {string} Formatted date string in UTC (e.g., "07 Jan 2026, 14:30 UTC")
  */
-export const formatDateIST = (date) => {
+export const formatDateUTCStr = (date) => {
   if (!date) return "Not set";
 
   // Force UTC interpretation for strings from backend
@@ -37,7 +37,7 @@ export const formatDateIST = (date) => {
   if (isNaN(d.getTime())) return "Invalid Date";
 
   const options = {
-    timeZone: "Asia/Kolkata",
+    timeZone: "UTC",
     year: "numeric",
     month: "short",
     day: "2-digit",
@@ -46,23 +46,25 @@ export const formatDateIST = (date) => {
     hour12: true,
   };
 
-  // Indian English locale ensures 'am/pm' and DD MMM YYYY format
-  return d.toLocaleString("en-IN", options).replace(/, /g, " ") + " IST";
+  return d.toLocaleString("en-IN", options).replace(/, /g, " ") + " UTC";
 };
 
+// Kept for backward compatibility during transition if needed
+export const formatDateIST = formatDateUTCStr;
+
 /**
- * Format date in IST - short format without time
+ * Format date in UTC - short format without time
  * @param {string|Date} date - Date to format
  * @returns {string} Formatted date (e.g., "07 Jan 2026")
  */
-export const formatDateOnlyIST = (date) => {
+export const formatDateOnlyUTC = (date) => {
   if (!date) return "Not set";
 
   const d = new Date(typeof date === "string" ? ensureUTC(date) : date);
   if (isNaN(d.getTime())) return "Invalid Date";
 
   const options = {
-    timeZone: "Asia/Kolkata",
+    timeZone: "UTC",
     year: "numeric",
     month: "short",
     day: "2-digit",
@@ -71,20 +73,21 @@ export const formatDateOnlyIST = (date) => {
   return d.toLocaleString("en-IN", options);
 };
 
+export const formatDateOnlyIST = formatDateOnlyUTC;
+
 /**
- * Convert UTC string to IST datetime-local input format
+ * Convert UTC string to UTC datetime-local input format
  * @param {string} utcDateString - UTC ISO string from backend
- * @returns {string} IST datetime string for input (YYYY-MM-DDTHH:MM)
+ * @returns {string} UTC datetime string for input (YYYY-MM-DDTHH:MM)
  */
-export const convertUTCToInputIST = (utcDateString) => {
+export const convertUTCToInputUTC = (utcDateString) => {
   if (!utcDateString) return "";
 
   const d = new Date(ensureUTC(utcDateString));
   if (isNaN(d.getTime())) return "";
 
-  // Use Intl.DateTimeFormat to get components in IST
   const formatter = new Intl.DateTimeFormat("en-GB", {
-    timeZone: "Asia/Kolkata",
+    timeZone: "UTC",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -96,45 +99,46 @@ export const convertUTCToInputIST = (utcDateString) => {
   const parts = formatter.formatToParts(d);
   const p = parts.reduce(
     (acc, part) => ({ ...acc, [part.type]: part.value }),
-    {},
+    {}
   );
 
   return `${p.year}-${p.month}-${p.day}T${p.hour}:${p.minute}`;
 };
 
+export const convertUTCToInputIST = convertUTCToInputUTC;
+
 /**
- * Convert IST datetime-local input to UTC ISO string
+ * Convert UTC datetime-local input to UTC ISO string
  * @param {string} inputDateTimeString - Datetime string from input (YYYY-MM-DDTHH:MM)
  * @returns {string|null} UTC ISO string
  */
-export const convertInputISTToUTC = (inputDateTimeString) => {
+export const convertInputUTCToUTC = (inputDateTimeString) => {
   if (!inputDateTimeString) return null;
 
   try {
-    // inputDateTimeString is "YYYY-MM-DDTHH:MM" in IST
     const [datePart, timePart] = inputDateTimeString.split("T");
-
-    // Create a Date object by appending the IST offset (+05:30)
-    const isoWithOffset = `${datePart}T${timePart}:00+05:30`;
+    const isoWithOffset = `${datePart}T${timePart}:00Z`;
     const date = new Date(isoWithOffset);
 
     if (isNaN(date.getTime())) return null;
     return date.toISOString();
   } catch (err) {
-    console.error("IST to UTC conversion error:", err);
+    console.error("UTC conversion error:", err);
     return null;
   }
 };
+
+export const convertInputISTToUTC = convertInputUTCToUTC;
 
 /**
  * Common formatting for list views/tables
  */
 export const formatDateLocal = (date) => {
-  return formatDateIST(date);
+  return formatDateUTCStr(date);
 };
 
 export const formatDateUTC = (date) => {
-  return formatDateIST(date);
+  return formatDateUTCStr(date);
 };
 
 /**
