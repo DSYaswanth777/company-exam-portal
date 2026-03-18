@@ -45,7 +45,7 @@ API docs at http://localhost:8000/docs
 ```powershell
 cd frontend-react
 npm install
-npm run dev -- --host --port 5173
+npm run dev -- --host --port 5300
 ```
 
 ### Student portal
@@ -53,7 +53,7 @@ npm run dev -- --host --port 5173
 ```powershell
 cd student-portal
 npm install
-npm run dev -- --host --port 5174
+npm run dev -- --host --port 5301
 ```
 
 ## Deployment notes

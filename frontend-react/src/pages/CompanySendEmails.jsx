@@ -521,18 +521,15 @@ export default function CompanySendEmails() {
                       disabled={
                         isSendingEmails ||
                         !canSendEmails ||
-                        examStatus?.exam_state === "completed" ||
-                        drive?.status === "suspended"
+                        drive?.status !== "upcoming"
                       }
                       className="flex-[2] px-8 py-4 bg-blue-600 text-white rounded-xl font-[500] text-[11px] uppercase tracking-widest shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-all flex items-center justify-center gap-3 disabled:bg-slate-200 disabled:shadow-none disabled:cursor-not-allowed"
                     >
                       <Send className="h-4 w-4" />
                       {isSendingEmails
                         ? "Broadcasting..."
-                        : drive?.status === "suspended"
-                        ? "Drive Suspended"
-                        : examStatus?.exam_state === "completed"
-                        ? "Exam Completed"
+                        : drive?.status !== "upcoming"
+                        ? "Upcoming Drives Only"
                         : "Send to all Candidates"}
                     </button>
                   </div>

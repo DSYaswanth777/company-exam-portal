@@ -214,7 +214,7 @@ frontend-react/
 Ensure backend has CORS enabled for frontend domain:
 
 ```python
-allowed_origins = ["http://localhost:5173", "http://localhost:3000", "your-production-domain"]
+allowed_origins = ["http://localhost:5300", "http://localhost:3000", "your-production-domain"]
 ```
 
 ### API Response Format

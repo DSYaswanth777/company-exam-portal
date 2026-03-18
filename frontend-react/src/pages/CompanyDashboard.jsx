@@ -436,13 +436,9 @@ export default function CompanyDashboard() {
                           onClick={() =>
                             navigate(`/company-send-emails?id=${drive.id}`)
                           }
-                          disabled={
-                            drive.status === "suspended" ||
-                            drive.status === "completed"
-                          }
+                          disabled={drive.status !== "upcoming"}
                           className={`px-10 ${
-                            drive.status === "suspended" ||
-                            drive.status === "completed"
+                            drive.status !== "upcoming"
                               ? "bg-slate-50 text-slate-200 border-slate-100 cursor-not-allowed"
                               : "bg-[#F8FAFC] text-[#64748B] border-slate-200/60 hover:bg-slate-100 hover:text-[#0F172A]"
                           } border py-2 rounded-xl  font-[500] text-[12px] uppercase tracking-[0.1em] transition-all flex items-center justify-center`}
