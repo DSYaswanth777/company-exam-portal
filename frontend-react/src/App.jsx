@@ -12,6 +12,7 @@ import CompanyDriveDetail from "./pages/CompanyDriveDetail";
 import CompanySendEmails from "./pages/CompanySendEmails";
 import CompanySupportTickets from "./pages/CompanySupportTickets";
 import CompanyRaiseTicket from "./pages/CompanyRaiseTicket";
+import CompanyNotifications from "./pages/CompanyNotifications";
 import Hero from "./components/Hero";
 import Landing from "./components/Landing";
 import Footer from "./components/Footer";
@@ -201,6 +202,15 @@ const App = () => {
                   element={
                     <RequireAuth allowedTypes={["company"]}>
                       <CompanyRaiseTicket />
+                    </RequireAuth>
+                  }
+                />
+
+                <Route
+                  path="/company-notifications"
+                  element={
+                    <RequireAuth allowedTypes={["company"]}>
+                      <CompanyNotifications />
                     </RequireAuth>
                   }
                 />

@@ -63,6 +63,30 @@ export default function AdminHeader({
     return () => clearTimeout(delayDebounceFn);
   }, [searchQuery]);
 
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // Fetch notifications for the badge
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const res = await adminService.getNotifications();
+        const data = res.data || [];
+        setNotifications(data);
+        // For now, let's assume all fetched ones are 'new' or just show total count
+        setUnreadCount(data.length);
+      } catch (err) {
+        console.error("Failed to fetch notification count:", err);
+      }
+    };
+
+    fetchNotifications();
+    
+    // Optional: Refresh count every 5 minutes
+    const interval = setInterval(fetchNotifications, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   const handleResultClick = (result) => {
     setShowResults(false);
     setSearchQuery("");
@@ -183,7 +207,13 @@ export default function AdminHeader({
           className="relative group p-2.5 bg-slate-50 rounded-xl hover:bg-slate-100 transition-all duration-300"
         >
           <Bell className="h-5 w-5 text-slate-400 group-hover:text-blue-600 transition-colors" />
-          <div className="absolute top-2.5 right-2.5 h-2.5 w-2.5 bg-red-500 rounded-full border-2 border-white group-hover:scale-110 transition-transform"></div>
+          {unreadCount > 0 && (
+            <div className="absolute top-2 right-2 min-w-[18px] h-[18px] px-1 bg-red-500 rounded-full border-2 border-white flex items-center justify-center group-hover:scale-110 transition-transform shadow-sm">
+              <span className="text-[10px] font-bold text-white leading-none">
+                {unreadCount > 99 ? "99+" : unreadCount}
+              </span>
+            </div>
+          )}
         </button>
 
         <div className="h-10 w-[1px] bg-slate-100 mx-2"></div>

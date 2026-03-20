@@ -12,6 +12,7 @@ import {
   Briefcase,
   Users,
   ChevronDown,
+  PlusCircle,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { DatePicker } from "rsuite";
@@ -217,10 +218,10 @@ export default function CompanyCreateDrive() {
               <ArrowLeft className="h-5 w-5" />
             </button>
             <div>
-              <h2 className="text-[22px] font-bold text-[#111827] tracking-tight leading-none mb-1">
+              <h2 className="text-[22px] font-[600] text-[#111827] tracking-tight leading-none mb-1">
                 Create New Drive
               </h2>
-              <p className="text-[13px] text-[#6B7280] font-medium">
+              <p className="text-[13px] text-[#6B7280] font-[500">
                 Set up a new exam drive for students
               </p>
             </div>
@@ -264,8 +265,8 @@ export default function CompanyCreateDrive() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                 <div className="space-y-1.5">
-                  <label className="text-[13px] font-semibold text-[#111827] ml-1">
-                    Drive Title *
+                  <label className="text-[12px] font-[600] text-[#9CA3AF]  uppercase">
+                    Drive Title
                   </label>
                   <input
                     type="text"
@@ -273,40 +274,40 @@ export default function CompanyCreateDrive() {
                     value={formData.title}
                     onChange={handleInputChange}
                     placeholder="e.g. Spring 2024 Technical Assessment"
-                    className="w-full h-[38px] px-3 py-2 bg-white border border-[#D1D5DB] rounded-[6px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[14px] text-[#111827] placeholder:text-[#9CA3AF]"
+                    className="w-full h-[56px] px-3 py-2 bg-[#F8FAFC] border-2 mt-2 border-[#D1D5DB] rounded-[16px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[14px] text-[#111827] placeholder:text-[#9CA3AF]"
                     required
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[13px] font-semibold text-[#111827] ml-1">
-                    Category *
+                  <label className="text-[12px] font-[600] text-[#9CA3AF]  uppercase">
+                    Category
                   </label>
                   <div className="relative">
                     <select
                       name="category"
                       value={formData.category}
                       onChange={handleInputChange}
-                      className="w-full h-[38px] px-3 py-2 bg-white border border-[#D1D5DB] rounded-[6px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[14px] text-[#111827] appearance-none"
+                      className="w-full h-[56px] px-3 pe-10 py-2 bg-[#F8FAFC] border-2 mt-2 border-[#D1D5DB] rounded-[16px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[14px] text-[#111827] appearance-none"
                     >
                       <option value="Technical MCQ">Technical MCQ</option>
                       <option value="Aptitude MCQ">Aptitude MCQ</option>
                       <option value="HR MCQ">HR MCQ</option>
                       <option value="Coding MCQ">Coding MCQ</option>
                     </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-0.5 h-4 w-4 text-slate-400 pointer-events-none" />
                   </div>
                 </div>
                 <div className="md:col-span-2 space-y-1.5">
-                  <label className="text-[13px] font-semibold text-[#111827] ml-1">
+                  <label className="text-[12px] font-[600] text-[#9CA3AF]  uppercase">
                     Description (Optional)
                   </label>
                   <textarea
                     name="description"
                     value={formData.description}
                     onChange={handleInputChange}
-                    rows="3"
+                    rows="5"
                     placeholder="Brief description of the exam drive"
-                    className="w-full px-3 py-2 bg-white border border-[#D1D5DB] rounded-[6px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[14px] text-[#111827] placeholder:text-[#9CA3AF] leading-relaxed resize-none"
+                    className="w-full px-3 py-2  bg-[#F8FAFC] border-2 mt-2 border-[#D1D5DB] rounded-[16px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[14px] text-[#111827] placeholder:text-[#9CA3AF]"
                   />
                 </div>
               </div>
@@ -330,7 +331,7 @@ export default function CompanyCreateDrive() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                 <div className="space-y-1.5">
-                  <label className="text-[13px] font-semibold text-[#111827] ml-1">
+                  <label className="text-[12px] font-[600] text-[#9CA3AF]  uppercase">
                     Exam Duration (minutes) *
                   </label>
                   <input
@@ -339,13 +340,13 @@ export default function CompanyCreateDrive() {
                     value={formData.exam_duration_minutes}
                     onChange={handleInputChange}
                     placeholder="e.g. 30"
-                    className="w-full h-[38px] px-3 py-2 bg-white border border-[#D1D5DB] rounded-[6px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[14px] text-[#111827] placeholder:text-[#9CA3AF]"
+                    className="w-full h-[56px] px-3 py-2  bg-[#F8FAFC] border-2 mt-2 border-[#D1D5DB] rounded-[16px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[14px] text-[#111827] placeholder:text-[#9CA3AF]"
                     required
                   />
                 </div>
                 {/* Window Starts */}
                 <div className="space-y-1.5">
-                  <label className="text-[13px] font-semibold text-slate-900 ml-1">
+                  <label className="text-[12px] font-[600] text-[#9CA3AF]  uppercase">
                     Window Start (UTC) *
                   </label>
                   <div className="relative group rsuite-datepicker-container">
@@ -360,7 +361,7 @@ export default function CompanyCreateDrive() {
                         handleDateChange("window_start", date)
                       }
                       placeholder="mm/dd/yyyy -- : --"
-                      className="w-full"
+                      className="w-full h-[56px] px-3 py-2  bg-[#F8FAFC] border-2 mt-2 border-[#D1D5DB] rounded-[16px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[14px] text-[#111827] placeholder:text-[#9CA3AF]"
                       style={{ width: "100%" }}
                     />
                   </div>
@@ -368,7 +369,7 @@ export default function CompanyCreateDrive() {
 
                 {/* Window Ends */}
                 <div className="space-y-1.5">
-                  <label className="text-[13px] font-semibold text-slate-900 ml-1">
+                  <label className="text-[12px] font-[600] text-[#9CA3AF]  uppercase">
                     Window End (UTC) *
                   </label>
                   <div className="relative group rsuite-datepicker-container">
@@ -381,7 +382,7 @@ export default function CompanyCreateDrive() {
                       }
                       onChange={(date) => handleDateChange("window_end", date)}
                       placeholder="mm/dd/yyyy -- : --"
-                      className="w-full"
+                      className="w-full h-[56px] px-3 py-2  bg-[#F8FAFC] border-2 mt-2 border-[#D1D5DB] rounded-[16px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[14px] text-[#111827] placeholder:text-[#9CA3AF]"
                       style={{ width: "100%" }}
                     />
                   </div>
@@ -400,17 +401,28 @@ export default function CompanyCreateDrive() {
             </div>
 
             {/* 03 Target Audience */}
-            <div className="bg-white rounded-[12px] shadow-sm border border-slate-100 p-8 space-y-6 animate-in slide-in-from-bottom-6 duration-700 delay-200">
-              <div className="flex justify-between items-center border-b border-slate-100 pb-4">
-                <h3 className="text-[14px] font-semibold text-[#111827] uppercase tracking-tight">
-                  B) Target Students (Group Based)
-                </h3>
+            <div className="bg-white rounded-[24px] shadow-sm border border-slate-100 p-12 space-y-10 animate-in slide-in-from-bottom-6 duration-700 delay-200">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-6">
+                  <div className="h-14 w-14 bg-purple-50 shadow-xl shadow-purple-500/10 rounded-xl flex items-center justify-center text-purple-600 font-[500] text-lg">
+                    03
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-[500] text-slate-900 tracking-tight">
+                      Target Audience
+                    </h3>
+                    <p className="text-sm font-[500] text-slate-400 mt-2">
+                      Specify which institutions and departments can participate
+                    </p>
+                  </div>
+                </div>
                 <button
                   type="button"
                   onClick={addTarget}
-                  className="text-[#1565C0] font-semibold text-[13px] hover:underline transition-all"
+                  className="flex items-center gap-2 bg-[#EFF6FF] text-[#2563EB] px-6 py-3 rounded-2xl font-bold text-[12px] uppercase tracking-widest hover:bg-[#DBEAFE] transition-all"
                 >
-                  + Add Another Group
+                  <PlusCircle className="h-4 w-4" />
+                  ADD GROUP
                 </button>
               </div>
 
@@ -431,8 +443,8 @@ export default function CompanyCreateDrive() {
                     )}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div className="space-y-3">
-                        <label className="text-[12px] font-medium text-slate-500 ml-1">
-                          College
+                        <label className="text-[12px] font-[600] text-[#9CA3AF]  uppercase">
+                          College / Institution
                         </label>
                         <div className="relative">
                           <select
@@ -447,7 +459,7 @@ export default function CompanyCreateDrive() {
                                 e.target.value,
                               )
                             }
-                            className="w-full h-[34px] px-3 py-1 bg-white border border-[#D1D5DB] rounded-[6px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[13px] text-[#111827] appearance-none"
+                            className="w-full h-[56px] px-3 pe-10 py-2 bg-white border-2 mt-2 border-[#D1D5DB] rounded-[16px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[14px] text-[#111827] appearance-none"
                           >
                             <option value="">e.g. MIT</option>
                             {colleges.map((c) => (
@@ -457,7 +469,7 @@ export default function CompanyCreateDrive() {
                             ))}
                             <option value="custom">+ Other (Custom)</option>
                           </select>
-                          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                          <ChevronDown className="absolute right-4 top-1/2 -translate-y-0.5 h-4 w-4 text-slate-400 pointer-events-none" />
                         </div>
                         {target.college_id === null &&
                           (!colleges.length ||
@@ -474,12 +486,12 @@ export default function CompanyCreateDrive() {
                                   e.target.value,
                                 )
                               }
-                              className="w-full mt-2 px-3 py-2 bg-white border border-[#D1D5DB] rounded-[6px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[14px] text-slate-900"
+                              className="w-full h-[56px] px-3 py-2  bg-white border-2 mt-2 border-[#D1D5DB] rounded-[16px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[14px] text-[#111827] placeholder:text-[#9CA3AF]"
                             />
                           )}
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[12px] font-medium text-slate-500 ml-1">
+                        <label className="text-[12px] font-[600] text-[#9CA3AF]  uppercase">
                           Student Group
                         </label>
                         <div className="relative">
@@ -495,7 +507,7 @@ export default function CompanyCreateDrive() {
                                 e.target.value,
                               )
                             }
-                            className="w-full h-[34px] px-3 py-1 bg-white border border-[#D1D5DB] rounded-[6px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[13px] text-[#111827] appearance-none"
+                            className="w-full h-[56px] px-3 pe-10 py-2 bg-white border-2 mt-2 border-[#D1D5DB] rounded-[16px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[14px] text-[#111827] appearance-none"
                           >
                             <option value="">e.g. Computer Science</option>
                             {studentGroups.map((g) => (
@@ -505,7 +517,7 @@ export default function CompanyCreateDrive() {
                             ))}
                             <option value="custom">+ Other (Custom)</option>
                           </select>
-                          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                          <ChevronDown className="absolute right-4 top-1/2 -translate-y-0.5 h-4 w-4 text-slate-400 pointer-events-none" />
                         </div>
                         {target.student_group_id === null &&
                           (!studentGroups.length ||
@@ -522,12 +534,12 @@ export default function CompanyCreateDrive() {
                                   e.target.value,
                                 )
                               }
-                              className="w-full mt-2 px-3 py-2 bg-white border border-[#D1D5DB] rounded-[6px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[14px] text-slate-900"
+                              className="w-full h-[56px] px-3 py-2  bg-white border-2 mt-2 border-[#D1D5DB] rounded-[16px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[14px] text-[#111827] placeholder:text-[#9CA3AF]"
                             />
                           )}
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[12px] font-medium text-slate-500 ml-1">
+                        <label className="text-[12px] font-[600] text-[#9CA3AF]  uppercase">
                           Batch Year (Optional)
                         </label>
                         <input
@@ -541,7 +553,7 @@ export default function CompanyCreateDrive() {
                               e.target.value,
                             )
                           }
-                          className="w-full h-[34px] px-3 py-1 bg-white border border-[#D1D5DB] rounded-[6px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[13px] text-[#111827] placeholder:text-[#9CA3AF]"
+                          className="w-full h-[56px] px-3 py-2  bg-white border-2 mt-2 border-[#D1D5DB] rounded-[16px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[14px] text-[#111827] placeholder:text-[#9CA3AF]"
                         />
                       </div>
                     </div>
@@ -551,24 +563,25 @@ export default function CompanyCreateDrive() {
             </div>
 
             {/* Action Footer */}
-            <div className="flex justify-end gap-4 pt-4">
+            <div className="flex justify-end gap-6 pt-10">
               <button
                 type="button"
                 onClick={() => navigate("/company-dashboard")}
-                className="px-6 py-2 h-[38px] border border-slate-300 bg-white text-slate-700 rounded-[6px] font-semibold text-[14px] hover:bg-slate-50 transition-all active:scale-95"
+                className="px-10 py-4 bg-[#F1F5F9] text-[#64748B] rounded-[16px] font-bold text-[15px] uppercase tracking-widest hover:bg-slate-200 transition-all active:scale-95"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex items-center gap-2 px-6 py-2 h-[38px] bg-[#1565C0] text-white rounded-[6px] font-semibold text-[14px] shadow-sm hover:bg-blue-700 transition-all active:scale-95"
+                className="flex items-center gap-3 px-10 py-4 bg-[#2563EB] text-white rounded-[16px] font-bold text-[15px] uppercase tracking-widest shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-all active:scale-95 group"
               >
                 {isSubmitting
                   ? "Processing..."
                   : driveId
-                    ? "Update Drive"
-                    : "Create Drive"}
+                    ? "UPDATE DRIVE"
+                    : "CREATE DRIVE"}
+                <Rocket className="h-5 w-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </button>
             </div>
           </form>

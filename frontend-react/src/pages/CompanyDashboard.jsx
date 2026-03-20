@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CompanySidebar from "../components/CompanySidebar";
+import CompanyHeader from "../components/CompanyHeader";
 import ConfirmationModal from "../components/ConfirmationModal";
 import {
   Users,
@@ -10,14 +11,19 @@ import {
   Calendar,
   HelpCircle,
   Copy,
+  Edit,
+  MoreVertical,
+  TrendingUp,
+  FileQuestion,
+  UserCheck,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import companyService from "../services/companyService";
 import { formatDateIST } from "../utils/timezone";
 import { IoIosTrendingUp } from "react-icons/io";
-import totalDrives from "/icons/totalDrives.png";
-import drivesLeft from "/icons/drivesLeft.png";
-import activeDrives from "/icons/activeDrives.png";
+import totalDrivesIcon from "/icons/totalDrives.png";
+import drivesLeftIcon from "/icons/drivesLeft.png";
+import activeDrivesIcon from "/icons/activeDrives.png";
 
 export default function CompanyDashboard() {
   const navigate = useNavigate();
@@ -38,6 +44,8 @@ export default function CompanyDashboard() {
     total_drives: 0,
     total_students: 0,
     active_drives: 0,
+    drives_limit: 0,
+    company_name: "",
   });
 
   useEffect(() => {
@@ -120,16 +128,21 @@ export default function CompanyDashboard() {
 
   const getStatusBadge = (status) => {
     const styles = {
-      live: "bg-emerald-100 text-emerald-700",
-      upcoming: "bg-purple-100 text-purple-700",
-      completed: "bg-slate-100 text-slate-600",
-      draft: "bg-slate-100 text-slate-400",
-      published: "bg-emerald-100 text-emerald-700",
-      suspended: "bg-red-100 text-red-700",
+      live: "bg-[#DCFCE7] text-[#16A34A] border-[#16A34A]/20",
+      published: "bg-[#DCFCE7] text-[#16A34A] border-[#16A34A]/20",
+      upcoming: "bg-[#DBEAFE] text-[#1D4ED8] border-[#1D4ED8]/20",
+      draft: "bg-[#FFEDD5] text-[#EA580C] border-[#EA580C]/20",
+      completed: "bg-[#FEE2E2] text-[#DC2626] border-[#DC2626]/20",
+      ended: "bg-[#FEE2E2] text-[#DC2626] border-[#DC2626]/20",
+      suspended: "bg-[#FEE2E2] text-[#DC2626] border-[#DC2626]/20",
     };
+
+    // Default to draft style if status not found
+    const currentStyle = styles[status.toLowerCase()] || styles.draft;
+
     return (
       <span
-        className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${styles[status]}`}
+        className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${currentStyle}`}
       >
         {status}
       </span>
@@ -137,58 +150,59 @@ export default function CompanyDashboard() {
   };
 
   return (
-    <div className="flex h-screen bg-slate-50">
+    <div className="flex h-screen bg-[#F8FAFC]">
       <CompanySidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <main className="flex-1 overflow-auto p-6 md:p-12">
+        <CompanyHeader />
+        <main className="flex-1 overflow-auto p-12">
           <div className="max-w-7xl mx-auto space-y-12 animate-in fade-in duration-700">
             {/* Welcome Banner */}
-            <div className="relative overflow-hidden bg-[#1A1A2E] rounded-2xl p-8 text-white shadow-lg">
-              <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div className="relative overflow-hidden bg-gradient-to-r from-[#2563EB] to-[#3B82F6] rounded-[32px] p-8 text-white shadow-xl">
+              <div className="relative z-10 flex justify-between items-center">
                 <div>
-                  <h1 className="text-2xl font-bold tracking-tight mb-2">
-                    Welcome back, {stats.company_name || "Admin"}!
+                  <h1 className="text-[36px] font-[600] tracking-tight mb-2">
+                    Welcome back, {stats.company_name || "User"}!
                   </h1>
-                  <div className="flex items-center gap-2">
-                    <p className="text-slate-400 text-[13px] font-medium">
-                      Subscription Tier:
-                    </p>
-                    <span className="px-2 py-0.5 bg-blue-600/20 text-blue-400 rounded text-[11px] font-bold uppercase tracking-wider border border-blue-600/30">
-                      {stats.plan || "Free"}
-                    </span>
-                  </div>
+                  <p className="text-blue-100 text-[18px] font-medium opacity-90">
+                    Here's what's happening with your exam portal today
+                  </p>
                 </div>
-                <div className="flex items-center gap-4">
-                  <div className="bg-white/5 rounded-xl p-4 border border-white/10 text-center min-w-[120px]">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
-                      Active Drives
-                    </p>
-                    <span className="text-2xl font-bold text-white">
-                      {stats.active_drives}
-                    </span>
+
+                {/* Growth Card */}
+                <div className="flex justify-center items-center gap-3">
+                  <div className="bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/20 flex items-center gap-6 min-w-[180px]">
+                    <div>
+                      <p className="text-[12px] font-bold uppercase tracking-widest text-blue-100 mb-1">
+                        THIS MONTH
+                      </p>
+                      <span className="text-[30px] font-[600]">+24%</span>
+                    </div>
+                  </div>
+                  <div className="h-16 w-16 bg-white/20 rounded-[18px] flex items-center justify-center">
+                    <TrendingUp className="h-8 w-8 text-white" />
                   </div>
                 </div>
               </div>
               {/* Decorative background circle */}
-              <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-blue-600/5 rounded-full blur-3xl"></div>
+              <div className="absolute -right-20 -bottom-20 w-[400px] h-[400px] bg-white/5 rounded-full blur-3xl"></div>
             </div>
 
             {/* Overview Section */}
             <section className="space-y-8">
-              <div className="flex flex-col md:flex-row justify-between items-end gap-6">
+              <div className="flex justify-between items-end">
                 <div>
-                  <h2 className="text-3xl font-semibold text-slate-900 tracking-tight mb-2">
+                  <h2 className="text-[28px] font-bold text-[#1E293B] tracking-tight mb-1">
                     Overview
                   </h2>
-                  <p className="text-slate-500 font-[500">
+                  <p className="text-[#64748B] text-[15px] font-medium">
                     Track your hiring progress and manage drives
                   </p>
                 </div>
                 <button
                   onClick={() => navigate("/company-create-drive")}
-                  className="flex items-center gap-2 bg-[#1565C0] text-white px-6 py-2.5 rounded-lg font-semibold text-[13px] shadow-sm hover:bg-blue-700 transition-all active:scale-95 group"
+                  className="flex items-center gap-3 bg-[#3B82F6] text-white px-8 py-4 rounded-[16px] font-bold text-[15px] shadow-lg shadow-blue-500/20 hover:bg-blue-600 transition-all active:scale-95 group"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="h-5 w-5" />
                   Create New Drive
                 </button>
               </div>
@@ -199,53 +213,65 @@ export default function CompanyDashboard() {
                   {
                     label: "Total Drives",
                     value: stats.total_drives,
-                    icon: totalDrives,
+                    icon: totalDrivesIcon,
                     color: "text-blue-600",
                     bg: "bg-blue-50",
-                    subtitle: "Lifetime created",
+                    count: "20 DRIVES", // Match design image placeholder
                   },
                   {
-                    label: "Drives Remaining",
+                    label: "Drives Left",
                     value:
                       stats.drives_limit === null
                         ? "∞"
                         : Math.max(0, stats.drives_limit - stats.total_drives),
-                    icon: drivesLeft,
-                    color: "text-amber-600",
-                    bg: "bg-amber-50",
-                    subtitle:
-                      stats.drives_limit === null
-                        ? "Unlimited access"
-                        : `${stats.drives_limit} total limit`,
-                  },
-                  {
-                    label: "Active Exams",
-                    value: stats.active_drives,
-                    icon: activeDrives,
+                    icon: drivesLeftIcon,
                     color: "text-purple-600",
                     bg: "bg-purple-50",
-                    subtitle: "Ongoing live sessions",
+                    count:
+                      stats.drives_limit === null
+                        ? "UNLIMITED"
+                        : `${stats.drives_limit - stats.total_drives} USED`,
+                  },
+                  {
+                    label: "Active Drives",
+                    value: stats.active_drives,
+                    icon: activeDrivesIcon,
+                    color: "text-emerald-600",
+                    bg: "bg-emerald-50",
+                    count: "2 LIVE",
                   },
                 ].map((stat, i) => (
                   <div
                     key={i}
-                    className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-all group"
+                    className="bg-white p-6 rounded-[24px] border border-slate-100 shadow-sm hover:shadow-md transition-all group relative overflow-hidden"
                   >
-                    <div className="flex items-center gap-4">
-                      <div className={`h-12 w-12 ${stat.bg} ${stat.color} rounded-lg flex items-center justify-center`}>
-                        <img src={stat.icon} alt="" className="h-6 w-6" />
-                      </div>
-                      <div>
-                        <p className="text-[12px] font-bold text-slate-500 uppercase tracking-tight">
-                          {stat.label}
-                        </p>
-                        <h4 className="text-[24px] font-bold text-slate-900 tracking-tight">
-                          {stat.value}
-                        </h4>
-                        <p className="text-slate-400 text-[11px] font-medium mt-0.5">
-                          {stat.subtitle}
-                        </p>
-                      </div>
+                    <div className="flex justify-between items-start mb-6">
+                      <img
+                        src={stat.icon}
+                        alt={stat.label}
+                        
+                      />
+
+                      <span
+                        className={`text-[11px] font-extrabold bg-[#EFF6FF] px-2 py-1 rounded-full uppercase tracking-widest ${stat.color}`}
+                      >
+                        {stat.count}
+                      </span>
+                    </div>
+                    <div className="ps-2">
+                      <h4 className="text-[40px] font-bold text-[#1E293B] tracking-tight leading-none mb-2">
+                        {stat.value}
+                      </h4>
+                      <p className="text-[#1E293B] text-[15px] font-[500]  tracking-wide">
+                        {stat.label}
+                      </p>
+                      <p className="text-[#9CA3AF] text-[12px] font-[500] mt-1">
+                        {i === 0
+                          ? "Total drives per month"
+                          : i === 1
+                            ? `Out of your ${stats.drives_limit || 20}-drive quota`
+                            : "Currently live & receiving entries"}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -254,7 +280,7 @@ export default function CompanyDashboard() {
 
             {/* My Drives Section */}
             <section className="space-y-10">
-              <h2 className="text-3xl font-semibold text-slate-900 tracking-tight">
+              <h2 className="text-[28px] font-bold text-[#1E293B] tracking-tight">
                 My Drives
               </h2>
 
@@ -263,83 +289,139 @@ export default function CompanyDashboard() {
                   {[1, 2].map((i) => (
                     <div
                       key={i}
-                      className="h-[] bg-white rounded-xl border border-slate-100 animate-pulse"
+                      className="h-[400px] bg-white rounded-[24px] border border-slate-100 animate-pulse"
                     ></div>
                   ))}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 ">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                   {drives.map((drive) => (
                     <div
                       key={drive.id}
-                      className="relative bg-white rounded-xl p-6 border border-slate-100 transition-all duration-300 overflow-hidden group shadow-sm hover:shadow-md flex flex-col justify-between h-full"
+                      className="relative bg-white rounded-[38px] p-10 border border-slate-100 transition-all duration-300 overflow-hidden group shadow-sm hover:shadow-xl flex flex-col h-full"
                     >
-                      {/* Left Accent Blue Border */}
-                      <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-[#1565C0] rounded-l-lg"></div>
+                      {/* Left Status Color Bar */}
+                      <div
+                        className={`absolute left-0 top-0 bottom-0 w-[6px] border-r-2 ${
+                          drive.status === "live"
+                            ? "bg-[#16A34A] border-[#15803D]"
+                            : drive.status === "upcoming"
+                              ? "bg-[#3B82F6] border-[#2563EB]"
+                              : drive.status === "draft"
+                                ? "bg-[#EA580C] border-[#C2410C]"
+                                : "bg-[#DC2626] border-[#B91C1C]"
+                        }`}
+                      ></div>
 
-                      <div>
-                        {/* Header */}
-                        <div className="flex justify-between items-start mb-4">
-                          <div className="space-y-3">
-                            <div className="flex items-center gap-3">
-                              <h3 className="text-[20px]  font-[500] text-[#1E293B] tracking-tight">
+                      <div className="flex-1">
+                        {/* Card Header */}
+                        <div className="flex justify-between items-start mb-6">
+                          <div className="space-y-4">
+                            <div className="flex items-center gap-4">
+                              <h3 className="text-[24px] font-bold text-[#1E293B] tracking-tight">
                                 {drive.title}
                               </h3>
-
                               {getStatusBadge(drive.status)}
                             </div>
-                            <p className="text-[#64748B] text-md font-medium leading-relaxed line-clamp-2">
-                              {drive.description || "Hiring drive"}
-                              {drive.targets?.[0]?.batch_year &&
-                                ` for ${drive.targets[0].batch_year} batch`}
+                            <p className="text-[#64748B] text-[15px] font-medium leading-relaxed max-w-[85%]">
+                              {drive.description ||
+                                "Core engineering hiring for Q1 2026 batch."}
                             </p>
                           </div>
-                          <button
-                            onClick={() => handleDuplicateDrive(drive.id)}
-                            className="h-12 w-12 bg-slate-50 text-slate-400 rounded-2xl flex items-center justify-center hover:bg-slate-100 hover:text-[#1E293B] transition-all border border-slate-100 cursor-pointer group"
-                            title="Duplicate Drive"
-                          >
-                            <Copy className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                          </button>
+
+                          {/* Utility Icons */}
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleDuplicateDrive(drive.id)}
+                              className="h-10 w-10 bg-slate-50 text-slate-400 rounded-[12px] flex items-center justify-center hover:bg-slate-100 hover:text-[#1E293B] transition-all border border-slate-100 group/btn"
+                              title="Duplicate"
+                            >
+                              <Copy className="h-4 w-4 group-hover/btn:scale-110 transition-transform" />
+                            </button>
+                            {(drive.status === "draft" ||
+                              drive.status === "upcoming") && (
+                              <button
+                                onClick={() =>
+                                  navigate(
+                                    `/company-create-drive?edit=${drive.id}`,
+                                  )
+                                }
+                                className="h-10 w-10 bg-slate-50 text-slate-400 rounded-[12px] flex items-center justify-center hover:bg-slate-100 hover:text-[#1E293B] transition-all border border-slate-100 group/btn"
+                                title="Edit"
+                              >
+                                <Edit className="h-4 w-4 group-hover/btn:scale-110 transition-transform" />
+                              </button>
+                            )}
+                          </div>
                         </div>
 
-                        {/* Tags */}
-                        <div className="flex gap-2 mb-4">
-                          <span className="bg-slate-50 text-slate-500 px-2 py-1 rounded-md font-bold text-[10px] uppercase tracking-tight border border-slate-100">
+                        {/* Tag Pills */}
+                        <div className="flex gap-3 mb-10">
+                          <span className="bg-[#F8FAFC] text-[#64748B] px-4 py-1.5 rounded-[8px] font-extrabold text-[10px] uppercase tracking-widest border border-slate-100 shadow-sm">
                             {drive.category || "TECHNICAL"}
+                          </span>
+                          <span className="bg-[#F8FAFC] text-[#64748B] px-4 py-1.5 rounded-[8px] font-extrabold text-[10px] uppercase tracking-widest border border-slate-100 shadow-sm">
+                            ENGINEERING
                           </span>
                         </div>
 
                         {/* Info Grid */}
-                        <div className="grid grid-cols-2 gap-4 mb-6">
-                          <div className="flex items-center gap-2">
-                            <Clock className="h-4 w-4 text-slate-400" />
+                        <div className="grid grid-cols-2 gap-y-8 gap-x-4 mb-10">
+                          {/* Duration */}
+                          <div className="flex items-center gap-4">
+                            <div className="h-10 w-10 bg-slate-50 rounded-full flex items-center justify-center text-blue-500 shadow-sm border border-slate-100">
+                              <Clock className="h-5 w-5" />
+                            </div>
                             <div>
-                              <p className="text-[14px] font-semibold text-slate-900">
+                              <p className="text-[11px] font-bold text-[#94A3B8] uppercase tracking-wider mb-0.5">
+                                DURATION
+                              </p>
+                              <p className="text-[15px] font-bold text-[#1E293B]">
                                 {drive.exam_duration_minutes} mins
                               </p>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <Calendar className="h-4 w-4 text-slate-400" />
+
+                          {/* Date & Time */}
+                          <div className="flex items-center gap-4">
+                            <div className="h-10 w-10 bg-slate-50 rounded-full flex items-center justify-center text-emerald-500 shadow-sm border border-slate-100">
+                              <Calendar className="h-5 w-5" />
+                            </div>
                             <div>
-                              <p className="text-[14px] font-semibold text-slate-900">
+                              <p className="text-[11px] font-bold text-[#94A3B8] uppercase tracking-wider mb-0.5">
+                                DATE & TIME
+                              </p>
+                              <p className="text-[15px] font-bold text-[#1E293B]">
                                 {formatDateIST(drive.window_start)}
                               </p>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <Users className="h-4 w-4 text-slate-400" />
+
+                          {/* Groups & Students */}
+                          <div className="flex items-center gap-4">
+                            <div className="h-10 w-10 bg-slate-50 rounded-full flex items-center justify-center text-purple-500 shadow-sm border border-slate-100">
+                              <UserCheck className="h-5 w-5" />
+                            </div>
                             <div>
-                              <p className="text-[14px] font-semibold text-slate-900">
-                                {drive.student_count || 0} Candidates
+                              <p className="text-[11px] font-bold text-[#94A3B8] uppercase tracking-wider mb-0.5">
+                                GROUPS & STUDENTS
+                              </p>
+                              <p className="text-[15px] font-bold text-[#1E293B]">
+                                3 Groups / {drive.student_count || 0} Students
                               </p>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <HelpCircle className="h-4 w-4 text-slate-400" />
+
+                          {/* Questions */}
+                          <div className="flex items-center gap-4">
+                            <div className="h-10 w-10 bg-slate-50 rounded-full flex items-center justify-center text-orange-500 shadow-sm border border-slate-100">
+                              <FileQuestion className="h-5 w-5" />
+                            </div>
                             <div>
-                              <p className="text-[14px] font-semibold text-slate-900">
+                              <p className="text-[11px] font-bold text-[#94A3B8] uppercase tracking-wider mb-0.5">
+                                NO. OF QUESTIONS
+                              </p>
+                              <p className="text-[15px] font-bold text-[#1E293B]">
                                 {drive.question_count || 0} Questions
                               </p>
                             </div>
@@ -347,50 +429,65 @@ export default function CompanyDashboard() {
                         </div>
                       </div>
 
-                      {/* Actions */}
-                      <div className="flex flex-wrap gap-2 mt-auto">
+                      {/* Card Footer Actions */}
+                      <div className="flex gap-4 mt-auto">
+                        <button
+                          onClick={() =>
+                            navigate(`/company-send-emails?driveId=${drive.id}`)
+                          }
+                          className="flex-1 py-2 border border-slate-200 text-[#64748B] rounded-[16px] font-bold text-[13px] hover:bg-slate-50 transition-all active:scale-95 uppercase tracking-widest shadow-sm"
+                        >
+                          Emails
+                        </button>
+
                         <button
                           onClick={() =>
                             navigate(`/company-drive-detail?id=${drive.id}`)
                           }
-                          className="px-4 py-1.5 border border-slate-200 text-slate-700 rounded-lg font-semibold text-[13px] hover:bg-slate-50 transition-all active:scale-95"
+                          className="flex-1 py-2 bg-[#3B82F6] text-white rounded-[16px] font-bold text-[13px] hover:bg-blue-600 transition-all active:scale-95 uppercase tracking-widest shadow-lg shadow-blue-500/20"
                         >
-                          View Details
+                          {drive.status === "completed" ? "Overview" : "View"}
                         </button>
 
-                        {(drive.status === "draft" ||
-                          drive.status === "pending") && (
+                        {drive.status === "live" && (
+                          <button
+                            onClick={() => openConfirmation(drive, "end")}
+                            className="flex-1 py-2 bg-[#FFEDD5] text-[#EA580C] rounded-[16px] font-bold text-[13px] border border-[#EA580C]/20 hover:bg-[#FFD8A8] transition-all active:scale-95 uppercase tracking-widest"
+                          >
+                            End Exam
+                          </button>
+                        )}
+
+                        {drive.status === "upcoming" && (
+                          <button
+                            onClick={() => openConfirmation(drive, "start")}
+                            className="flex-1 py-2 bg-[#DCFCE7] text-[#16A34A] rounded-[16px] font-bold text-[13px] border border-[#16A34A]/20 hover:bg-[#BBF7D0] transition-all active:scale-95 uppercase tracking-widest"
+                          >
+                            Start Exam
+                          </button>
+                        )}
+
+                        {drive.status === "draft" && (
                           <button
                             onClick={() => handlePublishDrive(drive.id)}
-                            className="px-4 py-1.5 bg-[#1565C0] text-white rounded-lg font-semibold text-[13px] hover:bg-blue-700 transition-all active:scale-95"
+                            className="flex-1 py-2 bg-[#FFEDD5] text-[#EA580C] rounded-[16px] font-bold text-[13px] border border-[#EA580C]/20 hover:bg-[#FFD8A8] transition-all active:scale-95 uppercase tracking-widest"
                           >
                             Publish
                           </button>
                         )}
 
-                        {drive.status === "live" ||
-                        drive.status === "ongoing" ? (
+                        {drive.status === "completed" && (
                           <button
-                            onClick={() => openConfirmation(drive, "end")}
-                            className="px-4 py-1.5 bg-red-50 text-red-600 border border-red-100 rounded-lg font-semibold text-[13px] hover:bg-red-100 transition-all active:scale-95"
+                            onClick={() =>
+                              navigate(
+                                `/company-drive-detail?id=${drive.id}&view=results`,
+                              )
+                            }
+                            className="flex-1 py-2 bg-[#DCFCE7] text-[#16A34A] rounded-[16px] font-bold text-[13px] border border-[#16A34A]/20 hover:bg-[#BBF7D0] transition-all active:scale-95 uppercase tracking-widest"
                           >
-                            End Exam
+                            Results
                           </button>
-                        ) : drive.status !== "completed" &&
-                          drive.status !== "draft" &&
-                          drive.status !== "pending" ? (
-                          <button
-                            onClick={() => openConfirmation(drive, "start")}
-                            disabled={drive.status === "suspended"}
-                            className={`px-4 py-1.5 ${
-                              drive.status === "suspended"
-                                ? "bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed"
-                                : "bg-emerald-50 text-emerald-600 border border-emerald-100 hover:bg-emerald-100"
-                            } rounded-lg font-semibold text-[13px] transition-all active:scale-95`}
-                          >
-                            Start Exam
-                          </button>
-                        ) : null}
+                        )}
                       </div>
                     </div>
                   ))}
