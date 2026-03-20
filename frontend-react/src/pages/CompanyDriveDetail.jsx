@@ -283,12 +283,13 @@ export default function CompanyDriveDetail() {
     const styles = {
       live: "bg-emerald-50 text-emerald-600 border-emerald-100",
       ongoing: "bg-emerald-600 text-white",
-      completed: "bg-slate-100 text-slate-600 border-slate-200",
+      completed: "bg-emerald-50 text-emerald-600 border-emerald-100",
       ended: "bg-slate-100 text-slate-600 border-slate-200",
       pending: "bg-orange-50 text-orange-600 border-orange-100",
       approved: "bg-emerald-50 text-emerald-600 border-emerald-100",
       submitted: "bg-blue-50 text-blue-600 border-blue-100",
       published: "bg-emerald-50 text-emerald-600 border-emerald-100",
+      opened: "bg-cyan-50 text-cyan-600 border-cyan-100",
       draft: "bg-slate-50 text-slate-400 border-slate-100",
     };
     return styles[status] || "bg-blue-50 text-blue-600 border-blue-100";
@@ -323,42 +324,37 @@ export default function CompanyDriveDetail() {
         <main className="flex-1 overflow-auto p-6 md:p-12">
           <div className="max-w-7xl mx-auto space-y-10 animate-in fade-in duration-700">
             {/* Page header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8">
-              <div className="flex items-center gap-6">
-                <button
-                  onClick={() => navigate("/company-dashboard")}
-                  className="h-12 w-12 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-blue-600 hover:border-blue-100 transition-all group shadow-sm bg-white"
-                >
-                  <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
-                </button>
-                <div className="space-y-1">
-                  <h2 className="text-3xl text-bold text-slate-900 tracking-tight">
-                    Drive Configuration
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pt-4">
+              <div className="flex items-center gap-4">
+                <div>
+                  <h2 className="text-[20px] font-bold text-[#111827] leading-tight">
+                    Drive Details
                   </h2>
-                  <p className="text-slate-500 font-[500] text-sm">
-                    Managing assessment parameters and compliance standards.
+                  <p className="text-[12px] text-[#6B7280] font-medium">
+                    Manage questions, students and settings
                   </p>
                 </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handleStartExam}
+                  disabled={isStartingExam || drive.status === "suspended"}
+                  className="bg-[#1565C0] text-white px-5 py-2 rounded-[4px] font-semibold text-[13px] shadow-sm hover:bg-blue-700 transition-all"
+                >
+                  Start Scheduled
+                </button>
               </div>
             </div>
 
             {/* Premium Tabs Design */}
-            <div className="flex gap-4 p-2 bg-white rounded-2xl shadow-sm border border-slate-100 max-w-fit overflow-x-auto no-scrollbar mb-10">
+            <div className="flex gap-6 border-b border-slate-200 mb-8 overflow-x-auto no-scrollbar">
               {[
-                { id: "overview", label: "OVERVIEW", icon: BarChart },
-                {
-                  id: "questions",
-                  label: "QUESTIONS",
-                  icon: HelpCircle,
-                  count: questions.length,
-                },
-                {
-                  id: "students",
-                  label: "CANDIDATES",
-                  icon: Users,
-                  count: students.length,
-                },
-                { id: "results", label: "RESULTS", icon: BarChart }, // Changed icon to match design better
+                { id: "overview", label: "Overview" },
+                { id: "questions", label: "Questions" },
+                { id: "students", label: "Students" },
+                { id: "monitoring", label: "Live Monitoring" },
+                { id: "results", label: "Results" },
+                { id: "emails", label: "Emails" },
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -367,20 +363,15 @@ export default function CompanyDriveDetail() {
                     if (tab.id === "results" && results.length === 0)
                       loadResults();
                   }}
-                  className={`flex items-center gap-3 px-6 py-3 rounded-xl text-[500] text-[11px] uppercase tracking-widest transition-all ${
+                  className={`pb-3 text-[13px] font-medium transition-all relative ${
                     activeTab === tab.id
-                      ? "bg-blue-600 text-white shadow-lg shadow-blue-500/25"
-                      : "text-slate-400 hover:text-slate-900 hover:bg-slate-50"
+                      ? "text-[#111827]"
+                      : "text-slate-500 hover:text-[#111827]"
                   }`}
                 >
-                  <tab.icon className="h-4 w-4" />
                   {tab.label}
-                  {tab.count !== undefined && (
-                    <span
-                      className={`px-2 py-0.5 rounded-lg text-[10px] text-[500] ${activeTab === tab.id ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"}`}
-                    >
-                      {tab.count}
-                    </span>
+                  {activeTab === tab.id && (
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-full"></div>
                   )}
                 </button>
               ))}
@@ -391,115 +382,65 @@ export default function CompanyDriveDetail() {
               {/* Overview Tab Content */}
               {activeTab === "overview" && (
                 <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-500">
-                  {/* Primary Stats Row */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {/* Type Card */}
-                    <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center space-y-4">
-                      <div className="h-14 w-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
-                        <FileText className="h-7 w-7" />
-                      </div>
-                      <div className="space-y-1">
-                        <p className="text-[14px] text-[500] text-blue-600 uppercase tracking-widest">
-                          Type
-                        </p>
-                        <p className="text-sm font-[600] text-slate-900 uppercase">
-                          Technical MCQ
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Duration Card */}
-                    <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center space-y-4">
-                      <div className="h-14 w-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center">
-                        <Clock className="h-7 w-7" />
-                      </div>
-                      <div className="space-y-1">
-                        <p className="text-[14px] text-[500] text-emerald-600 uppercase tracking-widest">
-                          Duration
-                        </p>
-                        <p className="text-sm font-[600] text-slate-900 uppercase">
-                          {drive.exam_duration_minutes} Minutes
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Students Card */}
-                    <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center space-y-4">
-                      <div className="h-14 w-14 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center">
-                        <Users className="h-7 w-7" />
-                      </div>
-                      <div className="space-y-1">
-                        <p className="text-[14px] text-[500] text-orange-600 uppercase tracking-widest">
-                          Students
-                        </p>
-                        <p className="text-sm font-[600] text-slate-900 uppercase">
-                          {students.length}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Questions Card */}
-                    <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center space-y-4">
-                      <div className="h-14 w-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
-                        <FileText className="h-7 w-7" />
-                      </div>
-                      <div className="space-y-1">
-                        <p className="text-[14px] text-[500] text-blue-600 uppercase tracking-widest">
-                          Questions
-                        </p>
-                        <div className="flex items-center justify-center">
-                          <span
-                            className={`px-4 py-1 rounded-full text-[10px] font-[600] uppercase tracking-widest border ${getStatusDisplay(drive.status)}`}
-                          >
-                            {drive.status}
-                          </span>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {/* Info Card */}
+                    <div className="md:col-span-3 bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
+                      <div className="space-y-4">
+                        <div className="space-y-1">
+                          <p className="text-[12px] font-medium text-slate-500">
+                            DESCRIPTION
+                          </p>
+                          <p className="text-[14px] font-medium text-[#111827]">
+                            {drive.description || "Core engineering hiring for Q1 2026 batch."}
+                          </p>
+                        </div>
+                        <div className="flex gap-12">
+                          <div className="space-y-1">
+                            <p className="text-[12px] font-medium text-slate-500">
+                              DURATION
+                            </p>
+                            <p className="text-[14px] font-bold text-[#111827]">
+                              {drive.exam_duration_minutes} minutes
+                            </p>
+                          </div>
+                          <div className="space-y-1">
+                            <p className="text-[12px] font-medium text-slate-500">
+                              STATUS
+                            </p>
+                            <span className={`badge badge-completed uppercase`}>
+                              {drive.status}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Description Section */}
-                  <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm space-y-4">
-                    <div className="flex items-center gap-3">
-                      <FileText className="h-5 w-5 text-slate-900" />
-                      <h3 className="text-[18px] font-[600] text-slate-900 uppercase">
-                        Description
-                      </h3>
-                    </div>
-                    <p className="text-slate-500 font-medium text-sm leading-relaxed">
-                      {drive.description ||
-                        "Core engineering hiring for Q1 2026 batch."}
-                    </p>
-                  </div>
 
                   {/* Schedule Section */}
-                  <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm space-y-6">
-                    <h3 className="text-[18px] font-[600] text-slate-900 uppercase">
+                  <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
+                    <h3 className="text-[14px] font-semibold text-[#111827] uppercase">
                       Schedule
                     </h3>
-                    <div className="space-y-6">
-                      <div className="flex items-start gap-4">
-                        <div className="mt-1">
-                          <Calendar className="h-5 w-5 text-slate-400" />
-                        </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <div className="flex items-start gap-3">
+                        <Calendar className="h-4 w-4 text-slate-400 mt-1" />
                         <div className="space-y-1">
-                          <p className="text-[14px] text-[500] text-slate-400 uppercase tracking-[0.1em]">
+                          <p className="text-[12px] text-slate-500 uppercase">
                             Window Start (UTC)
                           </p>
-                          <p className="text-sm font-[600] text-slate-900 uppercase">
+                          <p className="text-[13px] font-medium text-[#111827]">
                             {formatDateUTC(drive.window_start)}
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-start gap-4">
-                        <div className="mt-1">
-                          <Calendar className="h-5 w-5 text-slate-400" />
-                        </div>
+                      <div className="flex items-start gap-3">
+                        <Calendar className="h-4 w-4 text-slate-400 mt-1" />
                         <div className="space-y-1">
-                          <p className="text-[14px] text-[500] text-slate-400 uppercase tracking-[0.1em]">
+                          <p className="text-[12px] text-slate-500 uppercase">
                             Window End (UTC)
                           </p>
-                          <p className="text-sm font-[600] text-slate-900 uppercase">
+                          <p className="text-[13px] font-medium text-[#111827]">
                             {formatDateUTC(drive.window_end)}
                           </p>
                         </div>
@@ -508,57 +449,49 @@ export default function CompanyDriveDetail() {
                   </div>
 
                   {/* Target Groups Section */}
-                  <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm space-y-6">
-                    <h3 className="text-[18px] font-[600] text-slate-900 uppercase ">
+                  <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
+                    <h3 className="text-[14px] font-semibold text-[#111827] uppercase">
                       Target Groups
                     </h3>
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       {drive.targets && drive.targets.length > 0 ? (
                         drive.targets.map((target, idx) => (
                           <div
                             key={idx}
-                            className="p-6 rounded-2xl border border-slate-100 space-y-8"
+                            className="p-4 rounded-lg bg-slate-50 border border-slate-200 grid grid-cols-1 md:grid-cols-3 gap-4"
                           >
                             <div className="space-y-1">
-                              <p className="text-sm font-[600] text-slate-900">
-                                Group {idx + 1}
+                              <p className="text-[11px] text-slate-500 uppercase">
+                                College
+                              </p>
+                              <p className="text-[13px] font-medium text-[#111827]">
+                                {target.college_name ||
+                                  target.custom_college_name ||
+                                  "N/A"}
                               </p>
                             </div>
-                            <div className="flex flex-wrap items-center gap-x-12 gap-y-4">
-                              <div className="space-y-1">
-                                <p className="text-[11px] text-[500] text-slate-400 uppercase tracking-[0.1em]">
-                                  College:
-                                </p>
-                                <p className="text-sm font-[600] text-slate-900 uppercase">
-                                  {target.college_name ||
-                                    target.custom_college_name ||
-                                    "N/A"}
-                                </p>
-                              </div>
-                              <div className="space-y-1">
-                                <p className="text-[11px] text-[500] text-slate-400 uppercase tracking-[0.1em]">
-                                  Group:
-                                </p>
-                                <p className="text-sm font-[600] text-slate-900 uppercase">
-                                  {target.group_name ||
-                                    target.custom_student_group_name ||
-                                    target.student_group_name ||
-                                    "N/A"}
-                                </p>
-                              </div>
-                              <div className="space-y-1">
-                                <p className="text-[11px] text-[500] text-slate-400 uppercase ">
-                                  Batch:
-                                </p>
-                                <p className="text-sm font-[600] text-slate-900 uppercase">
-                                  {target.batch_year || "All"}
-                                </p>
-                              </div>
+                            <div className="space-y-1">
+                              <p className="text-[11px] text-slate-500 uppercase">
+                                Group
+                              </p>
+                              <p className="text-[13px] font-medium text-[#111827]">
+                                {target.group_name ||
+                                  target.custom_student_group_name ||
+                                  "N/A"}
+                              </p>
+                            </div>
+                            <div className="space-y-1">
+                              <p className="text-[11px] text-slate-500 uppercase">
+                                Batch
+                              </p>
+                              <p className="text-[13px] font-medium text-[#111827]">
+                                {target.batch_year || "All"}
+                              </p>
                             </div>
                           </div>
                         ))
                       ) : (
-                        <div className="p-12 text-center text-slate-400 font-medium bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                        <div className="p-8 text-center text-slate-400 text-[13px] bg-slate-50 rounded-lg border border-dashed border-slate-200">
                           No target groups specified for this drive.
                         </div>
                       )}
@@ -566,11 +499,11 @@ export default function CompanyDriveDetail() {
                   </div>
 
                   {/* Exam Status Section */}
-                  <div className="bg-white p-8 rounded-2xl border border-slate-100 shadow-sm space-y-6">
-                    <h3 className="text-[18px] font-[600] text-slate-900 uppercase ">
+                  <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
+                    <h3 className="text-[14px] font-semibold text-[#111827] uppercase">
                       Exam Status
                     </h3>
-                    <p className="text-slate-500 font-medium text-sm">
+                    <p className="text-slate-500 text-[13px]">
                       {examStatus?.exam_state === "ongoing"
                         ? "Exam is currently live and ongoing."
                         : examStatus?.exam_state === "completed"
@@ -587,12 +520,12 @@ export default function CompanyDriveDetail() {
                           disabled={
                             isStartingExam || drive.status === "suspended"
                           }
-                          className={`flex items-center gap-3 ${drive.status === "suspended" ? "bg-slate-100 text-slate-400 cursor-not-allowed" : "bg-emerald-600 text-white shadow-xl shadow-emerald-500/30 hover:bg-emerald-700"} px-8 py-4 rounded-xl font-semibold text-[12px] uppercase tracking-widest transition-all active:scale-95 group`}
+                          className={`flex items-center gap-2 ${drive.status === "suspended" ? "bg-slate-100 text-slate-400 cursor-not-allowed" : "bg-[#1565C0] text-white hover:bg-blue-700 shadow-sm"} px-6 py-2 rounded-[4px] font-semibold text-[13px] transition-all active:scale-95 group`}
                         >
                           {isStartingExam ? (
                             <RefreshCw className="h-4 w-4 animate-spin" />
                           ) : (
-                            <Rocket className="h-4 w-4 group-hover:translate-y-[-2px] transition-transform" />
+                            <Rocket className="h-4 w-4" />
                           )}
                           Start Exam Now
                         </button>
@@ -822,13 +755,13 @@ export default function CompanyDriveDetail() {
                 <div className="space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-500">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                     {/* Filter Results */}
-                    <div className="bg-white p-10 rounded-xl border border-slate-100 shadow-sm space-y-8">
-                      <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-widest">
-                        FILTER RESULTS
+                    <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
+                      <h4 className="text-[14px] font-semibold text-[#111827]">
+                        Filter Results
                       </h4>
-                      <div className="space-y-6">
-                        <p className="text-sm font-semibold text-slate-900">
-                          Minimum Percentage : {minPercentage}%
+                      <div className="space-y-4">
+                        <p className="text-[12px] font-normal text-[#111827]">
+                          Minimum Percentage: {minPercentage}%
                         </p>
                         <input
                           type="range"
@@ -836,11 +769,11 @@ export default function CompanyDriveDetail() {
                           max="100"
                           value={minPercentage}
                           onChange={(e) => setMinPercentage(e.target.value)}
-                          className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                          className="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#1565C0]"
                         />
                         <button
                           onClick={loadResults}
-                          className="w-full bg-blue-600 text-white py-4 rounded-[15px] font-semibold text-[14px] uppercase tracking-widest shadow-xl shadow-blue-500/10 hover:bg-blue-700 transition-all"
+                          className="bg-[#1565C0] text-white px-4 py-2 rounded-[4px] font-semibold text-[13px] hover:bg-blue-700 transition-all"
                         >
                           Apply Filter & Load Results
                         </button>
@@ -848,75 +781,55 @@ export default function CompanyDriveDetail() {
                     </div>
 
                     {/* Export Section */}
-                    <div className="bg-white p-10 rounded-xl border border-slate-100 shadow-sm space-y-8">
-                      <h4 className="text-sm font-semibold text-slate-900 uppercase tracking-widest">
-                        EXPORT RESULTS
+                    <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
+                      <h4 className="text-[14px] font-semibold text-[#111827]">
+                        Export Results
                       </h4>
-                      <div className="flex flex-col sm:flex-row gap-6">
+                      <div className="flex items-center gap-6">
                         <button
                           onClick={() => exportResults("summary")}
-                          className="flex-1 flex items-center justify-center gap-3 bg-white border border-slate-200 text-slate-900 py-6 rounded-xl font-semibold text-[11px] uppercase tracking-widest hover:border-blue-600 hover:text-blue-600 transition-all group"
+                          className="flex items-center gap-1 text-[12px] font-normal text-slate-600 hover:text-[#1565C0] transition-colors"
                         >
-                          <Download className="h-4 w-4 group-hover:-translate-y-1 transition-transform" />
-                          Export Summary CSV
+                          <Download className="h-4 w-4" />
+                          ↓ Export Summary CSV
                         </button>
                         <button
                           onClick={() => exportResults("detailed")}
-                          className="flex-1 flex items-center justify-center gap-3 bg-white border border-slate-200 text-slate-900 py-6 rounded-xl font-semibold text-[11px] uppercase tracking-widest hover:border-blue-600 hover:text-blue-600 transition-all group"
+                          className="flex items-center gap-1 text-[12px] font-normal text-slate-600 hover:text-[#1565C0] transition-colors"
                         >
-                          <Download className="h-4 w-4 group-hover:-translate-y-1 transition-transform" />
-                          Export Detailed CSV
+                          <Download className="h-4 w-4" />
+                          ↓ Export Detailed CSV ({results.length}/{students.length})
                         </button>
                       </div>
                     </div>
                   </div>
 
                   {/* Results Table Section */}
-                  <div className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden">
-                    <div className="p-6 border-b border-slate-50">
-                      <h4 className="text-[18px] font-semibold text-slate-900 uppercase tracking-widest">
-                        RESULTS TABLE
-                      </h4>
-                    </div>
-                    <table className="w-full">
-                      <thead className="bg-slate-900">
+                  <div className="results-table-wrapper mt-6">
+                    <table className="results-table">
+                      <thead>
                         <tr>
-                          <th className="px-4 py-4 text-left text-[14px] font-[600] text-white uppercase tracking-widest">
-                            NAME
-                          </th>
-                          <th className="px-4 py-4 text-left text-[14px] font-[600] text-white uppercase tracking-widest">
-                            EMAIL
-                          </th>
-                          <th className="px-4 py-4 text-left text-[14px] font-[600] text-white uppercase tracking-widest">
-                            ROLL NUMBER
-                          </th>
-                          <th className="px-4 py-4 text-left text-[14px] font-[600] text-white uppercase tracking-widest">
-                            COLLEGE
-                          </th>
-                          <th className="px-4 py-4 text-left text-[14px] font-[600] text-white uppercase tracking-widest">
-                            PERCENTAGE
-                          </th>
-                          <th className="px-4 py-4 text-center text-[14px] font-[600] text-white uppercase tracking-widest">
-                            STATUS
-                          </th>
+                          <th>Name</th>
+                          <th>Email</th>
+                          <th>Roll Number</th>
+                          <th>College</th>
+                          <th>Group</th>
+                          <th>Score</th>
+                          <th>Percentage</th>
+                          <th>Violations</th>
+                          <th className="text-center">Status</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-50">
+                      <tbody>
                         {isLoadingResults ? (
                           <tr>
-                            <td
-                              colSpan="6"
-                              className="px-10 py-20 text-center animate-pulse font-semibold text-slate-300"
-                            >
+                            <td colSpan="9" className="text-center py-20 animate-pulse font-semibold text-slate-300">
                               CALCULATING METRICS...
                             </td>
                           </tr>
                         ) : results.length === 0 ? (
                           <tr>
-                            <td
-                              colSpan="6"
-                              className="px-10 py-20 text-center italic text-slate-300 font-medium"
-                            >
+                            <td colSpan="9" className="text-center py-20 italic text-slate-300 font-medium">
                               No results found for the specified criteria.
                             </td>
                           </tr>
@@ -928,41 +841,28 @@ export default function CompanyDriveDetail() {
                                 setSelectedStudent(res);
                                 setIsStudentModalOpen(true);
                               }}
-                              className="hover:bg-blue-50/50 transition-colors cursor-pointer group"
+                              className="cursor-pointer"
                             >
-                              <td className="px-6 py-6 font-medium text-slate-600">
-                                <div className="flex items-center gap-3">
-                                  <span className="font-semibold text-slate-900">
-                                    {res.name}
-                                  </span>
-                                </div>
-                              </td>
-                              <td className="px-6 py-6 font-medium text-slate-500">
-                                {res.email}
-                              </td>
-                              <td className="px-6 py-6 font-[500] text-slate-900/40 text-[14px] tracking-widest">
-                                {res.roll_number}
-                              </td>
-                              <td className="px-6 py-6 font-[500] text-slate-500 uppercase text-[14px]">
-                                {res.college_name || "N/A"}
-                              </td>
-                              <td className="px-6 py-6">
-                                <span className="text-[14px] font-[500] text-slate-400 mt-1 block">
-                                  {res.percentage || 0}%
-                                </span>
-                              </td>
-                              <td className="px-8 py-6 text-center">
+                              <td>{res.name}</td>
+                              <td className="truncate max-w-[180px]">{res.email}</td>
+                              <td>{res.roll_number}</td>
+                              <td>{res.college_name || "N/A"}</td>
+                              <td>{res.student_group_name || "N/A"}</td>
+                              <td className="font-medium text-[#111827]">{res.score || 0}</td>
+                              <td className="font-medium text-[#111827]">{res.percentage || 0}%</td>
+                              <td className="text-red-600">{res.violation_count || 0}</td>
+                              <td className="text-center">
                                 <span
-                                  className={`px-6 py-2.5 rounded-xl text-[10px] font-semibold tracking-widest uppercase border ${
+                                  className={`badge ${
                                     res.exam_submitted_at
-                                      ? "bg-emerald-50 text-emerald-600 border-emerald-100"
+                                      ? "badge-completed"
                                       : res.exam_started_at
-                                        ? "bg-blue-50 text-blue-600 border-blue-100"
-                                        : "bg-slate-50 text-slate-400 border-slate-100"
+                                        ? "badge-in-progress"
+                                        : "bg-slate-100 text-slate-600"
                                   }`}
                                 >
                                   {res.exam_submitted_at
-                                    ? "Submitted"
+                                    ? "Completed"
                                     : res.exam_started_at
                                       ? "In Progress"
                                       : "Not Started"}

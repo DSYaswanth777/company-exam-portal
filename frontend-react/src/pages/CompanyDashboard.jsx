@@ -120,16 +120,16 @@ export default function CompanyDashboard() {
 
   const getStatusBadge = (status) => {
     const styles = {
-      live: "bg-emerald-100 text-emerald-600",
-      upcoming: "bg-purple-100 text-purple-600",
-      completed: "bg-slate-100 text-slate-400",
-      draft: "bg-blue-100 text-blue-500",
-      published: "bg-emerald-100 text-emerald-600",
-      suspended: "bg-red-100 text-red-600",
+      live: "bg-emerald-100 text-emerald-700",
+      upcoming: "bg-purple-100 text-purple-700",
+      completed: "bg-slate-100 text-slate-600",
+      draft: "bg-slate-100 text-slate-400",
+      published: "bg-emerald-100 text-emerald-700",
+      suspended: "bg-red-100 text-red-700",
     };
     return (
       <span
-        className={`px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider ${styles[status]}`}
+        className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${styles[status]}`}
       >
         {status}
       </span>
@@ -137,48 +137,40 @@ export default function CompanyDashboard() {
   };
 
   return (
-    <div className="flex h-screen bg-slate-50 font-['Poppins',_sans-serif]">
+    <div className="flex h-screen bg-slate-50">
       <CompanySidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
         <main className="flex-1 overflow-auto p-6 md:p-12">
           <div className="max-w-7xl mx-auto space-y-12 animate-in fade-in duration-700">
             {/* Welcome Banner */}
-            <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl p-8 text-white shadow-2xl shadow-blue-500/20">
+            <div className="relative overflow-hidden bg-[#1A1A2E] rounded-2xl p-8 text-white shadow-lg">
               <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
                 <div>
-                  <h1 className="text-3xl font-semibold tracking-tight mb-4">
+                  <h1 className="text-2xl font-bold tracking-tight mb-2">
                     Welcome back, {stats.company_name || "Admin"}!
                   </h1>
-                  <div className="flex items-center gap-3">
-                    <p className="text-blue-100 text-md font-[500] ">
+                  <div className="flex items-center gap-2">
+                    <p className="text-slate-400 text-[13px] font-medium">
                       Subscription Tier:
                     </p>
-                    <span className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-lg text-xs  font-[500] uppercase tracking-widest text-white border border-white/20">
+                    <span className="px-2 py-0.5 bg-blue-600/20 text-blue-400 rounded text-[11px] font-bold uppercase tracking-wider border border-blue-600/30">
                       {stats.plan || "Free"}
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-6">
-                  <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 px-10 border border-white/10">
-                    <p className="text-[10px] font-semibold uppercase tracking-widest text-blue-200 mb-1">
-                      Dashboard Health
+                <div className="flex items-center gap-4">
+                  <div className="bg-white/5 rounded-xl p-4 border border-white/10 text-center min-w-[120px]">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                      Active Drives
                     </p>
-                    <div className="flex items-center gap-3">
-                      <span className="text-4xl font-semibold">
-                        {stats.active_drives > 0 ? "Active" : "Stable"}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="h-16 w-16 bg-white/10 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/10">
-                    <IoIosTrendingUp
-                      className="h-8 w-8 text-white"
-                      stroke="20"
-                    />
+                    <span className="text-2xl font-bold text-white">
+                      {stats.active_drives}
+                    </span>
                   </div>
                 </div>
               </div>
               {/* Decorative background circle */}
-              <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-white/5 rounded-full blur-3xl"></div>
+              <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-blue-600/5 rounded-full blur-3xl"></div>
             </div>
 
             {/* Overview Section */}
@@ -194,9 +186,9 @@ export default function CompanyDashboard() {
                 </div>
                 <button
                   onClick={() => navigate("/company-create-drive")}
-                  className="flex items-center gap-3 bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-[12px] uppercase tracking-widest shadow-xl shadow-blue-500/30 hover:bg-blue-700 transition-all active:scale-95 group"
+                  className="flex items-center gap-2 bg-[#1565C0] text-white px-6 py-2.5 rounded-lg font-semibold text-[13px] shadow-sm hover:bg-blue-700 transition-all active:scale-95 group"
                 >
-                  <Plus className="h-5 w-5 group-hover:rotate-90 transition-transform" />
+                  <Plus className="h-4 w-4" />
                   Create New Drive
                 </button>
               </div>
@@ -237,21 +229,23 @@ export default function CompanyDashboard() {
                 ].map((stat, i) => (
                   <div
                     key={i}
-                    className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all group"
+                    className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-all group"
                   >
-                    <div className="flex justify-between items-start mb-3">
-                      <img src={stat.icon} alt="" />
-                    </div>
-                    <div className="ms-2">
-                      <h4 className="text-[32px] font-semibold text-slate-900 tracking-tighter ">
-                        {stat.value}
-                      </h4>
-                      <p className="text-slate-900 font-[500] text-[14px] tracking]">
-                        {stat.label}
-                      </p>
-                      <p className="text-slate-400 text-[12px] font-[400]  tracking-[0.1em] mt-1">
-                        {stat.subtitle}
-                      </p>
+                    <div className="flex items-center gap-4">
+                      <div className={`h-12 w-12 ${stat.bg} ${stat.color} rounded-lg flex items-center justify-center`}>
+                        <img src={stat.icon} alt="" className="h-6 w-6" />
+                      </div>
+                      <div>
+                        <p className="text-[12px] font-bold text-slate-500 uppercase tracking-tight">
+                          {stat.label}
+                        </p>
+                        <h4 className="text-[24px] font-bold text-slate-900 tracking-tight">
+                          {stat.value}
+                        </h4>
+                        <p className="text-slate-400 text-[11px] font-medium mt-0.5">
+                          {stat.subtitle}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -278,10 +272,10 @@ export default function CompanyDashboard() {
                   {drives.map((drive) => (
                     <div
                       key={drive.id}
-                      className={`relative bg-white rounded-[2.5rem] p-7 border border-slate-100 transition-all duration-500 overflow-hidden group shadow-sm hover:shadow-2xl flex flex-col justify-between h-full`}
+                      className="relative bg-white rounded-xl p-6 border border-slate-100 transition-all duration-300 overflow-hidden group shadow-sm hover:shadow-md flex flex-col justify-between h-full"
                     >
                       {/* Left Accent Blue Border */}
-                      <div className="absolute left-0 top-0 bottom-0 w-[6px] bg-[#3B82F6] rounded-l-full"></div>
+                      <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-[#1565C0] rounded-l-lg"></div>
 
                       <div>
                         {/* Header */}
@@ -310,66 +304,42 @@ export default function CompanyDashboard() {
                         </div>
 
                         {/* Tags */}
-                        <div className="flex gap-3 mb-4">
-                          <span className="bg-[#F8FAFC] text-[#64748B] px-2 py-2 rounded-xl  font-[500] text-[10px] uppercase tracking-widest border border-slate-100/50">
+                        <div className="flex gap-2 mb-4">
+                          <span className="bg-slate-50 text-slate-500 px-2 py-1 rounded-md font-bold text-[10px] uppercase tracking-tight border border-slate-100">
                             {drive.category || "TECHNICAL"}
-                          </span>
-                          <span className="bg-[#F8FAFC] text-[#64748B] px-2 py-2 rounded-xl  font-[500] text-[10px] uppercase tracking-widest border border-slate-100/50">
-                            ENGINEERING
                           </span>
                         </div>
 
                         {/* Info Grid */}
-                        <div className="grid grid-cols-2 gap-y-3 gap-x-1 mb-8">
-                          <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 bg-[#EFF6FF] text-[#3B82F6] rounded-xl flex items-center justify-center shadow-sm border border-blue-50">
-                              <Clock className="h-4 w-4" />
-                            </div>
+                        <div className="grid grid-cols-2 gap-4 mb-6">
+                          <div className="flex items-center gap-2">
+                            <Clock className="h-4 w-4 text-slate-400" />
                             <div>
-                              <p className="text-[12px]  font-[500] text-[#94A3B8] uppercase tracking-[0.15em] mb-1">
-                                Duration
-                              </p>
-                              <p className="text-[14px] font-[600] text-[#1E293B]">
+                              <p className="text-[14px] font-semibold text-slate-900">
                                 {drive.exam_duration_minutes} mins
                               </p>
                             </div>
                           </div>
-                          <div className="flex items-center gap-3">
-                            <div className="h-6 w-6 bg-[#F0FDF4] text-[#10B981] rounded-xl flex items-center justify-center shadow-sm border border-green-50">
-                              <Calendar className="h-4 w-4" />
-                            </div>
+                          <div className="flex items-center gap-2">
+                            <Calendar className="h-4 w-4 text-slate-400" />
                             <div>
-                              <p className="text-[12px]  font-[500] text-[#94A3B8] uppercase tracking-[0.15em] mb-1">
-                                Date & Time
-                              </p>
-                              <p className="text-[14px] font-[600] text-[#1E293B]">
+                              <p className="text-[14px] font-semibold text-slate-900">
                                 {formatDateIST(drive.window_start)}
                               </p>
                             </div>
                           </div>
-                          <div className="flex items-center gap-3">
-                            <div className="h-6 w-6 bg-[#F5F3FF] text-[#8B5CF6] rounded-xl flex items-center justify-center shadow-sm border border-purple-50">
-                              <Users className="h-4 w-4" />
-                            </div>
+                          <div className="flex items-center gap-2">
+                            <Users className="h-4 w-4 text-slate-400" />
                             <div>
-                              <p className="text-[12px]  font-[500] text-[#94A3B8] uppercase tracking-[0.15em] mb-1">
-                                Groups & Students
-                              </p>
-                              <p className="text-[14px] font-[600] text-[#1E293B]">
-                                {drive.targets?.length || 0} Groups /{" "}
-                                {drive.student_count || 0} Students
+                              <p className="text-[14px] font-semibold text-slate-900">
+                                {drive.student_count || 0} Candidates
                               </p>
                             </div>
                           </div>
-                          <div className="flex items-center gap-3">
-                            <div className="h-6 w-6 bg-[#FFF7ED] text-[#F97316] rounded-xl flex items-center justify-center shadow-sm border border-orange-50">
-                              <HelpCircle className="h-4 w-4" />
-                            </div>
+                          <div className="flex items-center gap-2">
+                            <HelpCircle className="h-4 w-4 text-slate-400" />
                             <div>
-                              <p className="text-[12px]  font-[500] text-[#94A3B8] uppercase tracking-[0.15em] mb-1">
-                                No. of Questions
-                              </p>
-                              <p className="text-[14px] font-[600] text-[#1E293B]">
+                              <p className="text-[14px] font-semibold text-slate-900">
                                 {drive.question_count || 0} Questions
                               </p>
                             </div>
@@ -378,41 +348,31 @@ export default function CompanyDashboard() {
                       </div>
 
                       {/* Actions */}
-                      <div className="flex gap-5 mt-auto">
-                        {(drive.status === "draft" ||
-                          drive.status === "pending") && (
-                          <div className="flex-1 flex gap-2">
-                            <button
-                              onClick={() =>
-                                navigate(`/company-create-drive?id=${drive.id}`)
-                              }
-                              className="flex-1 bg-slate-100 text-slate-600 py-2 rounded-xl  font-[500] text-[12px] uppercase tracking-[0.1em] hover:bg-slate-200 transition-all active:scale-95 flex items-center justify-center"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handlePublishDrive(drive.id)}
-                              className="flex-1 bg-blue-600 text-white py-2 rounded-xl  font-[500] text-[12px] uppercase tracking-[0.1em] shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-all active:scale-95 flex items-center justify-center"
-                            >
-                              Publish
-                            </button>
-                          </div>
-                        )}
-
+                      <div className="flex flex-wrap gap-2 mt-auto">
                         <button
                           onClick={() =>
                             navigate(`/company-drive-detail?id=${drive.id}`)
                           }
-                          className="flex-1 bg-[#2563EB] text-white py-2 rounded-xl  font-[500] text-[12px] uppercase tracking-[0.1em] shadow-xl shadow-blue-500/25 hover:bg-[#1D4ED8] transition-all active:scale-95 flex items-center justify-center"
+                          className="px-4 py-1.5 border border-slate-200 text-slate-700 rounded-lg font-semibold text-[13px] hover:bg-slate-50 transition-all active:scale-95"
                         >
-                          View
+                          View Details
                         </button>
+
+                        {(drive.status === "draft" ||
+                          drive.status === "pending") && (
+                          <button
+                            onClick={() => handlePublishDrive(drive.id)}
+                            className="px-4 py-1.5 bg-[#1565C0] text-white rounded-lg font-semibold text-[13px] hover:bg-blue-700 transition-all active:scale-95"
+                          >
+                            Publish
+                          </button>
+                        )}
 
                         {drive.status === "live" ||
                         drive.status === "ongoing" ? (
                           <button
                             onClick={() => openConfirmation(drive, "end")}
-                            className="flex-1 bg-[#FEF2F2] border-2 border-[#FEE2E2] text-[#DC2626] py-2 rounded-xl  font-[500] text-[12px] uppercase tracking-[0.1em] hover:bg-[#FEE2E2] transition-all active:scale-95 flex items-center justify-center"
+                            className="px-4 py-1.5 bg-red-50 text-red-600 border border-red-100 rounded-lg font-semibold text-[13px] hover:bg-red-100 transition-all active:scale-95"
                           >
                             End Exam
                           </button>
@@ -422,29 +382,15 @@ export default function CompanyDashboard() {
                           <button
                             onClick={() => openConfirmation(drive, "start")}
                             disabled={drive.status === "suspended"}
-                            className={`flex-1 ${
+                            className={`px-4 py-1.5 ${
                               drive.status === "suspended"
                                 ? "bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed"
-                                : "bg-[#F0FDF4] border-2 border-[#DCFCE7] text-[#16A34A] hover:bg-[#DCFCE7]"
-                            } py-2 rounded-xl  font-[500] text-[12px] uppercase tracking-[0.1em] transition-all active:scale-95 flex items-center justify-center`}
+                                : "bg-emerald-50 text-emerald-600 border border-emerald-100 hover:bg-emerald-100"
+                            } rounded-lg font-semibold text-[13px] transition-all active:scale-95`}
                           >
                             Start Exam
                           </button>
                         ) : null}
-
-                        <button
-                          onClick={() =>
-                            navigate(`/company-send-emails?id=${drive.id}`)
-                          }
-                          disabled={drive.status !== "upcoming"}
-                          className={`px-10 ${
-                            drive.status !== "upcoming"
-                              ? "bg-slate-50 text-slate-200 border-slate-100 cursor-not-allowed"
-                              : "bg-[#F8FAFC] text-[#64748B] border-slate-200/60 hover:bg-slate-100 hover:text-[#0F172A]"
-                          } border py-2 rounded-xl  font-[500] text-[12px] uppercase tracking-[0.1em] transition-all flex items-center justify-center`}
-                        >
-                          Emails
-                        </button>
                       </div>
                     </div>
                   ))}

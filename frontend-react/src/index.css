@@ -1,15 +1,28 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
+  --primary-blue: #1565C0;
+  --dark-navy: #1A1A2E;
+  --white: #FFFFFF;
+  --light-gray-border: #D1D5DB;
+  --muted-text: #6B7280;
+  --body-text: #111827;
+  --green-badge-bg: #DCFCE7;
+  --green-badge-text: #16A34A;
+  --blue-badge-bg: #DBEAFE;
+  --blue-badge-text: #1D4ED8;
+  --red-badge-bg: #FEE2E2;
+  --red-badge-text: #DC2626;
+  
   --bg-primary: white;
   --bg-secondary: #f8fafc;
-  --text-primary: #0f172a;
-  --text-secondary: #64748b;
+  --text-primary: var(--body-text);
+  --text-secondary: var(--muted-text);
   --border-color: #e2e8f0;
   --navbar-bg: rgba(255, 255, 255, 0.8);
   --navbar-border: #e2e8f0;
-  font-family: 'Poppins', sans-serif !important;
+  font-family: 'Poppins', 'Inter', sans-serif !important;
 }
 
 .dark {
@@ -90,7 +103,7 @@ svg.cursor-pointer {
   border-radius: 20px !important;
   padding: 12px 20px !important;
   font-family: 'Poppins', sans-serif !important;
-  font-weight: 700 !important;
+  font-weight: 00 !important;
   color: #0f172a !important;
   transition: all 0.2s ease-in-out !important;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
@@ -99,7 +112,9 @@ svg.cursor-pointer {
 .rsuite-datepicker-container:hover .rs-picker-toggle {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
 }
-
+.font-black{
+  font-weight: 600 !important;
+}
 .rsuite-datepicker-container .rs-picker-toggle:focus,
 .rsuite-datepicker-container .rs-picker-toggle-active {
   background-color: white !important;
@@ -130,5 +145,74 @@ svg.cursor-pointer {
 }
 
 .rs-calendar-table-cell-selected .rs-calendar-table-cell-content {
-  background-color: #3b82f6 !important;
+  background-color: var(--primary-blue) !important;
+}
+
+/* Results Table Generic Styles */
+.results-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.results-table {
+  width: 100%;
+  min-width: 800px;
+  border-collapse: collapse;
+  background: #FFFFFF;
+}
+
+.results-table thead {
+  background: #F9FAFB;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.results-table th {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6B7280;
+  padding: 10px 16px;
+  text-align: left;
+  white-space: nowrap;
+  height: 40px;
+}
+
+.results-table td {
+  font-size: 13px;
+  font-weight: 400;
+  color: #111827;
+  padding: 10px 16px;
+  vertical-align: middle;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.results-table tr:hover td {
+  background: #F9FAFB;
+}
+
+/* Status badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+}
+
+.badge-in-progress {
+  background: var(--blue-badge-bg);
+  color: var(--blue-badge-text);
+}
+
+.badge-completed {
+  background: var(--green-badge-bg);
+  color: var(--green-badge-text);
+}
+
+.badge-failed {
+  background: var(--red-badge-bg);
+  color: var(--red-badge-text);
 }

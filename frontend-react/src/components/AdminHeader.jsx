@@ -176,8 +176,16 @@ export default function AdminHeader({
         )}
       </div>
 
-      {/* Actions */}
       <div className="flex items-center gap-6">
+        {/* Notification Bell */}
+        <button
+          onClick={() => setActiveTab("notifications")}
+          className="relative group p-2.5 bg-slate-50 rounded-xl hover:bg-slate-100 transition-all duration-300"
+        >
+          <Bell className="h-5 w-5 text-slate-400 group-hover:text-blue-600 transition-colors" />
+          <div className="absolute top-2.5 right-2.5 h-2.5 w-2.5 bg-red-500 rounded-full border-2 border-white group-hover:scale-110 transition-transform"></div>
+        </button>
+
         <div className="h-10 w-[1px] bg-slate-100 mx-2"></div>
 
         <div className="relative group">

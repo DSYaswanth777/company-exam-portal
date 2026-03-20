@@ -7,14 +7,19 @@ import {
   LogOut,
   ChevronRight,
   Rocket,
+  Send,
 } from "lucide-react";
 
 export default function AdminSidebar({ activeTab, setActiveTab, onLogout }) {
   const menuItems = [
     { id: "overview", label: "Dashboard", icon: LayoutDashboard },
-    { id: "companies", label: "Company Approvals", icon: Building2 },
+    {
+      id: "companies",
+      label: "Company Approvals",
+      icon: "/icons/companyApprovals.png",
+    },
     { id: "data_management", label: "Data Management", icon: Database },
-    { id: "plans", label: "Plan Management", icon: Rocket },
+    { id: "send_message", label: "Send Message", icon: "/icons/sendMessage.png" },
     { id: "tickets", label: "Support Tickets", icon: Ticket },
   ];
 
@@ -46,13 +51,25 @@ export default function AdminSidebar({ activeTab, setActiveTab, onLogout }) {
                   : "text-slate-400 hover:text-white hover:bg-white/5"
               }`}
             >
-              <item.icon
-                className={`h-5 w-5 transition-transform duration-300 ${
-                  activeTab === item.id
-                    ? "scale-110 rotate-0"
-                    : "group-hover:rotate-6"
-                }`}
-              />
+              {typeof item.icon === "string" ? (
+                <img
+                  src={item.icon}
+                  alt=""
+                  className={`h-6 w-6 transition-transform duration-300 ${
+                    activeTab === item.id
+                      ? "scale-110 rotate-0"
+                      : "group-hover:rotate-6"
+                  }`}
+                />
+              ) : (
+                <item.icon
+                  className={`h-5 w-5 transition-transform duration-300 ${
+                    activeTab === item.id
+                      ? "scale-110 rotate-0"
+                      : "group-hover:rotate-6"
+                  }`}
+                />
+              )}
               <span className="font-[500] text-[16px] tracking-tight">
                 {item.label}
               </span>

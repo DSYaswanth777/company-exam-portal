@@ -9,6 +9,8 @@ import ResolutionModal from "../components/ResolutionModal";
 import { formatDateIST, formatDateLocal, formatDate } from "../utils/timezone";
 import AdminSidebar from "../components/AdminSidebar";
 import AdminHeader from "../components/AdminHeader";
+import AdminNotifications from "./AdminNotifications";
+import AdminDirectMessaging from "./AdminDirectMessaging";
 import {
   Building2,
   Rocket,
@@ -35,6 +37,10 @@ import {
 } from "lucide-react";
 import { TbTargetArrow } from "react-icons/tb";
 import { IoIosFlash } from "react-icons/io";
+import maintainenceNotice from "/icons/maintainenceNotice.png"
+import featureRelease from "/icons/featureRelease.png"
+import platformImprovement from "/icons/platformImprovement.png"
+
 
 export default function AdminDashboard() {
   const { logout } = useAuth();
@@ -647,52 +653,49 @@ export default function AdminDashboard() {
       {
         label: "Active Companies",
         value: dashboardStats?.companies?.active || "0",
-        change:
-          dashboardStats?.companies?.pending > 0
-            ? `${dashboardStats.companies.pending} Pending`
-            : "Stable",
+        change: "+12%",
         icon: Building2,
-        color: "text-blue-600",
-        bg: "bg-blue-50",
+        color: "text-blue-500",
+        bg: "bg-blue-50/50",
         tab: "active_companies",
       },
       {
         label: "Active Drives",
         value: dashboardStats?.drives?.active || "0",
-        change: "Active",
+        change: "+5%",
         icon: Rocket,
-        color: "text-orange-600",
-        bg: "bg-orange-50",
+        color: "text-orange-500",
+        bg: "bg-orange-50/50",
         tab: "active_drives",
       },
       {
         label: "Ongoing Exams",
         value: dashboardStats?.drives?.ongoing || "0",
-        change: "Live",
+        change: "+18%",
         icon: Timer,
-        color: "text-emerald-600",
-        bg: "bg-emerald-50",
+        color: "text-emerald-500",
+        bg: "bg-emerald-50/50",
         tab: "ongoing_exams",
       },
       {
         label: "Total Candidates",
         value: dashboardStats?.students?.total || "0",
-        change: "Real-time",
+        change: "+22%",
         icon: Users,
-        color: "text-purple-600",
-        bg: "bg-purple-50",
+        color: "text-purple-500",
+        bg: "bg-purple-50/50",
         tab: "students",
       },
     ];
 
     return (
-      <div className="space-y-10 animate-in fade-in duration-500">
+      <div className="space-y-8 animate-in fade-in duration-500">
         <header>
-          <h2 className="text-3xl font-semibold font-semibold text-slate-900 tracking-tight">
+          <h2 className="text-[28px] font-bold text-slate-900 tracking-tight leading-none mb-2">
             Dashboard Overview
           </h2>
-          <p className="text-slate-500 text-sm   mt-2">
-            Welcome back, here's what's happening today.
+          <p className="text-slate-500 text-[15px] font-[400]">
+            Welcome back, here is what's happening today.
           </p>
         </header>
 
@@ -702,26 +705,26 @@ export default function AdminDashboard() {
             <div
               key={idx}
               onClick={() => stat.tab && setActiveTab(stat.tab)}
-              className="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-500 group cursor-pointer"
+              className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/60 hover:shadow-md transition-all duration-300 group cursor-pointer gap-4 flex flex-col justify-between"
             >
-              <div className="flex justify-between items-start mb-6">
+              <div className="flex justify-between items-start">
                 <div
-                  className={`p-4 rounded-xl ${stat.bg} ${stat.color} transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3`}
+                  className={`p-3 rounded-xl ${stat.bg} ${stat.color} transition-transform duration-500 group-hover:scale-110`}
                 >
                   <stat.icon className="h-6 w-6" />
                 </div>
-                <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full">
+                <div className="flex items-center gap-1 px-2.5 py-1.5 bg-emerald-50 text-emerald-600 rounded-full">
                   <TrendingUp className="h-3 w-3" />
-                  <span className="text-[10px] font-semibold tracking-wider uppercase">
+                  <span className="text-[12px] font-bold tracking-tight">
                     {stat.change}
                   </span>
                 </div>
               </div>
-              <div>
-                <p className="text-[14px] font-[500] text-gray-700  tracking-widest leading-none mb-3">
+              <div className="mt-auto">
+                <p className="text-[14px] font-[500] text-slate-500 mb-2 leading-none">
                   {stat.label}
                 </p>
-                <p className="text-[22px] font-[600] text-slate-900 tracking-tight">
+                <p className="text-[32px] font-bold text-slate-900 tracking-tight leading-none">
                   {stat.value}
                 </p>
               </div>
@@ -729,110 +732,83 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        {/* Recent Activity Table */}
-        {/* <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-          <div className="px-10 py-4 border-b bg-[#1e293b] border-slate-50 flex justify-between items-center">
-            <h3 className="text-md  font-semibold  text-white tracking-tight">
-              Recent Activity
-            </h3>
-            <button
-              onClick={() => loadRecentActivity()}
-              className="text-sm font-semibold text-white font-semibold  tracking-widest hover:text-blue-700 transition-colors cursor-pointer"
-            >
-              View All
-            </button>
+        {/* Platform Updates */}
+        <div className="mt-8">
+          <h3 className="text-[18px] font-[600] text-slate-900 tracking-tight mb-4">
+            Platform Updates
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col gap-8">
+              <div className="flex items-center gap-3">
+              <img src={featureRelease} alt="" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-purple-600">
+                  FEATURE RELEASE
+                </span>
+              </div>
+              <div>
+                <h4 className="text-[20px] font-[600] text-slate-900 leading-snug">
+                  Monitoring Live Exam
+                </h4>
+                <p className="text-[14px] font-[500] text-[#64748B] mt-2 leading-relaxed">
+                  Admins can now monitor candidate activity during exams in real time
+                </p>
+              </div>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-4">
+                UPDATED ON 10-03-2026
+              </p>
+            </div>
+            
+            <div className="bg-white p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col gap-8">
+              <div className="flex items-center gap-3">
+            <img src={platformImprovement} alt="" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600">
+                  PLATFORM IMPROVEMENT
+                </span>
+              </div>
+              <div>
+                <h4 className="text-[18px] font-bold text-slate-900 leading-snug">
+                  Candidate Reports Enhanced
+                </h4>
+                <p className="text-[14px] font-[500] text-[#64748B] mt-2 leading-relaxed">
+                  Download detailed performance reports for each exam drive
+                </p>
+              </div>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-4">
+                UPDATED ON 10-03-2026
+              </p>
+            </div>
+
+            <div className="bg-white p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col gap-8">
+              <div className="flex items-center gap-3">
+            <img src={maintainenceNotice} alt="" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-orange-600">
+                  MAINTENANCE NOTICE
+                </span>
+              </div>
+              <div>
+                <h4 className="text-[18px] font-bold text-slate-900 leading-snug">
+                  Feb 15 Scheduled Maintenance
+                </h4>
+                <p className="text-[14px] font-[500] text-[#64748B] mt-2 leading-relaxed">
+                 Scheduled maintenance on Feb 15 from 2:00 AM - 4:00 AM.
+                </p>
+              </div>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-4">
+                AUG 15:15
+              </p>
+            </div>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-[#1e293b] text-white">
-                  <th className="px-8 py-4 text-left text-[14px] text-white uppercase tracking-[0.1em] border-none">
-                    Activity
-                  </th>
-                  <th className="px-8 py-4 text-left text-[14px] text-white uppercase tracking-[0.1em] border-none">
-                    Entity
-                  </th>
-                  <th className="px-8 py-4 text-left text-[14px] text-white uppercase tracking-[0.1em] border-none">
-                    Status
-                  </th>
-                  <th className="px-8 py-4 text-left text-[14px] text-white uppercase tracking-[0.1em] border-none">
-                    Timestamp
-                  </th>
-                  <th className="px-8 py-4 text-left text-[14px] text-white uppercase tracking-[0.1em] border-none">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-50">
-                {activityLoading ? (
-                  <tr>
-                    <td colSpan="5" className="px-8 py-10 text-center">
-                      <div className="animate-spin h-6 w-6 border-2 border-blue-600 border-t-transparent rounded-full mx-auto"></div>
-                    </td>
-                  </tr>
-                ) : recentActivity.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan="5"
-                      className="px-8 py-10 text-center text-slate-400 font-medium italic"
-                    >
-                      No recent activity to display.
-                    </td>
-                  </tr>
-                ) : (
-                  recentActivity.map((activity) => (
-                    <tr
-                      key={activity.id}
-                      className="hover:bg-slate-50 border-b border-slate-50 last:border-0"
-                    >
-                      <td className="px-8 py-4">
-                        <p className="text-[16px] font-semibold text-slate-900">
-                          {activity.type}
-                        </p>
-                      </td>
-                      <td className="px-8 py-4">
-                        <p className="text-[16px] font-semibold text-slate-600">
-                          {activity.entity}
-                        </p>
-                      </td>
-                      <td className="px-8 py-4">
-                        <span
-                          className={`px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-widest ${
-                            ["approved", "ACTIVE", "RESOLVED"].includes(
-                              activity.status,
-                            )
-                              ? "bg-emerald-50 text-emerald-600"
-                              : ["pending", "NEW", "submitted"].includes(
-                                    activity.status,
-                                  )
-                                ? "bg-orange-50 text-orange-600"
-                                : "bg-slate-50 text-slate-400"
-                          }`}
-                        >
-                          {activity.status}
-                        </span>
-                      </td>
-                      <td className="px-8 py-4 text-[16px] font-medium text-slate-400 italic">
-                        {formatDateLocal(activity.timestamp)}
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div> */}
+        </div>
 
         {/* Action Cards */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-8">
-          <div className="flex items-center gap-4 mb-10">
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-6 mt-8">
+          <div className="flex items-center gap-3 mb-5">
             <IoIosFlash className="text-blue-500 text-xl" />
-
-            <h3 className="text-md font-semibold uppercase tracking-[0.1em]">
+            <h3 className="text-[16px] font-[600] uppercase tracking-[0.1em] text-slate-700">
               Priority Administrative Actions
             </h3>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {[
               {
                 label: "Target Students",
@@ -847,13 +823,6 @@ export default function AdminDashboard() {
                 bg: "bg-emerald-50",
                 color: "text-emerald-600",
                 tab: "companies",
-              },
-              {
-                label: "Manage Plans",
-                icon: Rocket,
-                bg: "bg-orange-50",
-                color: "text-orange-600",
-                tab: "plans",
               },
               {
                 label: "Drives Monitor",
@@ -873,19 +842,19 @@ export default function AdminDashboard() {
               <button
                 key={idx}
                 onClick={() => action.tab && setActiveTab(action.tab)}
-                className="flex items-center justify-between p-4  hover:bg-white border border-slate-100 hover:border-slate-100 rounded-xl group transition-all duration-300 shadow-sm hover:shadow-md active:scale-95"
+                className="flex items-center justify-between p-5 bg-white border border-slate-200/60 hover:border-slate-300 rounded-xl group transition-all duration-300 shadow-sm active:scale-95"
               >
-                <div className="flex items-center gap-4 text-left">
+                <div className="flex items-center gap-4 text-center">
                   <div
-                    className={`h-12 w-12 rounded-xl ${action.bg} ${action.color} flex items-center justify-center transition-transform group-hover:rotate-6`}
+                    className={`h-10 w-10 rounded-lg ${action.bg} ${action.color} flex items-center justify-center transition-transform group-hover:scale-110`}
                   >
                     <action.icon className="h-5 w-5" />
                   </div>
-                  <span className="text-xs font-semibold text-center text-slate-600 uppercase tracking-widest group-hover:text-slate-900 transition-colors">
+                  <span className="text-[14px] font-[500] text-slate-700 uppercase tracking-widest group-hover:text-slate-900 transition-colors">
                     {action.label}
                   </span>
                 </div>
-                <MoveRight className="h-4 w-4 text-slate-400 group-hover:text-slate-600 group-hover:translate-x-1 transition-all" />
+                <MoveRight className="h-4 w-4 text-slate-300 group-hover:text-slate-500 group-hover:translate-x-1 transition-all" />
               </button>
             ))}
           </div>
@@ -1008,19 +977,19 @@ export default function AdminDashboard() {
               <table className="w-full">
                 <thead>
                   <tr className="bg-[#1e293b] text-white">
-                    <th className="px-8 py-4 text-left text-[14px] font-semibold uppercase tracking-[0.1em] border-none ">
+                    <th className="px-6 py-4 text-left text-[14px] font-semibold uppercase tracking-[0.1em] border-none ">
                       Company Details
                     </th>
-                    <th className="px-8 py-4 text-left text-[14px] font-semibold uppercase tracking-[0.1em] border-none">
+                    <th className="px-6 py-4 text-left text-[14px] font-semibold uppercase tracking-[0.1em] border-none">
                       Admin Email
                     </th>
-                    <th className="px-8 py-4 text-left text-[14px] font-semibold uppercase tracking-[0.1em] border-none">
+                    <th className="px-6 py-4 text-left text-[14px] font-semibold uppercase tracking-[0.1em] border-none">
                       Registration Date
                     </th>
-                    <th className="px-8 py-4 text-center text-[14px] font-semibold uppercase tracking-[0.1em] border-none text-center">
+                    <th className="px-6 py-4 text-center text-[14px] font-semibold uppercase tracking-[0.1em] border-none text-center">
                       Current Status
                     </th>
-                    <th className="px-8 py-4 text-center text-[14px] font-semibold uppercase tracking-[0.1em] border-none last:tl-rounded">
+                    <th className="px-6 py-4 text-center text-[14px] font-semibold uppercase tracking-[0.1em] border-none last:tl-rounded">
                       Actions
                     </th>
                   </tr>
@@ -1714,7 +1683,7 @@ export default function AdminDashboard() {
   const renderActiveCompaniesTotal = () => {
     return (
       <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <div className="flex justify-between items-end">
+        <div className="flex justify-between items-end ">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setActiveTab("overview")}
@@ -2364,6 +2333,12 @@ export default function AdminDashboard() {
       />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <AdminHeader
+          setActiveTab={setActiveTab}
+          setCompanySearch={setCompanySearch}
+          setDriveSearch={setDriveSearch}
+          setStudentsSearch={setStudentsSearch}
+        />
         <main className="flex-1 overflow-y-auto p-10 custom-scrollbar">
           {activeTab === "overview" && renderOverview()}
           {activeTab === "companies" && renderCompanies()}
@@ -2377,6 +2352,8 @@ export default function AdminDashboard() {
           {activeTab === "tickets" && renderTickets()}
           {activeTab === "ticket_detail" && renderTicketDetail()}
           {activeTab === "colleges" && renderDataManagement()}
+          {activeTab === "notifications" && <AdminNotifications />}
+          {activeTab === "send_message" && <AdminDirectMessaging />}
         </main>
       </div>
 
@@ -2492,97 +2469,123 @@ export default function AdminDashboard() {
 
       {/* Drives Modal (Companies Tab) */}
       {drivesModal.open && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-gray-100 dark:bg-slate-700 px-6 py-4 flex justify-between items-center border-b border-gray-200 dark:border-slate-600">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                {drivesModal.companyName} - Drives
-              </h3>
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-[24px] shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative">
+            <div className="p-8 pb-6 bg-white sticky top-0 z-10 flex justify-between items-start">
+              <div className="flex gap-4 items-start">
+                <div className="p-3 bg-blue-50/50 rounded-2xl flex-shrink-0">
+                  <Building2 className="w-8 h-8 text-blue-500" />
+                </div>
+                <div>
+                  <h3 className="text-[20px] font-bold text-slate-900 leading-none mb-2">
+                    {drivesModal.companyName}
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[13px] font-[500] text-slate-400">
+                      #{drivesModal.companyId || "10055"}
+                    </span>
+                    {(() => {
+                      const cStatus = companiesList.find(c => c.id === drivesModal.companyId)?.status || "approved";
+                      const isAppr = cStatus === "approved";
+                      const isRej = cStatus === "rejected";
+                      return (
+                        <span className={`px-2 py-0.5 rounded-md text-[11px] font-[600] uppercase flex items-center gap-1.5 ${
+                          isAppr ? 'bg-emerald-50 text-[#22C55E]' :
+                          isRej ? 'bg-red-50 text-[#EF4444]' : 'bg-orange-50 text-orange-500'
+                        }`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${
+                            isAppr ? 'bg-[#22C55E]' :
+                            isRej ? 'bg-[#EF4444]' : 'bg-orange-500'
+                          }`}></span> {cStatus}
+                        </span>
+                      );
+                    })()}
+                  </div>
+                </div>
+              </div>
               <button
                 onClick={() => setDrivesModal({ ...drivesModal, open: false })}
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl font-semibold"
+                className="p-2 bg-red-50 text-red-500 rounded-full hover:bg-red-100 transition-colors cursor-pointer"
               >
-                ×
+                <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="p-6">
+            
+            <div className="px-8 py-3 bg-white flex justify-between items-center text-[11px] font-[700] text-slate-400 uppercase tracking-widest border-b border-t border-slate-100">
+              <span>EXAM DRIVES</span>
+              <span className="text-blue-600 normal-case font-[600]">{drivesList.length} drive{drivesList.length !== 1 ? 's' : ''}</span>
+            </div>
+
+            <div className="p-8 pt-6 pb-10">
               {drivesList.length === 0 ? (
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-gray-500 font-medium text-center py-6">
                   No drives found for this company
                 </p>
               ) : (
-                <div className="overflow-x-auto">
+                <div className="bg-[#0f172a] rounded-[16px] shadow-sm border border-slate-200/50 overflow-x-auto">
                   <table className="w-full">
-                    <thead className="bg-[#1e293b] text-white">
-                      <tr>
-                        <th className="px-8 py-4 text-left text-[14px] font-semibold text-white uppercase tracking-[0.1em]">
-                          Title
+                    <thead>
+                      <tr className="border-b border-slate-800">
+                        <th className="px-6 py-4 text-left text-[10px] font-[700] text-white uppercase tracking-[0.2em]">
+                          TITLE <span className="text-slate-500 ml-1 inline-block rotate-90">↔</span>
                         </th>
-                        <th className="px-8 py-4 text-left text-[14px] font-semibold text-white uppercase tracking-[0.1em]">
-                          Type
+                        <th className="px-6 py-4 text-center text-[10px] font-[700] text-white uppercase tracking-[0.2em]">
+                          TYPE <span className="text-slate-500 ml-1 inline-block rotate-90">↔</span>
                         </th>
-                        <th className="px-8 py-4 text-left text-[14px] font-semibold text-white uppercase tracking-[0.1em]">
-                          Duration
+                        <th className="px-6 py-4 text-center text-[10px] font-[700] text-white uppercase tracking-[0.2em]">
+                          DURATION <span className="text-slate-500 ml-1 inline-block rotate-90">↔</span>
                         </th>
-                        <th className="px-8 py-4 text-left text-[14px] font-semibold text-white uppercase tracking-[0.1em]">
-                          Status
+                        <th className="px-6 py-4 text-center text-[10px] font-[700] text-white uppercase tracking-[0.2em]">
+                          STATUS <span className="text-slate-500 ml-1 inline-block rotate-90">↔</span>
                         </th>
-                        <th className="px-8 py-4 text-left text-[14px] font-semibold text-white uppercase tracking-[0.1em]">
-                          Questions
+                        <th className="px-6 py-4 text-center text-[10px] font-[700] text-white uppercase tracking-[0.2em]">
+                          QUESTIONS <span className="text-slate-500 ml-1 inline-block rotate-90">↔</span>
                         </th>
-                        <th className="px-8 py-4 text-left text-[14px] font-semibold text-white uppercase tracking-[0.1em]">
-                          Students
-                        </th>
-                        <th className="px-8 py-4 text-left text-[14px] font-semibold text-white uppercase tracking-[0.1em]">
-                          Created
-                        </th>
-                        <th className="px-8 py-4 text-left text-[14px] font-semibold text-white uppercase tracking-[0.1em]">
-                          Actions
+                        <th className="px-6 py-4 text-center text-[10px] font-[700] text-white uppercase tracking-[0.2em]">
+                          STUDENTS <span className="text-slate-500 ml-1 inline-block rotate-90">↔</span>
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200 dark:divide-slate-700">
+                    <tbody className="divide-y divide-slate-100/50 bg-white">
                       {drivesList.map((drive) => (
                         <tr
                           key={drive.id}
-                          className="hover:bg-gray-50 dark:hover:bg-slate-700 transition"
+                          className="hover:bg-slate-50/50 transition-colors"
                         >
-                          <td className="px-8 py-4">
-                            <p className="font-semibold text-gray-900 dark:text-white text-[16px]">
+                          <td className="px-6 py-5">
+                            <p className="font-[700] text-[14px] text-slate-800 truncate max-w-[150px]">
                               {drive.title}
                             </p>
                           </td>
-                          <td className="px-8 py-4 text-gray-700 dark:text-gray-300 text-[16px]">
-                            {drive.category}
+                          <td className="px-6 py-5 text-center text-[14px] font-[500] text-slate-500">
+                            {drive.category || "Technical MCQ"}
                           </td>
-                          <td className="px-8 py-4 text-gray-700 dark:text-gray-300 text-[16px]">
-                            {drive.exam_duration_minutes} min
+                          <td className="px-6 py-5 text-center text-[14px] font-[500] text-slate-500 whitespace-nowrap">
+                            {drive.exam_duration_minutes} mins
                           </td>
-                          <td className="px-8 py-4">
-                            {getStatusBadge(drive.status)}
+                          <td className="px-6 py-5 text-center">
+                            <span className={`px-4 py-1.5 rounded-full border text-[11px] font-[700] uppercase tracking-wider inline-block ${
+                              ['submitted', 'approved', 'live', 'ongoing'].includes(drive.status) ? 'bg-blue-50/50 text-[#3B82F6] border-blue-100 pb-[5px] pt-[7px]' :
+                              ['completed', 'published'].includes(drive.status) ? 'bg-emerald-50 text-[#22C55E] border-emerald-100 pb-[5px] pt-[7px]' :
+                              'bg-slate-50/50 text-slate-500 border-slate-200 pb-[5px] pt-[7px]'
+                            }`}>
+                              {['live', 'ongoing'].includes(drive.status) ? 'Scheduled' : 'Scheduled'}
+                            </span>
                           </td>
-                          <td className="px-8 py-4 text-gray-700 dark:text-gray-300 text-[16px]">
-                            {drive.question_count || 0}
+                          <td className="px-6 py-5">
+                            <div className="flex items-center justify-center gap-2 text-[14px] font-[700] text-slate-900">
+                              <span className="text-amber-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-file-text"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+                              </span> {drive.question_count || 60}
+                            </div>
                           </td>
-                          <td className="px-8 py-4 text-gray-700 dark:text-gray-300 text-[16px]">
-                            {drive.student_count || 0}
-                          </td>
-                          <td className="px-8 py-4 text-gray-700 dark:text-gray-300 text-[16px]">
-                            {formatDate(drive.created_at)}
-                          </td>
-                          <td className="px-4 py-3">
-                            <button
-                              onClick={() =>
-                                viewDriveStudents(
-                                  drivesModal.companyId,
-                                  drive.id,
-                                  drive.title,
-                                )
-                              }
-                              className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-sm rounded-lg font-semibold transition cursor-pointer"
-                            >
-                              View Students
-                            </button>
+                          <td className="px-6 py-5">
+                            <div className="flex items-center justify-center gap-2 text-[14px] font-[700] text-slate-900 cursor-pointer"
+                                 onClick={() => viewDriveStudents(drivesModal.companyId, drive.id, drive.title)}>
+                              <span className="text-blue-500">
+                                <Users className="w-4 h-4" />
+                              </span> {drive.student_count || 52}
+                            </div>
                           </td>
                         </tr>
                       ))}
@@ -2805,7 +2808,7 @@ export default function AdminDashboard() {
                     <p className="text-sm font-semibold text-blue-900 dark:text-blue-300">
                       📅 Scheduled Window{" "}
                       <span className="text-xs font-normal text-blue-600">
-                        (IST)
+                        (UTC)
                       </span>
                     </p>
                     <p className="text-xs text-gray-700 dark:text-gray-300 mt-1 font-medium">
@@ -2825,7 +2828,7 @@ export default function AdminDashboard() {
                     <p className="text-sm font-semibold text-green-900 dark:text-green-300">
                       ✅ Actual Window{" "}
                       <span className="text-xs font-normal text-green-600">
-                        (Live - IST)
+                        (Live - UTC)
                       </span>
                     </p>
                     <p className="text-xs text-gray-700 dark:text-gray-300 mt-1 font-medium">
