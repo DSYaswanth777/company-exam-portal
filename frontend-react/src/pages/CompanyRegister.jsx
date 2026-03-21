@@ -1,6 +1,8 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import companyService from "../services/companyService";
+import { getErrorMessage } from "../utils/errorHelpers";
 import {
   Mail,
   Lock,
@@ -14,6 +16,18 @@ import {
 } from "lucide-react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+
+const InputWrapper = ({ label, icon: Icon, children }) => (
+  <div className="flex flex-col gap-2">
+    <label className="text-[11px] font-[600] text-slate-500 uppercase tracking-[0.1em] ml-1">
+      {label}
+    </label>
+    <div className="relative group">
+      <Icon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+      {children}
+    </div>
+  </div>
+);
 
 export default function CompanyRegister() {
   const [formData, setFormData] = useState({
@@ -29,6 +43,7 @@ export default function CompanyRegister() {
 
   const [logoPreview, setLogoPreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
@@ -104,18 +119,6 @@ export default function CompanyRegister() {
       setLoading(false);
     }
   };
-  const InputWrapper = ({ label, icon: Icon, children }) => (
-    <div className="flex flex-col gap-2">
-      <label className="text-[11px] font-[600] text-slate-500 uppercase tracking-[0.1em] ml-1">
-        {label}
-      </label>
-      <div className="relative group">
-        <Icon className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-        {children}
-      </div>
-    </div>
-  );
-
   return (
     <>
     <Navbar/>
@@ -291,6 +294,12 @@ export default function CompanyRegister() {
                 .
               </span>
             </label>
+
+            {error && (
+              <div className="p-4 bg-red-50 border border-red-100 rounded-xl animate-in fade-in slide-in-from-top-2">
+                <p className="text-[14px] font-[500] text-red-600">{error}</p>
+              </div>
+            )}
 
             <button
               type="submit"
