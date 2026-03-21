@@ -433,7 +433,7 @@ export default function CompanyDashboard() {
                       <div className="flex gap-4 mt-auto">
                         <button
                           onClick={() =>
-                            navigate(`/company-send-emails?driveId=${drive.id}`)
+                            navigate(`/company-send-emails?id=${drive.id}`)
                           }
                           className="flex-1 py-2 border border-slate-200 text-[#64748B] rounded-[16px] font-bold text-[13px] hover:bg-slate-50 transition-all active:scale-95 uppercase tracking-widest shadow-sm"
                         >

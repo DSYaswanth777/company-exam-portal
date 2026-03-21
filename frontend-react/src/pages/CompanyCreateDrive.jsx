@@ -28,7 +28,7 @@ import { convertUTCToInputIST, convertInputISTToUTC } from "../utils/timezone";
 export default function CompanyCreateDrive() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const driveId = searchParams.get("id");
+  const driveId = searchParams.get("id") || searchParams.get("edit");
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);

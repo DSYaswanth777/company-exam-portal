@@ -211,7 +211,7 @@ export default function CompanySupportTickets() {
 
               {/* Footer Section */}
               <div className="p-8 border-t border-slate-50 flex flex-col md:flex-row justify-between items-center gap-6">
-                <p className="text-[10px] font-semibold text-slate-300 uppercase tracking-[0.2em]">
+                <p className="text-[12px] font-[600] text-[#9CA3AF] uppercase ">
                   Showing Active Support Thread History
                 </p>
                 <div className="flex gap-4">

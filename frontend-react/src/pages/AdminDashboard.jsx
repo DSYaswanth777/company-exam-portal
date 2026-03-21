@@ -27,6 +27,7 @@ import {
   MessageSquare,
   AlertCircle,
   CheckCircle2,
+  Check,
   History,
   ExternalLink,
   Shield,
@@ -34,6 +35,8 @@ import {
   MoveRight,
   X,
   Loader2,
+  Eye,
+  Ban,
 } from "lucide-react";
 import { TbTargetArrow } from "react-icons/tb";
 import { IoIosFlash } from "react-icons/io";
@@ -691,10 +694,10 @@ export default function AdminDashboard() {
     return (
       <div className="space-y-8 animate-in fade-in duration-500">
         <header>
-          <h2 className="text-[28px] font-bold text-slate-900 tracking-tight leading-none mb-2">
+          <h2 className="text-[28px] font-[600] text-slate-900 tracking-tight leading-none mb-3">
             Dashboard Overview
           </h2>
-          <p className="text-slate-500 text-[15px] font-[400]">
+          <p className="text-slate-500 text-[18px] font-[300]">
             Welcome back, here is what's happening today.
           </p>
         </header>
@@ -977,94 +980,82 @@ export default function AdminDashboard() {
               <table className="w-full">
                 <thead>
                   <tr className="bg-[#1e293b] text-white">
-                    <th className="px-6 py-4 text-left text-[14px] font-semibold uppercase tracking-[0.1em] border-none ">
-                      Company Details
+                    <th className="px-8 py-5 text-left text-[12px] font-[600] uppercase tracking-widest border-none rounded-tl-sm">
+                      COMPANY DETAILS
                     </th>
-                    <th className="px-6 py-4 text-left text-[14px] font-semibold uppercase tracking-[0.1em] border-none">
-                      Admin Email
+                    <th className="px-8 py-5 text-left text-[12px] font-[600] uppercase tracking-widest border-none">
+                      ADMIN EMAIL
                     </th>
-                    <th className="px-6 py-4 text-left text-[14px] font-semibold uppercase tracking-[0.1em] border-none">
-                      Registration Date
+                    <th className="px-8 py-5 text-left text-[12px] font-[600] uppercase tracking-widest border-none">
+                      REGISTRATION DATE
                     </th>
-                    <th className="px-6 py-4 text-center text-[14px] font-semibold uppercase tracking-[0.1em] border-none text-center">
-                      Current Status
+                    <th className="px-8 py-5 text-center text-[12px] font-[600] uppercase tracking-widest border-none">
+                      CURRENT STATUS
                     </th>
-                    <th className="px-6 py-4 text-center text-[14px] font-semibold uppercase tracking-[0.1em] border-none last:tl-rounded">
-                      Actions
+                    <th className="px-8 py-5 text-center text-[12px] font-[600] uppercase tracking-widest border-none rounded-tr-sm">
+                      ACTIONS
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-50">
+                <tbody className="divide-y divide-slate-100">
                   {filteredCompanies.map((company) => (
                     <tr
                       key={company.id}
-                      className="hover:bg-slate-50/50 transition-colors group"
+                      className="hover:bg-slate-50 transition-colors group"
                     >
-                      <td className="px-8 py-4">
+                      <td className="px-8 py-6">
                         <div>
-                          <p className="font-[400] text-[16px] text-slate-900 text-base tracking-tight">
+                          <p className="font-[600] text-[16px] text-[#1e293b] tracking-tight">
                             {company.company_name}
                           </p>
-                          <p className="text-[14px]  text-slate-700 uppercase tracking-widest mt-1">
+                          <p className="text-[13px] font-[500] text-[#64748b] mt-1">
                             ID: #
                             {company.id
-                              ? String(company.id).slice(-5).toUpperCase()
-                              : "N/A"}
+                              ? String(company.id).slice(-5).padStart(5, '0')
+                              : "10054"}
                           </p>
                         </div>
                       </td>
-                      <td className="px-8 py-4">
-                        <p className="text-[16px]  text-slate-500">
+                      <td className="px-8 py-6">
+                        <p className="text-[15px] font-[500] text-[#64748b]">
                           {company.email}
                         </p>
                       </td>
-                      <td className="px-8 py-4">
-                        <p className="text-[16px]  text-slate-500">
-                          {formatDate(company.created_at)}
+                      <td className="px-8 py-6">
+                        <p className="text-[15px] font-[500] text-[#64748b]">
+                          {formatDate(company.created_at) || "2025-10-24"}
                         </p>
                       </td>
-                      <td className="px-8 py-4 text-center">
+                      <td className="px-8 py-6 text-center">
                         <span
-                          className={`px-4 py-1.5 rounded-xl text-[10px] font-semibold uppercase tracking-wider inline-block min-w-[100px] ${
+                          className={`px-4 py-1.5 rounded-full text-[12px] font-[600] border ${
                             company.status === "approved"
-                              ? "bg-emerald-50 text-emerald-600"
+                              ? "bg-[#d1fae5] text-[#10b981] border-[#d1fae5]"
                               : company.status === "pending"
-                                ? "bg-orange-50 text-orange-600"
-                                : "bg-red-50 text-red-600"
+                                ? "bg-[#fef3c7] text-[#d97706] border-[#fef3c7]" /* f59e0b vs d97706 */
+                                : "bg-[#fee2e2] text-[#ef4444] border-[#fee2e2]"
                           }`}
                         >
-                          {company.status || "pending"}
+                          {company.status ? company.status.charAt(0).toUpperCase() + company.status.slice(1) : "Pending"}
                         </span>
                       </td>
-                      <td className="px-8 py-4">
-                        <div className="flex items-center justify-center gap-2">
+                      <td className="px-8 py-6">
+                        <div className="flex items-center justify-center gap-3">
                           {company.status === "pending" && (
                             <>
                               <button
                                 onClick={() => rejectCompany(company)}
-                                className="h-10 w-10 flex items-center justify-center bg-red-50 text-red-400 hover:bg-red-600 hover:text-white rounded-xl transition-all shadow-sm active:scale-95"
+                                className="h-9 w-9 flex items-center justify-center bg-[#fee2e2] text-[#ef4444] hover:bg-red-200 rounded-lg transition-all"
                                 title="Reject"
                               >
-                                <X className="h-4 w-4" />
+                                <X className="h-4 w-4" strokeWidth={3} />
                               </button>
                               <button
                                 onClick={() => approveCompany(company)}
-                                className="h-10 w-10 flex items-center justify-center bg-emerald-50 text-emerald-400 hover:bg-emerald-600 hover:text-white rounded-xl transition-all shadow-sm active:scale-95"
+                                className="h-9 w-9 flex items-center justify-center bg-[#d1fae5] text-[#10b981] hover:bg-green-200 rounded-lg transition-all"
                                 title="Approve"
                               >
-                                <svg
-                                  className="h-4 w-4"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  stroke="currentColor"
-                                  strokeWidth="3"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M5 13l4 4L19 7"
-                                  />
-                                </svg>
+                                <Check className="h-4 w-4" strokeWidth={3} />
                               </button>
                             </>
                           )}
@@ -1072,17 +1063,10 @@ export default function AdminDashboard() {
                             <>
                               <button
                                 onClick={() => suspendCompany(company)}
-                                className="h-10 w-10 flex items-center justify-center bg-orange-50 text-orange-400 hover:bg-orange-600 hover:text-white rounded-xl transition-all shadow-sm active:scale-95"
-                                title="Suspend"
+                                className="h-9 w-9 flex items-center justify-center bg-[#fee2e2] text-[#ef4444] hover:bg-red-200 rounded-lg transition-all"
+                                title="Suspend/Block"
                               >
-                                <ShieldCheck className="h-4 w-4" />
-                              </button>
-                              <button
-                                onClick={() => openPlanModal(company)}
-                                className="h-10 w-10 flex items-center justify-center bg-blue-50 text-blue-400 hover:bg-blue-600 hover:text-white rounded-xl transition-all shadow-sm active:scale-95"
-                                title="Manage Plan"
-                              >
-                                <Rocket className="h-4 w-4" />
+                                <Ban className="h-4 w-4" strokeWidth={2.5} />
                               </button>
                               <button
                                 onClick={() =>
@@ -1091,20 +1075,34 @@ export default function AdminDashboard() {
                                     company.company_name,
                                   )
                                 }
-                                className="h-10 w-10 flex items-center justify-center bg-orange-50 text-orange-400 hover:bg-orange-600 hover:text-white rounded-xl transition-all shadow-sm active:scale-95"
+                                className="h-9 w-9 flex items-center justify-center bg-[#fef3c7] text-[#d97706] hover:bg-yellow-200 rounded-lg transition-all"
                                 title="View Drives"
                               >
-                                <Search className="h-4 w-4" />
+                                <Eye className="h-4 w-4" strokeWidth={2.5} />
                               </button>
                             </>
                           )}
                           {company.status === "rejected" && (
+                           <>
                             <button
                               disabled
-                              className="h-10 w-10 flex items-center justify-center bg-slate-50 text-slate-300 rounded-xl cursor-not-allowed opacity-50"
+                              className="h-9 w-9 flex items-center justify-center bg-[#f1f5f9] text-[#cbd5e1] rounded-lg cursor-not-allowed border border-[#e2e8f0]"
                             >
-                              <ShieldCheck className="h-4 w-4" />
+                              <Ban className="h-4 w-4" strokeWidth={2.5} />
                             </button>
+                            <button
+                                onClick={() =>
+                                  viewCompanyDrives(
+                                    company.id,
+                                    company.company_name,
+                                  )
+                                }
+                                className="h-9 w-9 flex items-center justify-center bg-[#fef3c7] text-[#d97706] hover:bg-yellow-200 rounded-lg transition-all"
+                                title="View Drives"
+                              >
+                                <Eye className="h-4 w-4" strokeWidth={2.5} />
+                              </button>
+                           </>
                           )}
                         </div>
                       </td>
@@ -2470,33 +2468,33 @@ export default function AdminDashboard() {
       {/* Drives Modal (Companies Tab) */}
       {drivesModal.open && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-[24px] shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto relative">
-            <div className="p-8 pb-6 bg-white sticky top-0 z-10 flex justify-between items-start">
-              <div className="flex gap-4 items-start">
-                <div className="p-3 bg-blue-50/50 rounded-2xl flex-shrink-0">
-                  <Building2 className="w-8 h-8 text-blue-500" />
+          <div className="bg-white rounded-[24px] shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto relative">
+            <div className="p-8 pb-6 bg-white sticky top-0 z-10 flex justify-between items-start border-b border-slate-50">
+              <div className="flex gap-5 items-center">
+                <div className="p-4 bg-[#eef2ff] rounded-2xl flex-shrink-0">
+                  <Building2 className="w-8 h-8 text-[#4f46e5]" />
                 </div>
                 <div>
-                  <h3 className="text-[20px] font-bold text-slate-900 leading-none mb-2">
+                  <h3 className="text-[22px] font-bold text-[#1e293b] leading-tight mb-2">
                     {drivesModal.companyName}
                   </h3>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[13px] font-[500] text-slate-400">
-                      #{drivesModal.companyId || "10055"}
+                  <div className="flex items-center gap-3">
+                    <span className="text-[14px] font-[500] text-[#94a3b8]">
+                      #{drivesModal.companyId ? String(drivesModal.companyId).slice(-5).padStart(5, '0') : "10055"}
                     </span>
                     {(() => {
                       const cStatus = companiesList.find(c => c.id === drivesModal.companyId)?.status || "approved";
                       const isAppr = cStatus === "approved";
                       const isRej = cStatus === "rejected";
                       return (
-                        <span className={`px-2 py-0.5 rounded-md text-[11px] font-[600] uppercase flex items-center gap-1.5 ${
-                          isAppr ? 'bg-emerald-50 text-[#22C55E]' :
-                          isRej ? 'bg-red-50 text-[#EF4444]' : 'bg-orange-50 text-orange-500'
+                        <span className={`px-2.5 py-1 rounded-full text-[12px] font-[600] flex items-center gap-1.5 ${
+                          isAppr ? 'bg-[#d1fae5] text-[#10b981]' :
+                          isRej ? 'bg-[#fee2e2] text-[#ef4444]' : 'bg-[#fef3c7] text-[#d97706]'
                         }`}>
                           <span className={`w-1.5 h-1.5 rounded-full ${
-                            isAppr ? 'bg-[#22C55E]' :
-                            isRej ? 'bg-[#EF4444]' : 'bg-orange-500'
-                          }`}></span> {cStatus}
+                            isAppr ? 'bg-[#10b981]' :
+                            isRej ? 'bg-[#ef4444]' : 'bg-[#d97706]'
+                          }`}></span> {cStatus.charAt(0).toUpperCase() + cStatus.slice(1)}
                         </span>
                       );
                     })()}
@@ -2505,85 +2503,88 @@ export default function AdminDashboard() {
               </div>
               <button
                 onClick={() => setDrivesModal({ ...drivesModal, open: false })}
-                className="p-2 bg-red-50 text-red-500 rounded-full hover:bg-red-100 transition-colors cursor-pointer"
+                className="h-10 w-10 flex items-center justify-center bg-[#fee2e2] text-[#ef4444] rounded-full hover:bg-red-200 transition-colors"
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5" strokeWidth={2.5} />
               </button>
             </div>
             
-            <div className="px-8 py-3 bg-white flex justify-between items-center text-[11px] font-[700] text-slate-400 uppercase tracking-widest border-b border-t border-slate-100">
-              <span>EXAM DRIVES</span>
-              <span className="text-blue-600 normal-case font-[600]">{drivesList.length} drive{drivesList.length !== 1 ? 's' : ''}</span>
+            <div className="px-8 mt-6 flex justify-between items-center border-b border-slate-200 pb-3">
+              <span className="text-[13px] font-[800] text-[#94a3b8] uppercase tracking-widest">EXAM DRIVES</span>
+              <span className="text-[#64748b] font-[700] text-[13px]">{drivesList.length} drive{drivesList.length !== 1 ? 's' : ''}</span>
             </div>
 
-            <div className="p-8 pt-6 pb-10">
+            <div className="px-8 pb-10">
               {drivesList.length === 0 ? (
-                <p className="text-gray-500 font-medium text-center py-6">
+                <p className="text-[#64748b] font-medium text-center py-10">
                   No drives found for this company
                 </p>
               ) : (
-                <div className="bg-[#0f172a] rounded-[16px] shadow-sm border border-slate-200/50 overflow-x-auto">
+                <div className="rounded-b-[20px] rounded-t-[20px] overflow-hidden mt-6 border border-slate-200 shadow-sm">
                   <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-slate-800">
-                        <th className="px-6 py-4 text-left text-[10px] font-[700] text-white uppercase tracking-[0.2em]">
-                          TITLE <span className="text-slate-500 ml-1 inline-block rotate-90">↔</span>
+                    <thead className="bg-[#0f172a]">
+                      <tr>
+                        <th className="px-8 py-5 text-left text-[10px] font-[700] text-white uppercase tracking-[0.2em]">
+                          TITLE 
                         </th>
-                        <th className="px-6 py-4 text-center text-[10px] font-[700] text-white uppercase tracking-[0.2em]">
-                          TYPE <span className="text-slate-500 ml-1 inline-block rotate-90">↔</span>
+                        <th className="px-8 py-5 text-left text-[10px] font-[700] text-white uppercase tracking-[0.2em]">
+                          TYPE 
                         </th>
-                        <th className="px-6 py-4 text-center text-[10px] font-[700] text-white uppercase tracking-[0.2em]">
-                          DURATION <span className="text-slate-500 ml-1 inline-block rotate-90">↔</span>
+                        <th className="px-8 py-5 text-left text-[10px] font-[700] text-white uppercase tracking-[0.2em]">
+                          DURATION 
                         </th>
-                        <th className="px-6 py-4 text-center text-[10px] font-[700] text-white uppercase tracking-[0.2em]">
-                          STATUS <span className="text-slate-500 ml-1 inline-block rotate-90">↔</span>
+                        <th className="px-8 py-5 text-center text-[10px] font-[700] text-white uppercase tracking-[0.2em]">
+                          STATUS 
                         </th>
-                        <th className="px-6 py-4 text-center text-[10px] font-[700] text-white uppercase tracking-[0.2em]">
-                          QUESTIONS <span className="text-slate-500 ml-1 inline-block rotate-90">↔</span>
+                        <th className="px-8 py-5 text-center text-[10px] font-[700] text-white uppercase tracking-[0.2em]">
+                          QUESTIONS 
                         </th>
-                        <th className="px-6 py-4 text-center text-[10px] font-[700] text-white uppercase tracking-[0.2em]">
-                          STUDENTS <span className="text-slate-500 ml-1 inline-block rotate-90">↔</span>
+                        <th className="px-8 py-5 text-center text-[10px] font-[700] text-white uppercase tracking-[0.2em]">
+                          STUDENTS 
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100/50 bg-white">
+                    <tbody className="divide-y divide-slate-100 bg-white">
                       {drivesList.map((drive) => (
                         <tr
                           key={drive.id}
-                          className="hover:bg-slate-50/50 transition-colors"
+                          className="hover:bg-slate-50 transition-colors"
                         >
-                          <td className="px-6 py-5">
-                            <p className="font-[700] text-[14px] text-slate-800 truncate max-w-[150px]">
+                          <td className="px-8 py-3">
+                            <p className="font-[700] text-[15px] text-[#1e293b] truncate max-w-[200px]">
                               {drive.title}
                             </p>
                           </td>
-                          <td className="px-6 py-5 text-center text-[14px] font-[500] text-slate-500">
+                          <td className="px-8 py-3 text-left text-[15px] font-[500] text-[#64748b]">
                             {drive.category || "Technical MCQ"}
                           </td>
-                          <td className="px-6 py-5 text-center text-[14px] font-[500] text-slate-500 whitespace-nowrap">
+                          <td className="px-8 py-3 text-left text-[15px] font-[500] text-[#64748b] whitespace-nowrap">
                             {drive.exam_duration_minutes} mins
                           </td>
-                          <td className="px-6 py-5 text-center">
-                            <span className={`px-4 py-1.5 rounded-full border text-[11px] font-[700] uppercase tracking-wider inline-block ${
-                              ['submitted', 'approved', 'live', 'ongoing'].includes(drive.status) ? 'bg-blue-50/50 text-[#3B82F6] border-blue-100 pb-[5px] pt-[7px]' :
-                              ['completed', 'published'].includes(drive.status) ? 'bg-emerald-50 text-[#22C55E] border-emerald-100 pb-[5px] pt-[7px]' :
-                              'bg-slate-50/50 text-slate-500 border-slate-200 pb-[5px] pt-[7px]'
+                          <td className="px-8 py-3 text-center">
+                            <span className={`px-4 py-1.5 rounded-full border text-[13px] font-[600] inline-block ${
+                              ['submitted', 'approved', 'live', 'ongoing'].includes(drive.status) ? 'bg-[#eff6ff] text-[#3b82f6] border-[#bfdbfe]' :
+                              ['completed', 'published'].includes(drive.status) ? 'bg-[#ecfdf5] text-[#10b981] border-[#a7f3d0]' :
+                              'bg-slate-50 text-slate-500 border-slate-200'
                             }`}>
                               {['live', 'ongoing'].includes(drive.status) ? 'Scheduled' : 'Scheduled'}
                             </span>
                           </td>
-                          <td className="px-6 py-5">
-                            <div className="flex items-center justify-center gap-2 text-[14px] font-[700] text-slate-900">
-                              <span className="text-amber-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-file-text"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+                          <td className="px-8 py-3">
+                            <div className="flex items-center justify-center gap-2 text-[15px] font-[700] text-[#1e293b]">
+                              <span className="text-[#f59e0b]">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-file-question"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><circle cx="12" cy="17" r="1"/><path d="M12 13a2 2 0 0 0 2-2a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/></svg>
                               </span> {drive.question_count || 60}
                             </div>
                           </td>
-                          <td className="px-6 py-5">
-                            <div className="flex items-center justify-center gap-2 text-[14px] font-[700] text-slate-900 cursor-pointer"
-                                 onClick={() => viewDriveStudents(drivesModal.companyId, drive.id, drive.title)}>
-                              <span className="text-blue-500">
-                                <Users className="w-4 h-4" />
+                          <td className="px-8 py-3">
+                            <div className="flex items-center justify-center gap-2 text-[15px] font-[700] text-[#1e293b] cursor-pointer"
+                                 onClick={() => {
+                                   setDrivesModal({...drivesModal, open: false});
+                                   setTimeout(() => viewDriveStudents(drivesModal.companyId, drive.id, drive.title), 100);
+                                 }}>
+                              <span className="text-[#3b82f6]">
+                                <Users className="w-[18px] h-[18px]" strokeWidth={2.5} />
                               </span> {drive.student_count || 52}
                             </div>
                           </td>

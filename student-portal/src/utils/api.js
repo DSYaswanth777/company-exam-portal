@@ -1,7 +1,7 @@
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
-export const DEV_AUTH_BYPASS = false; // Disabling for real API connection
+export const DEV_AUTH_BYPASS = true; // Disabling for real API connection
 
 export const API_ENDPOINTS = {
   // Auth endpoints

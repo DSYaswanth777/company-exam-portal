@@ -11,7 +11,7 @@ import {
 import studentService from "../services/studentService";
 import { toast } from "react-hot-toast";
 import { useAuth } from "../contexts/AuthContext";
-
+import EssentialRegulations from "/EssentialRegulations.png";
 export default function WaitingRoom() {
   const navigate = useNavigate();
   const { student, logout } = useAuth();
@@ -132,10 +132,10 @@ export default function WaitingRoom() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-extrabold text-[#111827]">
+          <h1 className="text-[24px] font-[600] text-[#111827]">
             {driveInfo?.title || "Assessment..."}
           </h1>
-          <p className="text-gray-500 mt-1">
+          <p className="text-[#686666] font-[300] text-[16px] mt-1">
             Hello, {student?.name || "Candidate"}. Please review the
             instructions while we prepare your exam window.
           </p>
@@ -191,8 +191,8 @@ export default function WaitingRoom() {
 
             {/* Essential Regulations */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="bg-white px-8 py-6 border-b border-gray-50 flex items-center gap-3">
-                <Shield className="h-5 w-5 text-blue-600" />
+              <div className="bg-white px-8 py-4 border-b border-gray-200 flex items-center gap-3">
+                <img src={EssentialRegulations} alt="" />
                 <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wide">
                   Essential Regulations
                 </h2>
@@ -202,7 +202,7 @@ export default function WaitingRoom() {
                   {regulations.map((reg, index) => (
                     <div key={index} className="flex gap-4">
                       <div className="h-1.5 w-1.5 rounded-full bg-blue-500 mt-2 shrink-0"></div>
-                      <p className={`text-[14px] leading-relaxed ${reg.color} font-[400]`}>
+                      <p className={`text-[14px] leading-relaxed text-[#686666]  ${reg.color} font-[400]`}>
                         {reg.text}
                       </p>
                     </div>

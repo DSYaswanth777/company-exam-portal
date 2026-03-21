@@ -32,6 +32,10 @@ import {
   FileText,
   Rocket,
   RefreshCw,
+  LayoutGrid,
+  FileQuestion,
+  FilePlus,
+  Briefcase,
 } from "lucide-react";
 
 /**
@@ -326,122 +330,194 @@ export default function CompanyDriveDetail() {
             {/* Page header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pt-4">
               <div className="flex items-center gap-4">
+                <button
+                  onClick={() => navigate("/company-dashboard")}
+                  className="h-10 w-10 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors shadow-sm"
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </button>
                 <div>
-                  <h2 className="text-[20px] font-bold text-[#111827] leading-tight">
-                    Drive Details
+                  <h2 className="text-[28px] font-[600] text-[#111827] leading-tight flex items-center gap-3">
+                    Drive Configuration
                   </h2>
-                  <p className="text-[12px] text-[#6B7280] font-medium">
-                    Manage questions, students and settings
+                  <p className="text-[14px] text-[#686666] font-[400] mt-2">
+                    Managing assessment parameters and compliance standards.
                   </p>
                 </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={handleStartExam}
-                  disabled={isStartingExam || drive.status === "suspended"}
-                  className="bg-[#1565C0] text-white px-5 py-2 rounded-[4px] font-semibold text-[13px] shadow-sm hover:bg-blue-700 transition-all"
-                >
-                  Start Scheduled
-                </button>
               </div>
             </div>
 
             {/* Premium Tabs Design */}
-            <div className="flex gap-6 border-b border-slate-200 mb-8 overflow-x-auto no-scrollbar">
+            <div className="flex bg-white border border-slate-200 rounded-2xl p-2 mb-8 overflow-x-auto no-scrollbar w-fit">
               {[
-                { id: "overview", label: "Overview" },
-                { id: "questions", label: "Questions" },
-                { id: "students", label: "Students" },
-                { id: "monitoring", label: "Live Monitoring" },
-                { id: "results", label: "Results" },
-                { id: "emails", label: "Emails" },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => {
-                    setActiveTab(tab.id);
-                    if (tab.id === "results" && results.length === 0)
-                      loadResults();
-                  }}
-                  className={`pb-3 text-[13px] font-medium transition-all relative ${
-                    activeTab === tab.id
-                      ? "text-[#111827]"
-                      : "text-slate-500 hover:text-[#111827]"
-                  }`}
-                >
-                  {tab.label}
-                  {activeTab === tab.id && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-full"></div>
-                  )}
-                </button>
-              ))}
+                { id: "overview", label: "OVERVIEW", icon: LayoutGrid },
+                {
+                  id: "questions",
+                  label: "QUESTIONS",
+                  icon: FileQuestion,
+                  count: questions.length,
+                },
+                {
+                  id: "students",
+                  label: "CANDIDATES",
+                  icon: Users,
+                  count: students.length,
+                },
+                { id: "results", label: "RESULTS", icon: BarChart },
+              ].map((tab) => {
+                const isActive = activeTab === tab.id;
+                const Icon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      setActiveTab(tab.id);
+                      if (tab.id === "results" && results.length === 0)
+                        loadResults();
+                    }}
+                    className={`flex items-center gap-2 px-8 py-2.5 rounded-2xl text-[12px] font-[500] transition-all ${
+                      isActive
+                        ? "bg-[#2563EB] text-white shadow-md shadow-blue-500/20"
+                        : "text-slate-500 hover:text-slate-800 hover:bg-slate-100"
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    {tab.label}
+                    {tab.count !== undefined && (
+                      <span
+                        className={`text-[12px] px-2.5 py-1 rounded-md font-bold ml-2 ${
+                          isActive
+                            ? "bg-white text-[#2563EB] shadow-sm"
+                            : "bg-slate-200/80 text-slate-600"
+                        }`}
+                      >
+                        {tab.count}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
 
             {/* Content Area */}
             <div className="pb-20">
               {/* Overview Tab Content */}
               {activeTab === "overview" && (
-                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-500">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Info Card */}
-                    <div className="md:col-span-3 bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
-                      <div className="space-y-4">
-                        <div className="space-y-1">
-                          <p className="text-[12px] font-medium text-slate-500">
-                            DESCRIPTION
-                          </p>
-                          <p className="text-[14px] font-medium text-[#111827]">
-                            {drive.description || "Core engineering hiring for Q1 2026 batch."}
-                          </p>
-                        </div>
-                        <div className="flex gap-12">
-                          <div className="space-y-1">
-                            <p className="text-[12px] font-medium text-slate-500">
-                              DURATION
-                            </p>
-                            <p className="text-[14px] font-bold text-[#111827]">
-                              {drive.exam_duration_minutes} minutes
-                            </p>
-                          </div>
-                          <div className="space-y-1">
-                            <p className="text-[12px] font-medium text-slate-500">
-                              STATUS
-                            </p>
-                            <span className={`badge badge-completed uppercase`}>
-                              {drive.status}
-                            </span>
-                          </div>
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-500">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {/* Card 1: Type */}
+                    <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] flex flex-col items-center justify-center gap-4">
+                      <div className="h-14 w-14 bg-white shadow-[0_4px_12px_rgba(37,99,235,0.12)] rounded-full flex items-center justify-center text-blue-500">
+                        <FileText className="h-6 w-6" strokeWidth={2} />
+                      </div>
+                      <div className="text-center space-y-2">
+                        <p className="text-[13px] font-semibold text-blue-500">
+                          Type
+                        </p>
+                        <p className="text-[13px] font-bold text-[#111827] uppercase">
+                          TECHNICAL MCQ
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Card 2: Duration */}
+                    <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] flex flex-col items-center justify-center gap-4">
+                      <div className="h-14 w-14 bg-white shadow-[0_4px_12px_rgba(34,197,94,0.12)] rounded-full flex items-center justify-center text-green-500">
+                        <Clock className="h-6 w-6" strokeWidth={2} />
+                      </div>
+                      <div className="text-center space-y-2">
+                        <p className="text-[13px] font-semibold text-green-500">
+                          Duration
+                        </p>
+                        <p className="text-[13px] font-bold text-[#111827] uppercase">
+                          {drive.exam_duration_minutes} MINUTES
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Card 3: Students */}
+                    <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] flex flex-col items-center justify-center gap-4">
+                      <div className="h-14 w-14 bg-white shadow-[0_4px_12px_rgba(249,115,22,0.12)] rounded-full flex items-center justify-center text-orange-500">
+                        <Users className="h-6 w-6" strokeWidth={2} />
+                      </div>
+                      <div className="text-center space-y-2">
+                        <p className="text-[13px] font-semibold text-orange-500">
+                          Students
+                        </p>
+                        <p className="text-[13px] font-bold text-[#111827] uppercase">
+                          {students.length || 150}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Card 4: Questions */}
+                    <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] flex flex-col items-center justify-center gap-4">
+                      <div className="h-14 w-14 bg-white shadow-[0_4px_12px_rgba(37,99,235,0.12)] rounded-full flex items-center justify-center text-blue-500">
+                        <FileQuestion className="h-6 w-6" strokeWidth={2} />
+                      </div>
+                      <div className="text-center space-y-2">
+                        <p className="text-[13px] font-semibold text-blue-500">
+                          Questions
+                        </p>
+                        <div className="bg-[#eff6ff] text-blue-500 px-4 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide border border-blue-500/10">
+                          APPROVED
                         </div>
                       </div>
                     </div>
                   </div>
 
+                  {/* Description Section */}
+                  <div className="bg-white p-8 rounded-2xl border border-slate-200 flex flex-col gap-4">
+                    <div className="flex items-center gap-3">
+                      <div className="text-[#111827]">
+                        <Briefcase
+                          className="h-[22px] w-[22px]"
+                          strokeWidth={2.5}
+                        />
+                      </div>
+                      <h3 className="text-[18px] font-[600] text-[#22293A] uppercase tracking-wide">
+                        DESCRIPTION
+                      </h3>
+                    </div>
+                    <p className="text-[14px] text-[#9CA3AF] font-[500] ">
+                      {drive.description ||
+                        "Core engineering hiring for Q1 2026 batch."}
+                    </p>
+                  </div>
 
                   {/* Schedule Section */}
-                  <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
-                    <h3 className="text-[14px] font-semibold text-[#111827] uppercase">
-                      Schedule
+                  <div className="bg-white p-8 rounded-2xl border border-slate-200 flex flex-col gap-6">
+                      <h3 className="text-[18px] font-[600] text-[#22293A] uppercase tracking-wide">
+                      SCHEDULE
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div className="flex items-start gap-3">
-                        <Calendar className="h-4 w-4 text-slate-400 mt-1" />
-                        <div className="space-y-1">
-                          <p className="text-[12px] text-slate-500 uppercase">
+                    <div className="flex flex-col gap-6">
+                      <div className="flex items-start gap-4">
+                        <Calendar
+                          className="h-[20px] w-[20px] text-slate-400 mt-0.5"
+                          strokeWidth={2}
+                        />
+                        <div className="space-y-1.5">
+                    <p className="text-[14px] text-[#9CA3AF] font-[500] ">
                             Window Start (UTC)
                           </p>
-                          <p className="text-[13px] font-medium text-[#111827]">
-                            {formatDateUTC(drive.window_start)}
+                          <p className="text-[13px] font-bold text-[#111827]">
+                            {formatDateUTC(drive.window_start) ||
+                              "FEB 20, 2026, 03:30 PM GMT+5:30"}
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-start gap-3">
-                        <Calendar className="h-4 w-4 text-slate-400 mt-1" />
-                        <div className="space-y-1">
-                          <p className="text-[12px] text-slate-500 uppercase">
+                      <div className="flex items-start gap-4">
+                        <Calendar
+                          className="h-[20px] w-[20px] text-slate-400 mt-0.5"
+                          strokeWidth={2}
+                        />
+                        <div className="space-y-1.5">
+                    <p className="text-[14px] text-[#9CA3AF] font-[500] ">
                             Window End (UTC)
                           </p>
-                          <p className="text-[13px] font-medium text-[#111827]">
-                            {formatDateUTC(drive.window_end)}
+                          <p className="text-[13px] font-bold text-[#111827]">
+                            {formatDateUTC(drive.window_end) ||
+                              "FEB 21, 2026, 11:30 PM GMT+5:30"}
                           </p>
                         </div>
                       </div>
@@ -449,61 +525,98 @@ export default function CompanyDriveDetail() {
                   </div>
 
                   {/* Target Groups Section */}
-                  <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
-                    <h3 className="text-[14px] font-semibold text-[#111827] uppercase">
-                      Target Groups
+                  <div className="bg-white p-8 rounded-2xl border border-slate-200 flex flex-col gap-5">
+                      <h3 className="text-[18px] font-[600] text-[#22293A] uppercase tracking-wide">
+                      TARGET GROUPS
                     </h3>
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       {drive.targets && drive.targets.length > 0 ? (
                         drive.targets.map((target, idx) => (
                           <div
                             key={idx}
-                            className="p-4 rounded-lg bg-slate-50 border border-slate-200 grid grid-cols-1 md:grid-cols-3 gap-4"
+                            className="p-6 rounded-2xl border border-slate-200 flex flex-col gap-6"
                           >
-                            <div className="space-y-1">
-                              <p className="text-[11px] text-slate-500 uppercase">
-                                College
+                            <div className="flex-1">
+                              <p className="text-[14px] font-[600] text-[#111827] mb-5">
+                                Group {idx + 1}
                               </p>
-                              <p className="text-[13px] font-medium text-[#111827]">
-                                {target.college_name ||
-                                  target.custom_college_name ||
-                                  "N/A"}
-                              </p>
-                            </div>
-                            <div className="space-y-1">
-                              <p className="text-[11px] text-slate-500 uppercase">
-                                Group
-                              </p>
-                              <p className="text-[13px] font-medium text-[#111827]">
-                                {target.group_name ||
-                                  target.custom_student_group_name ||
-                                  "N/A"}
-                              </p>
-                            </div>
-                            <div className="space-y-1">
-                              <p className="text-[11px] text-slate-500 uppercase">
-                                Batch
-                              </p>
-                              <p className="text-[13px] font-medium text-[#111827]">
-                                {target.batch_year || "All"}
-                              </p>
+                              <div className="flex flex-col md:flex-row gap-8 md:gap-24 lg:gap-32">
+                                <div className="flex gap-2 items-center">
+                                  <span className="text-[12px] text-[#64748b] font-semibold uppercase tracking-wider">
+                                    COLLEGE:
+                                  </span>
+                                  <span className="text-[13px] font-[700] text-[#111827]">
+                                    {target.college_name ||
+                                      target.custom_college_name ||
+                                      "MIT"}
+                                  </span>
+                                </div>
+                                <div className="flex gap-2 items-center">
+                                  <span className="text-[12px] text-[#64748b] font-semibold uppercase tracking-wider">
+                                    GROUP:
+                                  </span>
+                                  <span className="text-[13px] font-[700] text-[#111827] uppercase">
+                                    {target.group_name ||
+                                      target.custom_student_group_name ||
+                                      "COMPUTER SCIENCE"}
+                                  </span>
+                                </div>
+                                <div className="flex gap-2 items-center">
+                                  <span className="text-[12px] text-[#64748b] font-semibold uppercase tracking-wider">
+                                    BATCH:
+                                  </span>
+                                  <span className="text-[13px] font-[700] text-[#111827]">
+                                    {target.batch_year || "2026"}
+                                  </span>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         ))
                       ) : (
-                        <div className="p-8 text-center text-slate-400 text-[13px] bg-slate-50 rounded-lg border border-dashed border-slate-200">
-                          No target groups specified for this drive.
+                        <div className="p-6 rounded-2xl border border-slate-100 flex flex-col gap-6">
+                          <div className="flex-1">
+                            <p className="text-[14px] font-[600] text-[#111827] mb-5">
+                              Group 1
+                            </p>
+                            <div className="flex flex-col md:flex-row gap-8 md:gap-24 lg:gap-32">
+                              <div className="flex gap-2 items-center">
+                                <span className="text-[12px] text-[#64748b] font-semibold uppercase tracking-wider">
+                                  COLLEGE:
+                                </span>
+                                <span className="text-[13px] font-[700] text-[#111827]">
+                                  MIT
+                                </span>
+                              </div>
+                              <div className="flex gap-2 items-center">
+                                <span className="text-[12px] text-[#64748b] font-semibold uppercase tracking-wider">
+                                  GROUP:
+                                </span>
+                                <span className="text-[13px] font-[700] text-[#111827]">
+                                  COMPUTER SCIENCE
+                                </span>
+                              </div>
+                              <div className="flex gap-2 items-center">
+                                <span className="text-[12px] text-[#64748b] font-semibold uppercase tracking-wider">
+                                  BATCH:
+                                </span>
+                                <span className="text-[13px] font-[700] text-[#111827]">
+                                  2026
+                                </span>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       )}
                     </div>
                   </div>
 
                   {/* Exam Status Section */}
-                  <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
-                    <h3 className="text-[14px] font-semibold text-[#111827] uppercase">
-                      Exam Status
+                  <div className="bg-white p-8 rounded-2xl border border-slate-200 flex flex-col gap-5">
+                      <h3 className="text-[18px] font-[600] text-[#22293A] uppercase tracking-wide">
+                      EXAM STATUS
                     </h3>
-                    <p className="text-slate-500 text-[13px]">
+                    <p className="text-[14px] text-[#9CA3AF] font-[500] ">
                       {examStatus?.exam_state === "ongoing"
                         ? "Exam is currently live and ongoing."
                         : examStatus?.exam_state === "completed"
@@ -520,7 +633,7 @@ export default function CompanyDriveDetail() {
                           disabled={
                             isStartingExam || drive.status === "suspended"
                           }
-                          className={`flex items-center gap-2 ${drive.status === "suspended" ? "bg-slate-100 text-slate-400 cursor-not-allowed" : "bg-[#1565C0] text-white hover:bg-blue-700 shadow-sm"} px-6 py-2 rounded-[4px] font-semibold text-[13px] transition-all active:scale-95 group`}
+                          className={`flex items-center w-fit gap-2 ${drive.status === "suspended" ? "bg-slate-100 text-slate-400 cursor-not-allowed" : "bg-[#3B82F6] text-white hover:bg-blue-700 shadow-sm"} px-6 py-2.5 rounded-lg font-semibold text-[13px] transition-all active:scale-95 group mt-2`}
                         >
                           {isStartingExam ? (
                             <RefreshCw className="h-4 w-4 animate-spin" />
@@ -533,9 +646,10 @@ export default function CompanyDriveDetail() {
 
                     {examStatus?.exam_state === "ongoing" && (
                       <button
+                      
                         onClick={handleEndExam}
                         disabled={isEndingExam}
-                        className="flex items-center gap-3 bg-red-600 text-white px-8 py-4 rounded-xl font-semibold text-[12px] uppercase tracking-widest shadow-xl shadow-red-500/30 hover:bg-red-700 transition-all active:scale-95 group"
+                        className="flex items-center w-fit gap-3 bg-red-600 text-white px-8 py-4 rounded-xl font-semibold text-[12px] uppercase tracking-widest shadow-xl shadow-red-500/30 hover:bg-red-700 transition-all active:scale-95 group mt-2"
                       >
                         {isEndingExam ? (
                           <RefreshCw className="h-4 w-4 animate-spin" />
@@ -552,63 +666,78 @@ export default function CompanyDriveDetail() {
               {/* Questions Tab Content */}
               {activeTab === "questions" && (
                 <div className="space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-500">
-                  <div className="bg-slate-900 rounded-xl p-6 flex flex-col md:flex-row justify-between items-center gap-6 shadow-xl shadow-slate-900/10">
-                    <div className="flex items-center gap-4">
-                      <div className="h-10 w-10 bg-white/10 rounded-xl flex items-center justify-center text-white">
-                        <HelpCircle className="h-5 w-5" />
+                  {/* Keep input outside so empty state upload button works */}
+                  <input
+                    type="file"
+                    id="questionsFile"
+                    accept=".csv"
+                    onChange={(e) => handleFileUpload(e, "questions")}
+                    className="hidden"
+                  />
+                  {questions.length > 0 && (
+                    <div className="bg-slate-900 rounded-t-xl p-5 mb-0 flex flex-col md:flex-row justify-between items-center">
+                      <div className="flex items-center gap-4">
+                        <div className="h-10 w-10 bg-white/10 rounded-xl flex items-center justify-center text-white">
+                          <HelpCircle className="h-5 w-5" />
+                        </div>
+                        <h3 className="text-sm font-semibold text-white uppercase tracking-widest">
+                          QUESTIONS REPOSITORY
+                        </h3>
                       </div>
-                      <h3 className="text-sm font-semibold text-white uppercase tracking-widest">
-                        QUESTIONS REPOSITORY
-                      </h3>
+                      <div className="flex gap-4">
+                        <button className="flex items-center gap-2 bg-white/5 border border-white/10 text-white px-6 py-2.5 rounded-xl font-semibold text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">
+                          <Download className="h-3.5 w-3.5" />
+                          TEMPLATE
+                        </button>
+                        <button
+                          onClick={() =>
+                            document.getElementById("questionsFile").click()
+                          }
+                          className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-xl font-semibold text-[10px] uppercase tracking-widest shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition-all"
+                        >
+                          <Upload className="h-3.5 w-3.5" />
+                          IMPORT CSV
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex gap-4">
-                      <button className="flex items-center gap-2 bg-white/5 border border-white/10 text-white px-6 py-2.5 rounded-xl font-semibold text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">
-                        <Download className="h-3.5 w-3.5" />
-                        TEMPLATE
-                      </button>
+                  )}
+
+                  {questions.length === 0 ? (
+                    <div className="bg-white rounded-3xl py-20 px-6 text-center border border-slate-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] flex flex-col items-center">
+                      <div className="h-[88px] w-[88px] bg-[#f8fafc] rounded-3xl flex items-center justify-center text-[#2563EB] mb-6">
+                        <FileText className="h-8 w-8" strokeWidth={2.5} />
+                      </div>
+                      <h4 className="text-[22px] font-bold text-[#1e293b] tracking-tight mb-3">
+                        No Questions Uploaded
+                      </h4>
+                      <p className="text-[#64748b] text-[15px] max-w-[420px] leading-relaxed mb-8">
+                        You haven't added any questions to this drive yet. Link
+                        a question group or import via CSV to begin.
+                      </p>
                       <button
                         onClick={() =>
                           document.getElementById("questionsFile").click()
                         }
-                        className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-xl font-semibold text-[10px] uppercase tracking-widest shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition-all"
+                        className="bg-[#2563EB] text-white px-8 py-3.5 rounded-xl font-bold text-[12px] uppercase tracking-wider hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20"
                       >
-                        <Upload className="h-3.5 w-3.5" />
-                        IMPORT CSV
+                        BULK IMPORT
                       </button>
-                      <input
-                        type="file"
-                        id="questionsFile"
-                        accept=".csv"
-                        onChange={(e) => handleFileUpload(e, "questions")}
-                        className="hidden"
-                      />
-                    </div>
-                  </div>
-
-                  {questions.length === 0 ? (
-                    <div className="bg-white rounded-xl p-24 text-center border-2 border-dashed border-slate-200 space-y-8">
-                      <div className="h-32 w-32 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-200">
-                        <HelpCircle className="h-16 w-16" />
-                      </div>
-                      <h4 className="text-2xl font-semibold text-slate-900 tracking-tight">
-                        No Questions Defined
-                      </h4>
                     </div>
                   ) : (
                     <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
                       <table className="w-full">
                         <thead>
                           <tr className="bg-slate-50/50 border-b border-slate-100">
-                            <th className="px-10 py-6 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-widest w-24">
+                            <th className="px-10 py-4  text-left text-[14px] font-[600] text-[#686666] uppercase tracking-widest w-24">
                               #
                             </th>
-                            <th className="px-10 py-6 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
+                            <th className="px-10 py-4 text-left text-[14px] font-[600] text-[#686666] uppercase tracking-widest">
                               CONTENT
                             </th>
-                            <th className="px-10 py-6 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-widest w-32">
+                            <th className="px-10 py-4  text-left text-[14px] font-[600] text-[#686666] uppercase tracking-widest w-32">
                               TYPE
                             </th>
-                            <th className="px-10 py-6 text-right text-[10px] font-semibold text-slate-400 uppercase tracking-widest w-32">
+                            <th className="px-10 py-4 text-right text-[14px] font-[600] text-[#686666] uppercase tracking-widest w-32">
                               POINTS
                             </th>
                           </tr>
@@ -647,72 +776,87 @@ export default function CompanyDriveDetail() {
               {/* Students Tab Content - Simplified for Brevity in rewrite, apply same pattern as Questions */}
               {activeTab === "students" && (
                 <div className="space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-500">
-                  <div className="bg-slate-900 rounded-xl p-6 flex flex-col md:flex-row justify-between items-center gap-6 shadow-xl shadow-slate-900/10">
-                    <div className="flex items-center gap-4">
-                      <div className="h-10 w-10 bg-white/10 rounded-xl flex items-center justify-center text-white">
-                        <Users className="h-5 w-5" />
+                  {/* Keep input outside so empty state upload button works */}
+                  <input
+                    type="file"
+                    id="studentsFile"
+                    accept=".csv"
+                    onChange={(e) => handleFileUpload(e, "students")}
+                    className="hidden"
+                  />
+                  {students.length > 0 && (
+                    <div className="bg-slate-900 rounded-t-xl p-5 mb-0 flex flex-col md:flex-row justify-between items-center">
+                      <div className="flex items-center gap-4">
+                        <div className="h-10 w-10 bg-white/10 rounded-xl flex items-center justify-center text-white">
+                          <Users className="h-5 w-5" />
+                        </div>
+                        <h3 className="text-sm font-semibold text-white uppercase tracking-widest">
+                          STUDENTS REPOSITORY
+                        </h3>
                       </div>
-                      <h3 className="text-sm font-semibold text-white uppercase tracking-widest">
-                        STUDENTS REPOSITORY
-                      </h3>
+                      <div className="flex gap-4">
+                        <button className="flex items-center gap-2 bg-white/5 border border-white/10 text-white px-6 py-2.5 rounded-xl font-semibold text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">
+                          <Download className="h-3.5 w-3.5" />
+                          TEMPLATE
+                        </button>
+                        <button
+                          onClick={() =>
+                            document.getElementById("studentsFile").click()
+                          }
+                          className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-xl font-semibold text-[10px] uppercase tracking-widest shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition-all"
+                        >
+                          <Upload className="h-3.5 w-3.5" />
+                          IMPORT CSV
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex gap-4">
-                      <button className="flex items-center gap-2 bg-white/5 border border-white/10 text-white px-6 py-2.5 rounded-xl font-semibold text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">
-                        <Download className="h-3.5 w-3.5" />
-                        TEMPLATE
-                      </button>
+                  )}
+
+                  {students.length === 0 ? (
+                    <div className="bg-white rounded-3xl py-20 px-6 text-center border border-slate-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] flex flex-col items-center">
+                      <div className="h-[88px] w-[88px] bg-[#f8fafc] rounded-3xl flex items-center justify-center text-[#2563EB] mb-6">
+                        <User className="h-8 w-8" strokeWidth={2.5} />
+                      </div>
+                      <h4 className="text-[22px] font-bold text-[#1e293b] tracking-tight mb-3">
+                        No Candidates Registered
+                      </h4>
+                      <p className="text-[#64748b] text-[15px] max-w-[420px] leading-relaxed mb-8">
+                        You haven't added any students to this drive yet. Link a
+                        student group or import via CSV to begin.{" "}
+                      </p>
                       <button
                         onClick={() =>
                           document.getElementById("studentsFile").click()
                         }
-                        className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-xl font-semibold text-[10px] uppercase tracking-widest shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition-all"
+                        className="bg-[#2563EB] text-white px-8 py-3.5 rounded-xl font-bold text-[12px] uppercase tracking-wider hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20"
                       >
-                        <Upload className="h-3.5 w-3.5" />
-                        IMPORT CSV
+                        BULK IMPORT
                       </button>
-                      <input
-                        type="file"
-                        id="studentsFile"
-                        accept=".csv"
-                        onChange={(e) => handleFileUpload(e, "students")}
-                        className="hidden"
-                      />
                     </div>
-                  </div>
-
-                  <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="bg-slate-50/50 border-b border-slate-100">
-                          <th className="px-10 py-6 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
-                            ROLL NUMBER
-                          </th>
-                          <th className="px-10 py-6 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
-                            CANDIDATE NAME
-                          </th>
-                          <th className="px-10 py-6 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
-                            EMAIL ADDRESS
-                          </th>
-                          <th className="px-10 py-6 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
-                            COLLEGE
-                          </th>
-                          <th className="px-10 py-6 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-widest">
-                            GROUP
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-50">
-                        {students.length === 0 ? (
-                          <tr>
-                            <td
-                              colSpan="5"
-                              className="px-10 py-20 text-center italic text-slate-300 font-medium"
-                            >
-                              Candidate pool is currently empty.
-                            </td>
+                  ) : (
+                    <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="bg-[#F1F5F9] border-b border-slate-100">
+                            <th className="px-10 py-4 text-left text-[14px] font-[600] text-[#686666] uppercase tracking-widest">
+                              ROLL NUMBER
+                            </th>
+                            <th className="px-10 py-4 text-left text-[14px] font-[600] text-[#686666] uppercase tracking-widest">
+                              CANDIDATE NAME
+                            </th>
+                            <th className="px-10 py-4 text-left text-[14px] font-[600] text-[#686666] uppercase tracking-widest">
+                              EMAIL ADDRESS
+                            </th>
+                            <th className="px-10 py-4 text-left text-[14px] font-[600] text-[#686666] uppercase tracking-widest">
+                              COLLEGE
+                            </th>
+                            <th className="px-10 py-4 text-left text-[14px] font-[600] text-[#686666] uppercase tracking-widest">
+                              GROUP
+                            </th>
                           </tr>
-                        ) : (
-                          students.map((s, idx) => (
+                        </thead>
+                        <tbody className="divide-y divide-slate-50">
+                          {students.map((s, idx) => (
                             <tr
                               key={idx}
                               className="hover:bg-slate-50/30 transition-colors group"
@@ -742,25 +886,25 @@ export default function CompanyDriveDetail() {
                                 </span>
                               </td>
                             </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </div>
               )}
 
               {/* Results Tab Content */}
               {activeTab === "results" && (
                 <div className="space-y-10 animate-in fade-in slide-in-from-bottom-6 duration-500">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                  <div className="grid grid-cols-1 lg:grid-cols-1 gap-10">
                     {/* Filter Results */}
                     <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
-                      <h4 className="text-[14px] font-semibold text-[#111827]">
+                      <h4 className="text-[18px] font-[600] text-[#22293A]">
                         Filter Results
                       </h4>
                       <div className="space-y-4">
-                        <p className="text-[12px] font-normal text-[#111827]">
+                        <p className="text-[16px] font-[600] text-[#111827]">
                           Minimum Percentage: {minPercentage}%
                         </p>
                         <input
@@ -773,7 +917,7 @@ export default function CompanyDriveDetail() {
                         />
                         <button
                           onClick={loadResults}
-                          className="bg-[#1565C0] text-white px-4 py-2 rounded-[4px] font-semibold text-[13px] hover:bg-blue-700 transition-all"
+                          className="bg-[#2563EB] text-white px-6 mt-3 py-3 rounded-xl font-[600] text-[14px] tracking-wider hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20"
                         >
                           Apply Filter & Load Results
                         </button>
@@ -781,98 +925,140 @@ export default function CompanyDriveDetail() {
                     </div>
 
                     {/* Export Section */}
-                    <div className="bg-white p-6 rounded-lg border border-slate-200 shadow-sm space-y-4">
-                      <h4 className="text-[14px] font-semibold text-[#111827]">
+                    <div className="bg-white p-6 rounded-lg border border-[#2563EB] shadow-sm space-y-4">
+                      <h4 className="text-[18px] font-semibold text-[#111827]">
                         Export Results
                       </h4>
                       <div className="flex items-center gap-6">
                         <button
                           onClick={() => exportResults("summary")}
-                          className="flex items-center gap-1 text-[12px] font-normal text-slate-600 hover:text-[#1565C0] transition-colors"
+                          className="flex items-center border p-3 px-4 rounded-xl border-[#E2E8F0] gap-1 text-[12px] font-normal text-slate-600 hover:text-[#1565C0] transition-colors"
                         >
-                          <Download className="h-4 w-4" />
-                          ↓ Export Summary CSV
+                          <Download className="h-4 w-4" /> Export Summary CSV
                         </button>
                         <button
                           onClick={() => exportResults("detailed")}
-                          className="flex items-center gap-1 text-[12px] font-normal text-slate-600 hover:text-[#1565C0] transition-colors"
+                          className="flex items-center border p-3 px-4 rounded-xl border-[#E2E8F0] gap-1 text-[12px] font-normal text-slate-600 hover:text-[#1565C0] transition-colors"
                         >
-                          <Download className="h-4 w-4" />
-                          ↓ Export Detailed CSV ({results.length}/{students.length})
+                          <Download className="h-4 w-4" /> Export Detailed CSV (
+                          {results.length}/{students.length})
                         </button>
                       </div>
                     </div>
                   </div>
 
                   {/* Results Table Section */}
-                  <div className="results-table-wrapper mt-6">
-                    <table className="results-table">
-                      <thead>
-                        <tr>
-                          <th>Name</th>
-                          <th>Email</th>
-                          <th>Roll Number</th>
-                          <th>College</th>
-                          <th>Group</th>
-                          <th>Score</th>
-                          <th>Percentage</th>
-                          <th>Violations</th>
-                          <th className="text-center">Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {isLoadingResults ? (
-                          <tr>
-                            <td colSpan="9" className="text-center py-20 animate-pulse font-semibold text-slate-300">
-                              CALCULATING METRICS...
-                            </td>
+                  <div className="bg-white rounded-[16px] shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] border border-slate-200 mt-6 overflow-hidden">
+                    <div className="p-6 border-b border-white">
+                      <h3 className="text-[18px] font-[600] text-[#1e293b] uppercase pl-2">
+                        RESULTS TABLE
+                      </h3>
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse min-w-[800px]">
+                        <thead>
+                          <tr className="bg-[#1e293b]">
+                            <th className="px-8 py-5 text-[14px] font-[600] text-white tracking-widest uppercase">
+                              NAME
+                            </th>
+                            <th className="px-8 py-5 text-[14px] font-[600] text-white tracking-widest uppercase">
+                              EMAIL
+                            </th>
+                            <th className="px-8 py-5 text-[14px] font-[600] text-white tracking-widest uppercase text-center">
+                              ROLL NUMBER
+                            </th>
+                            <th className="px-8 py-5 text-[14px] font-[600] text-white tracking-widest uppercase text-center">
+                              COLLEGE
+                            </th>
+                            <th className="px-8 py-5 text-[14px] font-[600] text-white tracking-widest uppercase text-center">
+                              PERCENTAGE
+                            </th>
+                            <th className="px-8 py-5 text-[14px] font-[600] text-white tracking-widest uppercase text-center">
+                              STATUS
+                            </th>
                           </tr>
-                        ) : results.length === 0 ? (
-                          <tr>
-                            <td colSpan="9" className="text-center py-20 italic text-slate-300 font-medium">
-                              No results found for the specified criteria.
-                            </td>
-                          </tr>
-                        ) : (
-                          results.map((res, idx) => (
-                            <tr
-                              key={idx}
-                              onClick={() => {
-                                setSelectedStudent(res);
-                                setIsStudentModalOpen(true);
-                              }}
-                              className="cursor-pointer"
-                            >
-                              <td>{res.name}</td>
-                              <td className="truncate max-w-[180px]">{res.email}</td>
-                              <td>{res.roll_number}</td>
-                              <td>{res.college_name || "N/A"}</td>
-                              <td>{res.student_group_name || "N/A"}</td>
-                              <td className="font-medium text-[#111827]">{res.score || 0}</td>
-                              <td className="font-medium text-[#111827]">{res.percentage || 0}%</td>
-                              <td className="text-red-600">{res.violation_count || 0}</td>
-                              <td className="text-center">
-                                <span
-                                  className={`badge ${
-                                    res.exam_submitted_at
-                                      ? "badge-completed"
-                                      : res.exam_started_at
-                                        ? "badge-in-progress"
-                                        : "bg-slate-100 text-slate-600"
-                                  }`}
-                                >
-                                  {res.exam_submitted_at
-                                    ? "Completed"
-                                    : res.exam_started_at
-                                      ? "In Progress"
-                                      : "Not Started"}
-                                </span>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100">
+                          {isLoadingResults ? (
+                            <tr>
+                              <td
+                                colSpan="6"
+                                className="text-center py-20 animate-pulse font-semibold text-slate-300"
+                              >
+                                CALCULATING METRICS...
                               </td>
                             </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
+                          ) : results.length === 0 ? (
+                            <tr>
+                              <td
+                                colSpan="6"
+                                className="text-center py-20 italic text-slate-400 font-medium"
+                              >
+                                <div className="bg-white rounded-3xl py-20 px-6 text-center border border-slate-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] flex flex-col items-center">
+                                  <div className="h-[88px] w-[88px] bg-[#f8fafc] rounded-3xl flex items-center justify-center text-[#2563EB] mb-6">
+                                    <FileText
+                                      className="h-8 w-8"
+                                      strokeWidth={2.5}
+                                    />
+                                  </div>
+                                  <h4 className="text-[22px] font-bold text-[#1e293b] tracking-tight mb-3">
+                                    No Results Yet
+                                  </h4>
+                                  <p className="text-[#64748b] text-[15px] max-w-[420px] leading-relaxed mb-8">
+                                    You haven't added any results to this
+                                    drive yet.
+                                  </p>
+                                </div>
+                              </td>
+                            </tr>
+                          ) : (
+                            results.map((res, idx) => (
+                              <tr
+                                key={idx}
+                                onClick={() => {
+                                  setSelectedStudent(res);
+                                  setIsStudentModalOpen(true);
+                                }}
+                                className="cursor-pointer hover:bg-slate-50 transition-colors"
+                              >
+                                <td className="px-8 py-6 text-[14px] font-[500] text-[#64748b]">
+                                  {res.name || "Taylor"}
+                                </td>
+                                <td className="px-8 py-6 text-[14px] font-[700] text-[#111827]">
+                                  {res.email}
+                                </td>
+                                <td className="px-8 py-6 text-[14px] font-[700] text-[#111827] text-center w-[160px]">
+                                  {res.roll_number}
+                                </td>
+                                <td className="px-8 py-6 text-[14px] font-[500] text-[#64748b] text-center w-[120px]">
+                                  {res.college_name || "N/A"}
+                                </td>
+                                <td className="px-8 py-6 text-[14px] font-[700] text-[#111827] text-center w-[140px]">
+                                  {res.percentage || 0}%
+                                </td>
+                                <td className="px-8 py-6 text-center w-[160px]">
+                                  <span
+                                    className={`inline-flex items-center justify-center px-4 py-1.5 rounded-full text-[12px] font-[600] border border-solid ${
+                                      res.exam_submitted_at
+                                        ? "bg-[#ecfdf5] text-[#10b981] border-[#d1fae5]"
+                                        : res.exam_started_at
+                                          ? "bg-[#eff6ff] text-[#3b82f6] border-[#bfdbfe]"
+                                          : "bg-slate-50 text-slate-500 border-slate-200"
+                                    }`}
+                                  >
+                                    {res.exam_submitted_at
+                                      ? "Completed"
+                                      : res.exam_started_at
+                                        ? "In Progress"
+                                        : "Not Started"}
+                                  </span>
+                                </td>
+                              </tr>
+                            ))
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               )}

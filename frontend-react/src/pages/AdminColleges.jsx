@@ -182,7 +182,7 @@ export default function AdminColleges({ onBack }) {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-10">
       {/* Header */}
-      <div className="flex justify-between items-start mb-2">
+      <div className="flex justify-between items-start mb-8">
         <div className="flex items-center gap-4">
           <button
             onClick={onBack}
@@ -191,10 +191,10 @@ export default function AdminColleges({ onBack }) {
             <ChevronLeft className="h-5 w-5" />
           </button>
           <div>
-            <h2 className="text-[28px] font-bold text-slate-900 tracking-tight leading-none">
+            <h2 className="text-[28px] font-[600] text-slate-900 tracking-tight leading-none">
               Reference Data Management
             </h2>
-            <p className="text-slate-500 font-medium text-[15px] mt-2">
+            <p className="text-slate-500 font-[300] text-[14px] mt-2 mb-3">
               Approved and pending companies are listed
             </p>
           </div>
@@ -202,7 +202,7 @@ export default function AdminColleges({ onBack }) {
       </div>
 
       {/* Filter and Toggle Selector */}
-      <div className="bg-white p-3 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
+      <div className="bg-white p-3 rounded-2xl mt-3 border border-slate-200/60 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
         <div className="relative flex-1 group max-w-[400px] w-full ml-1 text-slate-500">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
           <input

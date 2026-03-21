@@ -22,7 +22,7 @@ export default function LoginPage() {
         if (result.data.exam_submitted_at) {
           navigate("/result");
         } else {
-          navigate("/waiting-room");
+          navigate("/instructions");
         }
       } else {
         toast.error(result.error || "Invalid email or access access_token");

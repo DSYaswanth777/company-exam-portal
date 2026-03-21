@@ -151,6 +151,8 @@ export default function CompanySendEmails() {
     message: "",
     confirmLabel: "",
     type: "info",
+    customCancelClass: "",
+    customConfirmClass: "",
     onConfirm: () => {},
   });
 
@@ -190,6 +192,8 @@ export default function CompanySendEmails() {
         "Are you sure you want to broadcast invitations to all registered candidates? This action will trigger secure email protocols for all pending students.",
       confirmLabel: "Execute",
       type: "info",
+      customCancelClass: "bg-[#F8FAFC] py-1 px-3 text-[#64748B] border hover:bg-slate-200",
+      customConfirmClass: "bg-blue-600 py-1 px-3 text-white shadow-xl shadow-blue-500/20 hover:bg-blue-700",
       onConfirm: async () => {
         setIsSendingEmails(true);
         setModalConfig((prev) => ({ ...prev, isOpen: false }));
@@ -292,10 +296,10 @@ export default function CompanySendEmails() {
                     {/* System Note */}
                     <div className="bg-blue-50/50 p-6 rounded-2xl border border-blue-100 flex gap-4">
                       <div className="h-10 w-10 bg-white rounded-xl flex items-center justify-center shadow-sm border border-blue-100 shrink-0">
-                        <Zap className="h-5 w-5 text-blue-600" />
+                       <img src="/icons/studentNoteIcon.png" alt="" />
                       </div>
                       <div className="space-y-1">
-                        <h4 className="text-sm font-[500] text-blue-900">
+                        <h4 className="text-[14px] font-[600] text-blue-700">
                           System Note
                         </h4>
                         <p className="text-[12px] text-blue-700 leading-relaxed font-medium">
@@ -310,23 +314,23 @@ export default function CompanySendEmails() {
 
                 {/* Email Configuration Card */}
                 <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                  <div className="p-6 border-b border-slate-50 flex items-center gap-3">
+                  <div className="p-3 pb-1 border-b border-slate-50 flex items-center gap-3">
                     <div className="h-10 w-10 bg-slate-50 rounded-xl flex items-center justify-center">
                       <Mail className="h-5 w-5 text-slate-600" />
                     </div>
-                    <h3 className="text-lg font-[500] text-slate-900 tracking-tight uppercase">
+                    <h3 className="text-lg font-[600] text-slate-900 tracking-tight uppercase">
                       Email Configuration
                     </h3>
                   </div>
 
-                  <div className="p-10 space-y-10">
+                  <div className="p-4 space-y-4">
                     {/* Variable Injection */}
-                    <div className="bg-slate-50 p-8 rounded-2xl border border-slate-100 space-y-6">
+                    <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-6">
                       <div className="flex items-center gap-3">
                         <Code className="h-4 w-4 text-blue-600" />
-                        <p className="text-[11px] font-[500] text-slate-400 uppercase tracking-[0.2em]">
+                        <h4 className="text-[14px] font-[600] text-blue-700">
                           Available Variables
-                        </p>
+                        </h4>
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {templateVariables.map((v) => (
@@ -348,8 +352,8 @@ export default function CompanySendEmails() {
 
                     {/* Form Fields */}
                     <form onSubmit={handleSubmitConfig} className="space-y-10">
-                      <div className="space-y-4">
-                        <label className="text-[11px] font-[500] text-slate-400 uppercase tracking-[0.2em] ml-2">
+                      <div className="space-y-6">
+                        <label className="text-[12px] mb-3 font-[600] text-[#22293A] uppercase  ml-2">
                           Email Subject
                         </label>
                         <input
@@ -362,13 +366,13 @@ export default function CompanySendEmails() {
                             )
                           }
                           placeholder="e.g. Assessment Invitation for {{drive_title}}"
-                          className="w-full px-8 py-5 bg-[#0F172A] border-none rounded-[20px] focus:outline-none focus:ring-4 focus:ring-blue-600/20 text-white font-[500] text-lg placeholder:text-slate-500"
+                          className="w-full px-8 py-3 mt-2 bg-[#0F172A] border-none rounded-[20px] focus:outline-none focus:ring-4 focus:ring-blue-600/20 text-white font-[500] text-lg placeholder:text-slate-500"
                           required
                         />
                       </div>
 
                       <div className="space-y-4">
-                        <label className="text-[11px] font-[500] text-slate-400 uppercase tracking-[0.2em] ml-2">
+                        <label className="text-[12px] mb-3 font-[600] text-[#22293A] uppercase  ml-2">
                           Email Body
                         </label>
                         <textarea
@@ -377,7 +381,7 @@ export default function CompanySendEmails() {
                             handleConfigChange("body_template", e.target.value)
                           }
                           rows="12"
-                          className="w-full px-8 py-8 bg-[#0F172A] border-none rounded-[24px] focus:outline-none focus:ring-4 focus:ring-blue-600/20 text-white font-[500] text-md leading-relaxed resize-none placeholder:text-slate-500"
+                          className="w-full px-8 py-8 mt-2 bg-[#0F172A] border-none rounded-[24px] focus:outline-none focus:ring-4 focus:ring-blue-600/20 text-white font-[500] text-md leading-relaxed resize-none placeholder:text-slate-500"
                           placeholder="Craft your secure invitation message here..."
                           required
                         />
@@ -404,25 +408,25 @@ export default function CompanySendEmails() {
                         </label>
                       </div>
 
-                      <div className="flex gap-4 pt-6">
+                      <div className="flex gap-18 pt-6 justify-center px-12">
                         <button
                           type="submit"
                           disabled={isSubmitting}
-                          className="flex-1 bg-slate-900 text-white py-4 rounded-[20px] font-[500] text-[11px] uppercase tracking-widest shadow-xl shadow-slate-900/10 hover:bg-slate-800 transition-all active:scale-95 flex items-center justify-center gap-3"
+                          className="flex-1 bg-slate-900 text-white py-3 rounded-xl tracking-[0.1em] font-[600] text-[13px] uppercase  shadow-xl shadow-slate-900/10 hover:bg-slate-800 transition-all active:scale-95 flex items-center justify-center gap-3"
                         >
                           {isSubmitting ? (
                             <RefreshCw className="h-4 w-4 animate-spin" />
                           ) : (
-                            <RefreshCw className="h-4 w-4" />
+                            <></>
                           )}
                           Update Template
                         </button>
                         <button
                           type="button"
                           onClick={generatePreview}
-                          className="flex-1 bg-blue-600 text-white py-4 rounded-[20px] font-[500] text-[11px] uppercase tracking-widest shadow-xl shadow-blue-500/20 hover:bg-blue-700 transition-all active:scale-95 flex items-center justify-center gap-3"
+                          className="flex-1 bg-blue-600 text-white py-3 rounded-xl tracking-[0.1em] font-[600] text-[13px] uppercase  shadow-xl shadow-blue-500/20 hover:bg-blue-700 transition-all active:scale-95 flex items-center justify-center gap-3"
                         >
-                          <Eye className="h-4 w-4" />
+                          {/* <Eye className="h-4 w-4" /> */}
                           Generate Preview
                         </button>
                       </div>
@@ -434,7 +438,7 @@ export default function CompanySendEmails() {
               {/* Right Column - Preview & Actions */}
               <div className="lg:col-span-12 xl:col-span-5 space-y-8">
                 <div className="space-y-4">
-                  <h3 className="text-sm font-[500] text-slate-400 uppercase tracking-[0.2em] ml-2">
+                  <h3 className="text-[16px] font-[600] text-[#686666] uppercase tracking-[0.1em] ml-2">
                     Live Email Preview
                   </h3>
                   <div className="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden min-h-[600px] flex flex-col">
@@ -512,7 +516,7 @@ export default function CompanySendEmails() {
                       onClick={() =>
                         navigate(`/company-drive-detail?id=${driveId}`)
                       }
-                      className="flex-1 px-8 py-4 bg-white border border-slate-200 text-slate-600 rounded-xl font-[500] text-[11px] uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center justify-center"
+                      className="flex-1 px-3 py-1 bg-white border border-slate-200 text-slate-600 rounded-xl font-[500] text-[11px] uppercase tracking-widest hover:bg-slate-50 transition-all flex items-center justify-center"
                     >
                       Cancel
                     </button>
@@ -523,7 +527,7 @@ export default function CompanySendEmails() {
                         !canSendEmails ||
                         drive?.status !== "upcoming"
                       }
-                      className="flex-[2] px-8 py-4 bg-blue-600 text-white rounded-xl font-[500] text-[11px] uppercase tracking-widest shadow-lg shadow-blue-500/20 hover:bg-blue-700 transition-all flex items-center justify-center gap-3 disabled:bg-slate-200 disabled:shadow-none disabled:cursor-not-allowed"
+                      className="flex-[2] px-4 py-4 bg-blue-600 text-white rounded-xl font-[500] text-[14px]  shadow-xl shadow-blue-500/20 hover:bg-blue-700 transition-all flex items-center justify-center gap-2 disabled:bg-slate-200 disabled:shadow-none disabled:cursor-not-allowed"
                     >
                       <Send className="h-4 w-4" />
                       {isSendingEmails
@@ -538,7 +542,7 @@ export default function CompanySendEmails() {
                 {/* Return Dashboard Action */}
                 <button
                   onClick={() => navigate("/company-dashboard")}
-                  className="w-full bg-[#0F172A] text-white py-5 rounded-2xl font-[500] text-[11px] uppercase tracking-widest flex items-center justify-center gap-3 shadow-2xl shadow-slate-900/30 hover:bg-slate-800 transition-all active:scale-98"
+                  className="w-full bg-[#0F172A] text-white py-5 rounded-2xl font-[500] text-[16px] uppercase  flex items-center justify-center gap-3 shadow-2xl shadow-slate-900/30 hover:bg-slate-800 transition-all active:scale-98"
                 >
                   <ArrowLeft className="h-4 w-4" />
                   Back to Dashboard
@@ -557,6 +561,8 @@ export default function CompanySendEmails() {
         message={modalConfig.message}
         confirmLabel={modalConfig.confirmLabel}
         type={modalConfig.type}
+        customCancelClass={modalConfig.customCancelClass}
+        customConfirmClass={modalConfig.customConfirmClass}
       />
     </div>
   );
