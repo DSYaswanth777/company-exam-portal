@@ -1573,7 +1573,7 @@ export default function AdminDashboard() {
               const isLive =
                 ["live", "ongoing"].includes(drive.status) ||
                 examStatuses[drive.id]?.exam_state === "ongoing";
-              const isCompleted = drive.status === "completed";
+              const isCompleted = drive.status === "ended";
               const isPending = ["pending", "submitted", "draft"].includes(
                 drive.status,
               );
@@ -1616,6 +1616,10 @@ export default function AdminDashboard() {
                     <h3 className="text-[17px] font-bold text-slate-800 leading-snug group-hover:text-blue-600 transition-colors">
                       {drive.title || "Campus Recruitment 2026"}
                     </h3>
+                    <div className="flex items-center gap-2 mt-2 text-slate-500">
+                      <Building2 className="h-4 w-4 text-slate-400" />
+                      <span className="text-[14px] font-[500]">{drive.company_name || "Unknown Company"}</span>
+                    </div>
 
                     <div className="mt-5 space-y-3">
                       <div className="flex items-center gap-3 text-slate-500">

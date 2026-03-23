@@ -50,7 +50,7 @@ export default function CompanySendEmails() {
   const [drive, setDrive] = useState(null);
   const [examStatus, setExamStatus] = useState(null);
   const [previewText, setPreviewText] = useState("");
-
+console.log(drive)
   const templateVariables = [
     "{{student_name}}",
     "{{roll_number}}",
@@ -417,7 +417,7 @@ export default function CompanySendEmails() {
                           {isSubmitting ? (
                             <RefreshCw className="h-4 w-4 animate-spin" />
                           ) : (
-                            <></>
+                            <></> 
                           )}
                           Update Template
                         </button>
@@ -523,12 +523,12 @@ export default function CompanySendEmails() {
                     <button
                       onClick={handleSendEmails}
                       disabled={
-                        isSendingEmails ||
-                        !canSendEmails ||
+               
                         drive?.status !== "upcoming"
                       }
                       className="flex-[2] px-4 py-4 bg-blue-600 text-white rounded-xl font-[500] text-[14px]  shadow-xl shadow-blue-500/20 hover:bg-blue-700 transition-all flex items-center justify-center gap-2 disabled:bg-slate-200 disabled:shadow-none disabled:cursor-not-allowed"
                     >
+                  
                       <Send className="h-4 w-4" />
                       {isSendingEmails
                         ? "Broadcasting..."

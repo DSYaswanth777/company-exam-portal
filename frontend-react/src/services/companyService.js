@@ -42,6 +42,8 @@ const companyService = {
           active_drives: drives.filter((d) => d.status === "live").length,
           plan: profile.plan || "free",
           drives_limit: profile.drives_limit,
+          drives_used: profile.drives_used,
+          drives_remaining: profile.drives_remaining,
           company_name: profile.company_name,
         },
       };

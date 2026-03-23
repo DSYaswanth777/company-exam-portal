@@ -45,6 +45,8 @@ export default function CompanyDashboard() {
     total_students: 0,
     active_drives: 0,
     drives_limit: 0,
+    drives_used: 0,
+    drives_remaining: 0,
     company_name: "",
   });
 
@@ -212,25 +214,25 @@ export default function CompanyDashboard() {
                 {[
                   {
                     label: "Total Drives",
-                    value: stats.total_drives,
+                    value: stats.drives_used !== undefined ? stats.drives_used : stats.total_drives,
                     icon: totalDrivesIcon,
                     color: "text-blue-600",
                     bg: "bg-blue-50",
-                    count: "20 DRIVES", // Match design image placeholder
+                    count: stats.drives_limit === null ? "UNLIMITED" : `${stats.drives_limit} DRIVES`,
                   },
                   {
                     label: "Drives Left",
                     value:
                       stats.drives_limit === null
                         ? "∞"
-                        : Math.max(0, stats.drives_limit - stats.total_drives),
+                        : stats.drives_remaining !== undefined ? stats.drives_remaining : Math.max(0, stats.drives_limit - stats.total_drives),
                     icon: drivesLeftIcon,
                     color: "text-purple-600",
                     bg: "bg-purple-50",
                     count:
                       stats.drives_limit === null
                         ? "UNLIMITED"
-                        : `${stats.drives_limit - stats.total_drives} USED`,
+                        : `${stats.drives_used !== undefined ? stats.drives_used : stats.total_drives} USED`,
                   },
                   {
                     label: "Active Drives",
@@ -238,7 +240,7 @@ export default function CompanyDashboard() {
                     icon: activeDrivesIcon,
                     color: "text-emerald-600",
                     bg: "bg-emerald-50",
-                    count: "2 LIVE",
+                    count: `${stats.active_drives} LIVE`,
                   },
                 ].map((stat, i) => (
                   <div
@@ -269,7 +271,7 @@ export default function CompanyDashboard() {
                         {i === 0
                           ? "Total drives per month"
                           : i === 1
-                            ? `Out of your ${stats.drives_limit || 20}-drive quota`
+                            ? `Out of your ${stats.drives_limit === null ? "unlimited" : stats.drives_limit}-drive quota`
                             : "Currently live & receiving entries"}
                       </p>
                     </div>
