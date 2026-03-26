@@ -95,6 +95,8 @@ const companyService = {
   previewEmailTemplate: (data) =>
     companyApi.post("/email-template/preview", data),
   getNotifications: () => companyApi.get("/notifications"),
+  markNotificationRead: (id) => companyApi.put(`/notifications/${id}/read`),
+  markAllNotificationsRead: () => companyApi.put("/notifications/read-all"),
 
   // Search
   search: (query) => companyApi.get(`/search?q=${query}`),

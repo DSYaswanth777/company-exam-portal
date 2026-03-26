@@ -30,19 +30,25 @@ export default function ResultPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 font-poppins">
       <div className="w-full max-w-[500px] bg-white rounded-xl shadow-xl p-10 md:p-14 border border-gray-100 flex flex-col items-center text-center animate-in fade-in zoom-in duration-300">
-        {/* Success Icon */}
-        <div className="h-18 w-18 bg-green-50 rounded-full flex items-center justify-center mb-6">
-          <div className="h-12 w-12 bg-green-100 rounded-full flex items-center justify-center">
-            <CheckCircle className="h-8 w-8 text-green-500" />
+        {/* Success/Status Icon */}
+        <div className={`h-18 w-18 ${result?.is_disqualified ? 'bg-red-50' : 'bg-green-50'} rounded-full flex items-center justify-center mb-6`}>
+          <div className={`h-12 w-12 ${result?.is_disqualified ? 'bg-red-100' : 'bg-green-100'} rounded-full flex items-center justify-center`}>
+            {result?.is_disqualified ? (
+              <CheckCircle className="h-8 w-8 text-red-500" />
+            ) : (
+              <CheckCircle className="h-8 w-8 text-green-500" />
+            )}
           </div>
         </div>
 
         {/* Text content */}
         <h1 className="text-3xl font-semibold text-gray-800 mb-4 tracking-tight">
-          Submission Successful!
+          {result?.is_disqualified ? "Disqualified" : "Submission Successful!"}
         </h1>
         <p className="text-gray-500 text-[16px] font-[400] leading-relaxed  mb-10">
-          Your assessment has been securely recorded.{" "}
+          {result?.is_disqualified 
+            ? "Your assessment was terminated due to integrity violations."
+            : "Your assessment has been securely recorded."}
           <br className="hidden sm:block" /> No further action is needed from
           you.
         </p>
@@ -56,22 +62,23 @@ export default function ResultPage() {
             </span>
           </div>
           <div className="flex justify-between items-center text-sm font-medium">
-            <span className="text-gray-400">Submitted At</span>
+            <span className="text-gray-400">Status</span>
+            <span className={`${result?.is_disqualified ? 'text-red-600' : 'text-green-600'} font-bold`}>
+              {result?.is_disqualified ? "Disqualified" : "Submitted"}
+            </span>
+          </div>
+          <div className="flex justify-between items-center text-sm font-medium">
+            <span className="text-gray-400">Time</span>
             <span className="text-gray-700 font-bold">
               {result ? formatDateUTC(result.submitted_at) : "..."}
             </span>
           </div>
-          {result && (
-            <div className="flex justify-between items-center text-sm font-medium pt-4 border-t border-slate-100">
-              <span className="text-gray-400">Your Score</span>
-              <div className="flex items-center gap-2">
-                <Trophy className="h-4 w-4 text-orange-400" />
-                <span className="text-blue-600 font-semibold text-lg">
-                  {result.score} / {result.total_marks}
-                </span>
-              </div>
-            </div>
-          )}
+          <div className="flex justify-between items-center text-sm font-medium pt-4 border-t border-slate-100">
+            <span className="text-gray-400">Anomalies detected</span>
+            <span className={`${result?.is_disqualified ? 'text-red-600' : 'text-emerald-600'} font-bold`}>
+              {result?.is_disqualified ? "Yes" : "No"}
+            </span>
+          </div>
         </div>
 
         {/* Action Button */}

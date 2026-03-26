@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Bell, User, LogOut, ChevronDown, Building2, Ticket, Clock, Inbox } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import { Bell, User, LogOut, ChevronDown, Building2, Ticket, Clock, Inbox, MoreVertical, Check } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import companyService from "../services/companyService";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +13,8 @@ export default function CompanyHeader() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState(null);
+  const [openMenuId, setOpenMenuId] = useState(null);
+  const dropdownMenuRef = useRef(null);
 
   // Real data from profile or fallback to claims
   const companyName = profile?.company_name || user?.claims?.company_name || user?.claims?.username || "";
@@ -21,6 +23,14 @@ export default function CompanyHeader() {
   useEffect(() => {
     fetchNotifications();
     fetchProfile();
+
+    const handleClickOutside = (event) => {
+      if (dropdownMenuRef.current && !dropdownMenuRef.current.contains(event.target)) {
+        setOpenMenuId(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const fetchProfile = async () => {
@@ -60,7 +70,14 @@ export default function CompanyHeader() {
     return `${diffInDays} DAYS AGO`;
   };
 
-  const getIcon = (type) => {
+  const getIcon = (type, logoUrl) => {
+    if (logoUrl) {
+      return (
+        <div className="h-10 w-10 bg-white rounded-xl flex items-center justify-center border border-slate-100 p-1 overflow-hidden shadow-sm">
+          <img src={logoUrl} alt="Company Logo" className="h-full w-full object-contain" />
+        </div>
+      );
+    }
     return (
       <div className="h-10 w-10 bg-[#3b82f6] rounded-xl flex items-center justify-center text-white shadow-sm">
         {type?.toLowerCase() === "registration" ? (
@@ -109,9 +126,29 @@ export default function CompanyHeader() {
             <div className="absolute right-0 mt-4 w-[450px] bg-white rounded-[24px] border border-slate-200 shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300">
               <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-white">
                 <h3 className="text-[18px] font-black text-[#1E293B] tracking-tight">Notifications</h3>
-                <span className="bg-[#6366f1]/10 text-[#6366f1] text-[10px] font-black px-3 py-1 rounded-full tracking-widest uppercase">
-                  {unreadCount} UNREAD
-                </span>
+                <div className="flex items-center gap-3">
+                  {unreadCount > 0 && (
+                    <button 
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        try {
+                          await companyService.markAllNotificationsRead();
+                          setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+                          setUnreadCount(0);
+                          toast.success("All marked as read");
+                        } catch (err) {
+                          toast.error("Failed to mark all as read");
+                        }
+                      }}
+                      className="text-[10px] font-black text-[#6366f1] hover:text-[#4f46e5] transition-colors uppercase tracking-widest"
+                    >
+                      Mark all as read
+                    </button>
+                  )}
+                  <span className="bg-[#6366f1]/10 text-[#6366f1] text-[10px] font-black px-3 py-1 rounded-full tracking-widest uppercase">
+                    {unreadCount} UNREAD
+                  </span>
+                </div>
               </div>
 
               <div className="max-h-[500px] overflow-y-auto">
@@ -132,10 +169,25 @@ export default function CompanyHeader() {
                     {notifications.map((notification) => (
                       <div
                         key={notification.id}
-                        className="px-6 py-6 hover:bg-slate-50/50 transition-all duration-300 flex items-center gap-4 group cursor-pointer relative"
+                        onClick={async () => {
+                          if (!notification.is_read) {
+                            try {
+                              await companyService.markNotificationRead(notification.id);
+                              setNotifications(prev => 
+                                prev.map(n => n.id === notification.id ? { ...n, is_read: true } : n)
+                              );
+                              setUnreadCount(prev => Math.max(0, prev - 1));
+                            } catch (err) {
+                              console.error("Failed to mark as read:", err);
+                            }
+                          }
+                        }}
+                        className={`px-6 py-6 hover:bg-slate-100/30 transition-all duration-300 flex items-center gap-4 group cursor-pointer relative ${
+                          !notification.is_read ? 'bg-indigo-50/40' : 'bg-white'
+                        }`}
                       >
                         <div className="flex-shrink-0 transition-transform duration-300 group-hover:scale-105">
-                          {getIcon(notification.type)}
+                          {getIcon(notification.type, profile?.logo_url)}
                         </div>
                         
                         <div className="flex-1 min-w-0">
@@ -148,7 +200,7 @@ export default function CompanyHeader() {
                                 ? "bg-blue-50 text-blue-500 border-blue-100" 
                                 : "bg-orange-50 text-orange-500 border-orange-100"
                             }`}>
-                              {notification.type || "NOTIFICATION"}
+                            {notification.type || "NOTIFICATION"}
                             </span>
                           </div>
                           <p className="text-[13px] text-slate-400 font-medium leading-relaxed truncate pr-4">
@@ -162,9 +214,47 @@ export default function CompanyHeader() {
                           </div>
                         </div>
 
-                        {!notification.is_read && (
-                          <div className="h-2 w-2 bg-[#3b82f6] rounded-full shadow-[0_0_8px_rgba(59,130,246,0.6)] shrink-0 ml-2"></div>
-                        )}
+                        <div className="flex flex-col items-end gap-2 shrink-0 ml-2">
+                          <div className="relative" ref={openMenuId === notification.id ? dropdownMenuRef : null}>
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setOpenMenuId(openMenuId === notification.id ? null : notification.id);
+                              }}
+                              className="p-1 text-slate-400 hover:text-slate-600 transition-colors rounded-lg hover:bg-slate-100"
+                            >
+                              <MoreVertical className="h-4 w-4" />
+                            </button>
+
+                            {openMenuId === notification.id && (
+                              <div className="absolute top-full right-0 mt-1 w-36 bg-white rounded-xl shadow-xl border border-slate-100 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                                <button 
+                                  onClick={async (e) => {
+                                    e.stopPropagation();
+                                    try {
+                                      await companyService.markNotificationRead(notification.id);
+                                      setNotifications(prev => 
+                                        prev.map(n => n.id === notification.id ? { ...n, is_read: true } : n)
+                                      );
+                                      setUnreadCount(prev => Math.max(0, prev - 1));
+                                      setOpenMenuId(null);
+                                      toast.success("Marked as read");
+                                    } catch (err) {
+                                      console.error("Failed to mark as read:", err);
+                                    }
+                                  }}
+                                  className="w-full px-4 py-2 flex items-center gap-2 hover:bg-slate-50 transition-colors text-left group"
+                                >
+                                  <Check className="h-3.5 w-3.5 text-slate-400 group-hover:text-blue-500" />
+                                  <span className="text-[12px] font-medium text-slate-600">Mark as read</span>
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                          {!notification.is_read && (
+                            <div className="h-2 w-2 bg-[#3b82f6] rounded-full shadow-[0_0_8px_rgba(59,130,246,0.6)] shrink-0"></div>
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>

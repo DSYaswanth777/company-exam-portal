@@ -120,7 +120,7 @@ export default function InstructionsPage() {
               {isLoading ? (
                 <div className="h-9 w-16 bg-blue-100 animate-pulse rounded"></div>
               ) : (
-                driveDetails?.question_count || "--"
+                driveDetails?.total_questions || "--"
               )}
             </div>
           </div>

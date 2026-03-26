@@ -37,10 +37,10 @@ export default function WaitingRoom() {
       const res = await studentService.getDriveInfo();
       setDriveInfo(res.data);
 
-      if (res.data.status === "live") {
-        navigate("/exam");
-        return;
-      }
+      // if (res.data.status === "live") {
+      //   navigate("/exam");
+      //   return;
+      // }
 
       if (res.data.window_start) {
         let dateStr = res.data.window_start;
@@ -61,7 +61,7 @@ export default function WaitingRoom() {
           });
         } else {
           if (res.data.actual_window_start || res.data.status === "live") {
-            navigate("/exam");
+            // navigate("/exam"); // DISABLED AUTO-START
           } else {
             // Reset timer if we hit 0 but not live yet
             setTimeLeft({ hours: 0, minutes: 0, seconds: 0 });
@@ -152,41 +152,75 @@ export default function WaitingRoom() {
                 </div>
                 <div className="text-center md:text-left">
                   <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                    Waiting for Exam Window
+                    {driveInfo?.status === "ended"
+                      ? "The exam has ended"
+                      : driveInfo?.status === "live"
+                        ? "Examination is Live"
+                        : "Waiting for Exam Window"}
                   </h2>
                   <p className="text-gray-500 text-sm">
-                    The secure browser link will activate automatically when the
-                    window opens.
+                    {driveInfo?.status === "ended"
+                      ? "You can no longer start this assessment."
+                      : driveInfo?.status === "live"
+                        ? "You can now start the examination manually."
+                        : "The secure browser link will activate manually when the window opens."}
                   </p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-6 mt-10 max-w-2xl mx-auto md:mx-0">
-                <div className="bg-gray-50 p-6 rounded-xl text-center">
-                  <div className="text-4xl font-semibold text-gray-900">
-                    {timeLeft.hours}
+              {driveInfo?.status === "live" ? (
+                <div className="mt-10 flex justify-center md:justify-start">
+                  <button
+                    onClick={() => navigate("/instructions")}
+                    className="flex items-center gap-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold py-4 px-10 rounded-xl transition-all shadow-lg shadow-blue-500/30 group"
+                  >
+                    Start Exam Now
+                    <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+              ) : driveInfo?.status === "ended" ? (
+                <div className="mt-10 bg-red-50 p-6 rounded-xl border border-red-100 flex items-center gap-4">
+                  <div className="h-10 w-10 bg-red-100 rounded-lg flex items-center justify-center">
+                    <AlertTriangle className="h-6 w-6 text-red-600" />
                   </div>
-                  <div className="text-gray-400 text-sm uppercase tracking-wider font-semibold mt-1">
-                    Hours
+                  <div>
+                    <h3 className="text-red-900 font-bold">
+                      Registration Closed
+                    </h3>
+                    <p className="text-red-700 text-sm">
+                      This assessment has concluded. Please contact your
+                      coordinator for details.
+                    </p>
                   </div>
                 </div>
-                <div className="bg-gray-50 p-6 rounded-xl text-center">
-                  <div className="text-4xl font-semibold text-gray-900">
-                    {timeLeft.minutes}
+              ) : (
+                <div className="grid grid-cols-3 gap-6 mt-10 max-w-2xl mx-auto md:mx-0">
+                  <div className="bg-gray-50 p-6 rounded-xl text-center">
+                    <div className="text-4xl font-semibold text-gray-900">
+                      {timeLeft.hours}
+                    </div>
+                    <div className="text-gray-400 text-sm uppercase tracking-wider font-semibold mt-1">
+                      Hours
+                    </div>
                   </div>
-                  <div className="text-gray-400 text-sm uppercase tracking-wider font-semibold mt-1">
-                    Minutes
+                  <div className="bg-gray-50 p-6 rounded-xl text-center">
+                    <div className="text-4xl font-semibold text-gray-900">
+                      {timeLeft.minutes}
+                    </div>
+                    <div className="text-gray-400 text-sm uppercase tracking-wider font-semibold mt-1">
+                      Minutes
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 p-6 rounded-xl text-center">
+                    <div className="text-4xl font-semibold text-gray-900">
+                      {timeLeft.seconds}
+                    </div>
+                    <div className="text-gray-400 text-sm uppercase tracking-wider font-semibold mt-1">
+                      Seconds
+                    </div>
                   </div>
                 </div>
-                <div className="bg-gray-50 p-6 rounded-xl text-center">
-                  <div className="text-4xl font-semibold text-gray-900">
-                    {timeLeft.seconds}
-                  </div>
-                  <div className="text-gray-400 text-sm uppercase tracking-wider font-semibold mt-1">
-                    Seconds
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
 
             {/* Essential Regulations */}
@@ -202,7 +236,9 @@ export default function WaitingRoom() {
                   {regulations.map((reg, index) => (
                     <div key={index} className="flex gap-4">
                       <div className="h-1.5 w-1.5 rounded-full bg-blue-500 mt-2 shrink-0"></div>
-                      <p className={`text-[14px] leading-relaxed text-[#686666]  ${reg.color} font-[400]`}>
+                      <p
+                        className={`text-[14px] leading-relaxed text-[#686666]  ${reg.color} font-[400]`}
+                      >
                         {reg.text}
                       </p>
                     </div>

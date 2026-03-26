@@ -31,12 +31,7 @@ function App() {
               <Route path="/disqualified" element={<DisqualifiedPage />} />
               <Route
                 path="/"
-                element={
-                  <Navigate
-                    to={DEV_AUTH_BYPASS ? "/instructions" : "/login"}
-                    replace
-                  />
-                }
+                element={<Navigate to="/instructions" replace />}
               />
             </Routes>
             <Toaster position="top-right" reverseOrder={false} />
