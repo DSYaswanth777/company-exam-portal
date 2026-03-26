@@ -15,12 +15,56 @@ import {
   PlusCircle,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
-import { DatePicker } from "rsuite";
+import { DatePicker, SelectPicker } from "rsuite";
 import "rsuite/dist/rsuite-no-reset.min.css";
-import { parseISO, format } from "date-fns";
+import { parseISO, format, addHours } from "date-fns";
 import companyService from "../services/companyService";
 import { getErrorMessage } from "../utils/errorHelpers";
 import { convertUTCToInputIST, convertInputISTToUTC } from "../utils/timezone";
+
+const rsuiteCustomStyles = `
+  .rsuite-select-container .rs-picker-toggle.rs-btn {
+    height: 56px !important;
+    display: flex;
+    align-items: center;
+    background-color: #ffffff !important;
+    border: 2px solid #D1D5DB !important;
+    border-radius: 16px !important;
+    font-family: inherit !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: #111827 !important;
+    padding-left: 12px !important;
+  }
+  .rsuite-select-container .rs-picker-toggle:hover,
+  .rsuite-select-container .rs-picker-toggle:focus,
+  .rsuite-select-container .rs-picker-focused .rs-picker-toggle {
+    border-color: #1565C0 !important;
+    box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.1) !important;
+  }
+  .rsuite-select-container .rs-picker-toggle-placeholder {
+    color: #9CA3AF !important;
+    font-weight: 500 !important;
+  }
+  .rsuite-select-container .rs-picker-toggle-caret {
+    top: 18px !important;
+    right: 12px !important;
+    color: #9CA3AF !important;
+  }
+  .rs-picker-select-menu {
+    border-radius: 12px !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+    border: 1px solid #E5E7EB !important;
+  }
+  .rs-picker-select-menu-item {
+    font-size: 13px !important;
+    padding: 10px 16px !important;
+  }
+  .rs-picker-select-menu-item-active {
+    color: #1565C0 !important;
+    background-color: #F0F7FF !important;
+  }
+`;
 
 /**
  * CompanyCreateDrive - Hyper-fidelity multi-step drive configuration matching Image 4.
@@ -55,9 +99,27 @@ export default function CompanyCreateDrive() {
   });
 
   useEffect(() => {
+    const styleSheet = document.createElement("style");
+    styleSheet.innerText = rsuiteCustomStyles;
+    document.head.appendChild(styleSheet);
+    return () => {
+      document.head.removeChild(styleSheet);
+    };
+  }, []);
+
+  useEffect(() => {
     loadReferenceData();
     if (driveId) {
       loadDriveData();
+    } else {
+      // Prefill for new drive
+      const now = new Date();
+      setFormData((prev) => ({
+        ...prev,
+        window_start: format(now, "yyyy-MM-dd'T'HH:mm"),
+        window_end: format(addHours(now, 24), "yyyy-MM-dd'T'HH:mm"),
+        exam_duration_minutes: 60,
+      }));
     }
   }, [driveId]);
 
@@ -389,11 +451,11 @@ export default function CompanyCreateDrive() {
                 </div>
               </div>
 
-              <div className="bg-[#FFEB3B]/30 border-l-2 border-[#FFEB3B] rounded-xl p-8 flex items-center gap-6">
-                <div className="h-8 w-8 bg-[#FFEB3B] rounded-xl flex items-center justify-center text-slate-900 shadow-lg shadow-yellow-500/20">
+              <div className="bg-[#FDE047]/30 border-l-2 border-[#EAB308] rounded-xl p-8 flex items-center gap-8">
+                <div className="h-8 w-8 bg-[#EAB308] rounded-xl flex items-center justify-center text-slate-900 shadow-lg shadow-yellow-500/20">
                   <Clock className="h-4 w-4" />
                 </div>
-                <p className="text-[18px] font-[500] text-slate-800">
+                <p className="text-[18px] font-[400] text-[#713F12]">
                   The exam active window is of 24 hrs and the exam itself will
                   run for {formData.exam_duration_minutes} mins.
                 </p>
@@ -446,30 +508,24 @@ export default function CompanyCreateDrive() {
                         <label className="text-[12px] font-[600] text-[#9CA3AF]  uppercase">
                           College / Institution
                         </label>
-                        <div className="relative">
-                          <select
+                        <div className="relative group rsuite-select-container">
+                          <SelectPicker
+                            data={[
+                              ...colleges.map((c) => ({ label: c.name, value: c.id })),
+                              { label: "+ Other (Custom)", value: "custom" }
+                            ]}
                             value={
                               target.college_id ||
-                              (target.custom_college_name ? "custom" : "")
+                              (target.custom_college_name ? "custom" : null)
                             }
-                            onChange={(e) =>
-                              handleTargetChange(
-                                idx,
-                                "college_id",
-                                e.target.value,
-                              )
+                            onChange={(value) =>
+                              handleTargetChange(idx, "college_id", value)
                             }
-                            className="w-full h-[56px] px-3 pe-10 py-2 bg-white border-2 mt-2 border-[#D1D5DB] rounded-[16px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[14px] text-[#111827] appearance-none"
-                          >
-                            <option value="">e.g. MIT</option>
-                            {colleges.map((c) => (
-                              <option key={c.id} value={c.id}>
-                                {c.name}
-                              </option>
-                            ))}
-                            <option value="custom">+ Other (Custom)</option>
-                          </select>
-                          <ChevronDown className="absolute right-4 top-1/2 -translate-y-0.5 h-4 w-4 text-slate-400 pointer-events-none" />
+                            placeholder="Search or Select College"
+                            className="w-full mt-2"
+                            searchable={true}
+                            style={{ width: "100%" }}
+                          />
                         </div>
                         {target.college_id === null &&
                           (!colleges.length ||
@@ -494,30 +550,24 @@ export default function CompanyCreateDrive() {
                         <label className="text-[12px] font-[600] text-[#9CA3AF]  uppercase">
                           Student Group
                         </label>
-                        <div className="relative">
-                          <select
+                        <div className="relative group rsuite-select-container">
+                          <SelectPicker
+                            data={[
+                              ...studentGroups.map((g) => ({ label: g.name, value: g.id })),
+                              { label: "+ Other (Custom)", value: "custom" }
+                            ]}
                             value={
                               target.student_group_id ||
-                              (target.custom_student_group_name ? "custom" : "")
+                              (target.custom_student_group_name ? "custom" : null)
                             }
-                            onChange={(e) =>
-                              handleTargetChange(
-                                idx,
-                                "student_group_id",
-                                e.target.value,
-                              )
+                            onChange={(value) =>
+                              handleTargetChange(idx, "student_group_id", value)
                             }
-                            className="w-full h-[56px] px-3 pe-10 py-2 bg-white border-2 mt-2 border-[#D1D5DB] rounded-[16px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[14px] text-[#111827] appearance-none"
-                          >
-                            <option value="">e.g. Computer Science</option>
-                            {studentGroups.map((g) => (
-                              <option key={g.id} value={g.id}>
-                                {g.name}
-                              </option>
-                            ))}
-                            <option value="custom">+ Other (Custom)</option>
-                          </select>
-                          <ChevronDown className="absolute right-4 top-1/2 -translate-y-0.5 h-4 w-4 text-slate-400 pointer-events-none" />
+                            placeholder="Search or Select Group"
+                            className="w-full mt-2"
+                            searchable={true}
+                            style={{ width: "100%" }}
+                          />
                         </div>
                         {target.student_group_id === null &&
                           (!studentGroups.length ||

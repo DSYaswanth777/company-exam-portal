@@ -186,8 +186,8 @@ export default function CompanyHeader() {
                           !notification.is_read ? 'bg-indigo-50/40' : 'bg-white'
                         }`}
                       >
-                        <div className="flex-shrink-0 transition-transform duration-300 group-hover:scale-105">
-                          {getIcon(notification.type, profile?.logo_url)}
+                        <div className="flex-shrink-0 bg-slate-50 p-2 rounded-xl transition-transform duration-300 group-hover:scale-105">
+                         <Building2 className="h-5 w-5 text-[#3b82f6]"/>
                         </div>
                         
                         <div className="flex-1 min-w-0">
