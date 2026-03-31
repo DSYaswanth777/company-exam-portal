@@ -73,8 +73,11 @@ export default function AdminHeader({
         const res = await adminService.getNotifications();
         const data = res.data || [];
         setNotifications(data);
-        // For now, let's assume all fetched ones are 'new' or just show total count
-        setUnreadCount(data.length);
+        
+        // Filter out read notifications from localStorage
+        const readIds = JSON.parse(localStorage.getItem("admin_read_notifications") || "[]");
+        const unread = data.filter(n => !readIds.includes(n.id));
+        setUnreadCount(unread.length);
       } catch (err) {
         console.error("Failed to fetch notification count:", err);
       }

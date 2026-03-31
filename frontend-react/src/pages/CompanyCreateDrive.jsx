@@ -294,7 +294,7 @@ export default function CompanyCreateDrive() {
               Setup Progress
             </span>
             <div className="flex gap-1.5">
-              {[1, 1, 1, 0].map((active, i) => (
+              {(driveId ? [1, 1, 1, 1] : [1, 1, 1, 0]).map((active, i) => (
                 <div
                   key={i}
                   className={`h-1.5 w-10 rounded-full ${active ? "bg-blue-600" : "bg-slate-100"}`}
@@ -456,10 +456,19 @@ export default function CompanyCreateDrive() {
                   <Clock className="h-4 w-4" />
                 </div>
                 <p className="text-[18px] font-[400] text-[#713F12]">
-                  The exam active window is of 24 hrs and the exam itself will
-                  run for {formData.exam_duration_minutes} mins.
+                  The exam active window is of{" "}
+                  {formData.window_start && formData.window_end
+                    ? Math.round(
+                        (parseISO(formData.window_end) -
+                          parseISO(formData.window_start)) /
+                          (1000 * 60 * 60),
+                      )
+                    : 24}{" "}
+                  hrs and the exam itself will run for{" "}
+                  {formData.exam_duration_minutes} mins.
                 </p>
               </div>
+
             </div>
 
             {/* 03 Target Audience */}

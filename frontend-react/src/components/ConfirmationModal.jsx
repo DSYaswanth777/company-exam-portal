@@ -76,14 +76,14 @@ export default function ConfirmationModal({
             <button
               onClick={onClose}
               disabled={isLoading}
-              className={`flex-1 px-6 py-4 bg-white border border-slate-200 text-slate-600 rounded-xl font-semibold text-[13px] uppercase tracking-widest hover:bg-slate-50 transition-all active:scale-95 disabled:opacity-50 ${customCancelClass}`}
+              className={`flex-1 px-6 py-4 bg-white border border-slate-200 text-slate-600 rounded-xl font-semibold text-[13px] uppercase tracking-widest hover:bg-slate-50 transition-all active:scale-95 disabled:opacity-80 ${customCancelClass}`}
             >
               {cancelLabel}
             </button>
             <button
               onClick={onConfirm}
               disabled={isLoading}
-              className={`flex-1 px-6 py-4 ${config.buttonBg} text-white rounded-xl font-semibold text-[13px] uppercase tracking-widest shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 ${customConfirmClass}`}
+              className={`flex-1 px-6 py-4 ${config.buttonBg} text-white rounded-xl font-semibold text-[13px] uppercase tracking-widest shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2 disabled:opacity-80 ${customConfirmClass}`}
             >
               {isLoading ? (
                 <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

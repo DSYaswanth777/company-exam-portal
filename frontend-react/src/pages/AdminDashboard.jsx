@@ -500,6 +500,9 @@ export default function AdminDashboard() {
       } else if (type === "suspend" || type === "revoke") {
         await adminService.suspendCompany(company.id);
         toast.success("Company suspended");
+      } else if (type === "unsuspend") {
+        await adminService.unsuspendCompany(company.id);
+        toast.success("Company unsuspended successfully");
       }
       await loadCompanies();
       setActionModal({ isOpen: false, type: "approve", company: null });
@@ -508,6 +511,14 @@ export default function AdminDashboard() {
     } finally {
       setIsActionLoading(false);
     }
+  };
+
+  const unsuspendCompany = (company) => {
+    setActionModal({
+      isOpen: true,
+      type: "unsuspend",
+      company,
+    });
   };
 
   const viewCompanyDrives = async (companyId, companyName) => {
@@ -654,7 +665,7 @@ export default function AdminDashboard() {
   const renderOverview = () => {
     const stats = [
       {
-        label: "Active Companies",
+        label: "Approved Companies",
         value: dashboardStats?.companies?.active || "0",
         change: "+12%",
         icon: Building2,
@@ -663,7 +674,7 @@ export default function AdminDashboard() {
         tab: "active_companies",
       },
       {
-        label: "Active Drives",
+        label: "Approved Drives",
         value: dashboardStats?.drives?.active || "0",
         change: "+5%",
         icon: Rocket,
@@ -672,7 +683,7 @@ export default function AdminDashboard() {
         tab: "active_drives",
       },
       {
-        label: "Ongoing Exams",
+        label: "Live Exams",
         value: dashboardStats?.drives?.ongoing || "0",
         change: "+18%",
         icon: Timer,
@@ -681,7 +692,7 @@ export default function AdminDashboard() {
         tab: "ongoing_exams",
       },
       {
-        label: "Total Candidates",
+        label: "Registered Students",
         value: dashboardStats?.students?.total || "0",
         change: "+22%",
         icon: Users,
@@ -735,71 +746,75 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        {/* Platform Updates */}
-        <div className="mt-8">
-          <h3 className="text-[18px] font-[600] text-slate-900 tracking-tight mb-4">
-            Platform Updates
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col gap-8">
-              <div className="flex items-center gap-3">
-              <img src={featureRelease} alt="" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-purple-600">
-                  FEATURE RELEASE
-                </span>
-              </div>
-              <div>
-                <h4 className="text-[20px] font-[600] text-slate-900 leading-snug">
-                  Monitoring Live Exam
-                </h4>
-                <p className="text-[14px] font-[500] text-[#64748B] mt-2 leading-relaxed">
-                  Admins can now monitor candidate activity during exams in real time
-                </p>
-              </div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-4">
-                UPDATED ON 10-03-2026
+        {/* Company Tiers & Expiry */}
+        <div className="mt-12">
+          <div className="flex justify-between items-end mb-6">
+            <div>
+              <h3 className="text-[20px] font-bold text-slate-900 tracking-tight">
+                Company Status Overview
+              </h3>
+              <p className="text-slate-500 text-sm mt-1">
+                Monitor registration tiers and subscription validity.
               </p>
             </div>
+            <button 
+              onClick={() => setActiveTab("active_companies")}
+              className="text-blue-600 font-bold text-[12px] uppercase tracking-wider hover:text-blue-700 transition-colors flex items-center gap-2"
+            >
+              View All Companies
+              <MoveRight className="h-4 w-4" />
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {companiesList.slice(0, 3).map((company) => (
+              <div key={company.id} className="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-md transition-all">
+                <div className="flex justify-between items-start mb-6">
+                  <div className="h-12 w-12 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100">
+                    {company.logo_url ? (
+                      <img src={company.logo_url} alt="" className="h-8 w-8 object-contain" />
+                    ) : (
+                      <Building2 className="h-6 w-6 text-slate-400" />
+                    )}
+                  </div>
+                  <div className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${
+                    company.plan === "premium" ? "bg-purple-50 text-purple-600 border border-purple-100" : "bg-blue-50 text-blue-600 border border-blue-100"
+                  }`}>
+                    {company.plan || "Free"} Tier
+                  </div>
+                </div>
+                <div>
+                  <h4 className="text-[16px] font-bold text-slate-900 leading-tight">
+                    {company.name}
+                  </h4>
+                  <p className="text-slate-500 text-[12px] mt-1">
+                    Registered: {formatDate(company.created_at)}
+                  </p>
+                </div>
+                <div className="mt-6 pt-6 border-t border-slate-50 flex justify-between items-center">
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest line-clamp-1">
+                      Subscription Expiry
+                    </p>
+                    <p className="text-[13px] font-semibold text-slate-700">
+                      {company.expiry_date ? formatDate(company.expiry_date) : "N/A"}
+                    </p>
+                  </div>
+                  <button 
+                    onClick={() => openPlanModal(company)}
+                    className="p-2.5 rounded-lg bg-slate-50 text-slate-400 hover:text-blue-600 transition-colors border border-transparent hover:border-blue-100"
+                  >
+                    <Settings className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            ))}
             
-            <div className="bg-white p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col gap-8">
-              <div className="flex items-center gap-3">
-            <img src={platformImprovement} alt="" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600">
-                  PLATFORM IMPROVEMENT
-                </span>
+            {companiesList.length === 0 && (
+              <div className="col-span-full py-12 text-center bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
+                <p className="text-slate-400 font-medium">No registered companies found.</p>
               </div>
-              <div>
-                <h4 className="text-[18px] font-bold text-slate-900 leading-snug">
-                  Candidate Reports Enhanced
-                </h4>
-                <p className="text-[14px] font-[500] text-[#64748B] mt-2 leading-relaxed">
-                  Download detailed performance reports for each exam drive
-                </p>
-              </div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-4">
-                UPDATED ON 10-03-2026
-              </p>
-            </div>
-
-            <div className="bg-white p-8 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col gap-8">
-              <div className="flex items-center gap-3">
-            <img src={maintainenceNotice} alt="" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-orange-600">
-                  MAINTENANCE NOTICE
-                </span>
-              </div>
-              <div>
-                <h4 className="text-[18px] font-bold text-slate-900 leading-snug">
-                  Feb 15 Scheduled Maintenance
-                </h4>
-                <p className="text-[14px] font-[500] text-[#64748B] mt-2 leading-relaxed">
-                 Scheduled maintenance on Feb 15 from 2:00 AM - 4:00 AM.
-                </p>
-              </div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-4">
-                AUG 15:15
-              </p>
-            </div>
+            )}
           </div>
         </div>
 
@@ -1082,28 +1097,52 @@ export default function AdminDashboard() {
                               </button>
                             </>
                           )}
-                          {company.status === "rejected" && (
-                           <>
-                            <button
-                              disabled
-                              className="h-9 w-9 flex items-center justify-center bg-[#f1f5f9] text-[#cbd5e1] rounded-lg cursor-not-allowed border border-[#e2e8f0]"
-                            >
-                              <Ban className="h-4 w-4" strokeWidth={2.5} />
-                            </button>
-                            <button
-                                onClick={() =>
-                                  viewCompanyDrives(
-                                    company.id,
-                                    company.company_name,
-                                  )
-                                }
-                                className="h-9 w-9 flex items-center justify-center bg-[#fef3c7] text-[#d97706] hover:bg-yellow-200 rounded-lg transition-all"
-                                title="View Drives"
-                              >
-                                <Eye className="h-4 w-4" strokeWidth={2.5} />
-                              </button>
-                           </>
-                          )}
+                           {company.status === "rejected" && (
+                            <>
+                             <button
+                               onClick={() => unsuspendCompany(company)}
+                               className="h-9 w-9 flex items-center justify-center bg-[#d1fae5] text-[#10b981] hover:bg-green-200 rounded-lg transition-all"
+                               title="Unsuspend / Re-approve"
+                             >
+                               <RotateCcw className="h-4 w-4" strokeWidth={2.5} />
+                             </button>
+                             <button
+                                 onClick={() =>
+                                   viewCompanyDrives(
+                                     company.id,
+                                     company.company_name,
+                                   )
+                                 }
+                                 className="h-9 w-9 flex items-center justify-center bg-[#fef3c7] text-[#d97706] hover:bg-yellow-200 rounded-lg transition-all"
+                                 title="View Drives"
+                               >
+                                 <Eye className="h-4 w-4" strokeWidth={2.5} />
+                               </button>
+                            </>
+                           )}
+                           {company.status === "suspended" && (
+                            <>
+                             <button
+                               onClick={() => unsuspendCompany(company)}
+                               className="h-9 w-9 flex items-center justify-center bg-[#d1fae5] text-[#10b981] hover:bg-green-200 rounded-lg transition-all"
+                               title="Unsuspend"
+                             >
+                               <RotateCcw className="h-4 w-4" strokeWidth={2.5} />
+                             </button>
+                             <button
+                                 onClick={() =>
+                                   viewCompanyDrives(
+                                     company.id,
+                                     company.company_name,
+                                   )
+                                 }
+                                 className="h-9 w-9 flex items-center justify-center bg-[#fef3c7] text-[#d97706] hover:bg-yellow-200 rounded-lg transition-all"
+                                 title="View Drives"
+                               >
+                                 <Eye className="h-4 w-4" strokeWidth={2.5} />
+                               </button>
+                            </>
+                           )}
                         </div>
                       </td>
                     </tr>
@@ -1548,8 +1587,8 @@ export default function AdminDashboard() {
               // Status filter
               if (driveStatusFilter === "active") {
                 return (
-                  ["live", "ongoing", "approved"].includes(d.status) ||
-                  d.is_approved
+                  ["live", "ongoing", "upcoming", "approved", "submitted"].includes(d.status) ||
+                  (d.is_approved && d.status !== "draft")
                 );
               }
               if (driveStatusFilter === "completed") {
@@ -1643,7 +1682,7 @@ export default function AdminDashboard() {
                       onClick={() => viewDriveDetail(drive.id)}
                       className="w-full flex items-center justify-center gap-3 px-6 py-3.5 bg-white border border-slate-300 rounded-3xl text-[16px] font-[500] text-slate-800 hover:bg-slate-50 hover:border-slate-200 transition-all duration-300 select-none group/btn"
                     >
-                      Open Control Center
+                      Drive Info
                       <ChevronRight className="h-4 w-4 text-slate-300 group-hover/btn:translate-x-1 transition-transform" />
                     </button>
                   </div>
@@ -1795,17 +1834,24 @@ export default function AdminDashboard() {
                       </p>
                     </td>
                     <td className="px-8 py-4 text-right">
-                      <span
-                        className={`px-4 py-1.5 rounded-xl text-[10px] font-semibold uppercase tracking-widest border ${
-                          company.status === "approved"
-                            ? "bg-emerald-50 text-emerald-600 border-emerald-100"
-                            : company.status === "pending"
-                              ? "bg-orange-50 text-orange-600 border-orange-100"
-                              : "bg-red-50 text-red-600 border-red-100"
-                        }`}
-                      >
-                        {company.status?.toUpperCase()}
-                      </span>
+                      <div className="flex items-center justify-end gap-3">
+                        <span
+                          className={`px-4 py-1.5 rounded-xl text-[10px] font-semibold uppercase tracking-widest border ${
+                            company.plan === "premium"
+                              ? "bg-purple-50 text-purple-600 border-purple-100"
+                              : "bg-blue-50 text-blue-600 border-blue-100"
+                          }`}
+                        >
+                          {company.plan || "FREE"}
+                        </span>
+                        <button
+                          onClick={() => openPlanModal(company)}
+                          className="p-2 rounded-lg bg-slate-50 text-slate-400 hover:text-blue-600 transition-colors border border-transparent hover:border-blue-100"
+                          title="Set Plan"
+                        >
+                          <Settings className="h-4 w-4" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

@@ -257,7 +257,7 @@ export default function CompanyRegister() {
                     <button
                       type="button"
                       onClick={removeLogo}
-                      className="absolute top-2 right-2 p-1.5 bg-white border border-slate-200 rounded-full text-slate-400 hover:text-red-500 hover:border-red-200 transition-all shadow-sm"
+                      className="absolute top-2 right-2 p-1.5 bg-white border border-slate-200 rounded-full text-slate-400 hover:text-red-500 hover:border-red-200 transition-all shadow-sm disabled:opacity-80"
                     >
                       <X className="h-4 w-4" />
                     </button>
@@ -304,7 +304,7 @@ export default function CompanyRegister() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-[60px] bg-slate-50 hover:bg-slate-100 disabled:opacity-50 text-slate-400 hover:text-slate-600 font-[600] rounded-2xl transition-all flex items-center justify-center gap-3 mt-4"
+              className="w-full h-[60px] bg-slate-50 hover:bg-slate-100 disabled:opacity-80 text-slate-400 font-[600] rounded-2xl transition-all flex items-center justify-center gap-3 mt-4"
             >
               <span className="text-[16px]">
                 {loading ? "Registering..." : "Register Company"}

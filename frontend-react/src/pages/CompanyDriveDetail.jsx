@@ -445,7 +445,7 @@ export default function CompanyDriveDetail() {
                           Students
                         </p>
                         <p className="text-[13px] font-bold text-[#111827] uppercase">
-                          {students.length || 150}
+                          {students.length}
                         </p>
                       </div>
                     </div>
@@ -459,9 +459,9 @@ export default function CompanyDriveDetail() {
                         <p className="text-[13px] font-semibold text-blue-500">
                           Questions
                         </p>
-                        <div className="bg-[#eff6ff] text-blue-500 px-4 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide border border-blue-500/10">
-                          APPROVED
-                        </div>
+                        <p className="text-[13px] font-bold text-[#111827] uppercase">
+                          {questions.length} / {drive.question_count || 0}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -548,7 +548,7 @@ export default function CompanyDriveDetail() {
                                   <span className="text-[13px] font-[700] text-[#111827]">
                                     {target.college_name ||
                                       target.custom_college_name ||
-                                      "MIT"}
+                                      "N/A"}
                                   </span>
                                 </div>
                                 <div className="flex gap-2 items-center">
@@ -558,7 +558,7 @@ export default function CompanyDriveDetail() {
                                   <span className="text-[13px] font-[700] text-[#111827] uppercase">
                                     {target.group_name ||
                                       target.custom_student_group_name ||
-                                      "COMPUTER SCIENCE"}
+                                      "N/A"}
                                   </span>
                                 </div>
                                 <div className="flex gap-2 items-center">
@@ -566,7 +566,7 @@ export default function CompanyDriveDetail() {
                                     BATCH:
                                   </span>
                                   <span className="text-[13px] font-[700] text-[#111827]">
-                                    {target.batch_year || "2026"}
+                                    {target.batch_year || "N/A"}
                                   </span>
                                 </div>
                               </div>
@@ -574,38 +574,8 @@ export default function CompanyDriveDetail() {
                           </div>
                         ))
                       ) : (
-                        <div className="p-6 rounded-2xl border border-slate-100 flex flex-col gap-6">
-                          <div className="flex-1">
-                            <p className="text-[14px] font-[600] text-[#111827] mb-5">
-                              Group 1
-                            </p>
-                            <div className="flex flex-col md:flex-row gap-8 md:gap-24 lg:gap-32">
-                              <div className="flex gap-2 items-center">
-                                <span className="text-[12px] text-[#64748b] font-semibold uppercase tracking-wider">
-                                  COLLEGE:
-                                </span>
-                                <span className="text-[13px] font-[700] text-[#111827]">
-                                  MIT
-                                </span>
-                              </div>
-                              <div className="flex gap-2 items-center">
-                                <span className="text-[12px] text-[#64748b] font-semibold uppercase tracking-wider">
-                                  GROUP:
-                                </span>
-                                <span className="text-[13px] font-[700] text-[#111827]">
-                                  COMPUTER SCIENCE
-                                </span>
-                              </div>
-                              <div className="flex gap-2 items-center">
-                                <span className="text-[12px] text-[#64748b] font-semibold uppercase tracking-wider">
-                                  BATCH:
-                                </span>
-                                <span className="text-[13px] font-[700] text-[#111827]">
-                                  2026
-                                </span>
-                              </div>
-                            </div>
-                          </div>
+                        <div className="p-6 rounded-2xl border border-slate-100 flex items-center justify-center py-10">
+                          <p className="text-slate-400 font-medium italic">No target groups configured for this drive.</p>
                         </div>
                       )}
                     </div>
@@ -710,9 +680,13 @@ export default function CompanyDriveDetail() {
                       <h4 className="text-[22px] font-bold text-[#1e293b] tracking-tight mb-3">
                         No Questions Uploaded
                       </h4>
-                      <p className="text-[#64748b] text-[15px] max-w-[420px] leading-relaxed mb-8">
+                      <p className="text-[#64748b] text-[15px] max-w-[420px] leading-relaxed mb-4">
                         You haven't added any questions to this drive yet. Link
                         a question group or import via CSV to begin.
+                      </p>
+                      <p className="text-amber-600 text-[12px] font-semibold uppercase tracking-wider mb-8 flex items-center gap-2">
+                        <AlertCircle className="h-4 w-4" />
+                        Warning: This action cannot be undone
                       </p>
                       <button
                         onClick={() =>
@@ -820,9 +794,13 @@ export default function CompanyDriveDetail() {
                       <h4 className="text-[22px] font-bold text-[#1e293b] tracking-tight mb-3">
                         No Candidates Registered
                       </h4>
-                      <p className="text-[#64748b] text-[15px] max-w-[420px] leading-relaxed mb-8">
+                      <p className="text-[#64748b] text-[15px] max-w-[420px] leading-relaxed mb-4">
                         You haven't added any students to this drive yet. Link a
                         student group or import via CSV to begin.{" "}
+                      </p>
+                      <p className="text-amber-600 text-[12px] font-semibold uppercase tracking-wider mb-8 flex items-center gap-2">
+                        <AlertCircle className="h-4 w-4" />
+                        Warning: This action cannot be undone
                       </p>
                       <button
                         onClick={() =>
@@ -848,10 +826,7 @@ export default function CompanyDriveDetail() {
                               EMAIL ADDRESS
                             </th>
                             <th className="px-10 py-4 text-left text-[14px] font-[600] text-[#686666] uppercase tracking-widest">
-                              COLLEGE
-                            </th>
-                            <th className="px-10 py-4 text-left text-[14px] font-[600] text-[#686666] uppercase tracking-widest">
-                              GROUP
+                                COLLEGE & GROUP
                             </th>
                           </tr>
                         </thead>
@@ -873,17 +848,12 @@ export default function CompanyDriveDetail() {
                               <td className="px-10 py-6">
                                 <div className="space-y-0.5">
                                   <p className="text-[11px] font-semibold text-slate-900">
-                                    MIT
+                                    {s.college_name || "N/A"}
                                   </p>
                                   <p className="text-[10px] font-medium text-slate-400">
-                                    Computer Science
+                                    {s.group_name || "N/A"}
                                   </p>
                                 </div>
-                              </td>
-                              <td className="px-10 py-6">
-                                <span className="h-7 w-7 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center text-[10px] font-semibold">
-                                  2
-                                </span>
                               </td>
                             </tr>
                           ))}

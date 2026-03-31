@@ -332,7 +332,14 @@ export default function CompanyDashboard() {
                           </div>
 
                           {/* Utility Icons */}
-                          <div className="flex gap-2">
+                          <div className="flex items-center gap-3">
+                            <div className={`px-4 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest border shrink-0 h-10 flex items-center ${
+                              stats?.plan === "premium" 
+                                ? "bg-purple-50 text-purple-600 border-purple-100" 
+                                : "bg-blue-50 text-blue-600 border-blue-100"
+                            }`}>
+                              {stats?.plan || "Free"} Plan
+                            </div>
                             <button
                               onClick={() => handleDuplicateDrive(drive.id)}
                               className="h-10 w-10 bg-slate-50 text-slate-400 rounded-[12px] flex items-center justify-center hover:bg-slate-100 hover:text-[#1E293B] transition-all border border-slate-100 group/btn"
@@ -409,7 +416,8 @@ export default function CompanyDashboard() {
                                 GROUPS & STUDENTS
                               </p>
                               <p className="text-[15px] font-bold text-[#1E293B]">
-                                3 Groups / {drive.student_count || 0} Students
+                                {drive.targets?.length || 0} Groups /{" "}
+                                {drive.student_count || 0} Students
                               </p>
                             </div>
                           </div>

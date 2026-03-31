@@ -12,7 +12,10 @@ export default function ExamPage() {
   const { student } = useAuth();
   const navigate = useNavigate();
   const [violationCount, setViolationCount] = useState(0);
+  const [warningCount, setWarningCount] = useState(0);
   const [isViolationModalOpen, setIsViolationModalOpen] = useState(false);
+  const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
+  const [isFullScreenRequired, setIsFullScreenRequired] = useState(false);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [activeQuestion, setActiveQuestion] = useState(1);
   const [selectedOptions, setSelectedOptions] = useState({});
@@ -113,6 +116,13 @@ export default function ExamPage() {
   // Violation Detection Logic
   const handleViolation = useCallback(
     async (type) => {
+      // First, give 2 warnings for tab switching/fullscreen exit
+      if ((type === "tab_switch" || type === "fullscreen_exit") && warningCount < 2) {
+        setWarningCount(prev => prev + 1);
+        setIsWarningModalOpen(true);
+        return;
+      }
+
       // Increment count locally
       const newCount = violationCount + 1;
       setViolationCount(newCount);
@@ -120,14 +130,17 @@ export default function ExamPage() {
 
       if (newCount >= 3) {
         try {
-          const reason = `System detected excessive tab switching beyond the permitted limit.`;
+          const reason = `System detected excessive security violations beyond the permitted limit.`;
           await studentService.recordViolation(reason);
           SafeStorage.removeItem("violation_count");
           SafeStorage.removeItem("exam_answers");
+          
+          // Try to exit fullscreen before navigating
+          if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+          
           navigate("/disqualified", { state: { reason } });
         } catch (err) {
           console.error("Failed to record disqualification", err);
-          // Still navigate because the backend will block them anyway
           navigate("/disqualified", {
             state: { reason: "Security violation detected." },
           });
@@ -136,7 +149,7 @@ export default function ExamPage() {
         setIsViolationModalOpen(true);
       }
     },
-    [violationCount, navigate],
+    [violationCount, warningCount, navigate],
   );
 
   useEffect(() => {
@@ -169,13 +182,19 @@ export default function ExamPage() {
 
     const handleFullScreenChange = () => {
       if (!document.fullscreenElement) {
+        setIsFullScreenRequired(true);
         handleViolation("fullscreen_exit");
+      } else {
+        setIsFullScreenRequired(false);
       }
     };
 
     const handleContextMenu = (e) => {
       e.preventDefault();
-      handleViolation("right_click");
+      toast.error("Right-click is disabled during the exam!", {
+        icon: "🚫",
+        duration: 3000,
+      });
     };
 
     const handleCopy = (e) => {
@@ -190,11 +209,34 @@ export default function ExamPage() {
       });
     };
 
+    const handleKeyDown = (e) => {
+      // Block common shortcuts
+      if (
+        (e.ctrlKey || e.metaKey) && 
+        ['c', 'v', 'x', 'p', 'a', 'u'].includes(e.key.toLowerCase())
+      ) {
+        e.preventDefault();
+        toast.error("Keyboard shortcuts are disabled!", { icon: "🚫" });
+      }
+      
+      // Block F12
+      if (e.key === "F12") {
+        e.preventDefault();
+        toast.error("Developer tools are restricted!", { icon: "🚫" });
+      }
+    };
+
     document.addEventListener("visibilitychange", handleVisibilityChange);
     document.addEventListener("fullscreenchange", handleFullScreenChange);
     document.addEventListener("contextmenu", handleContextMenu);
     document.addEventListener("copy", handleCopy);
     document.addEventListener("paste", handlePaste);
+    document.addEventListener("keydown", handleKeyDown);
+
+    // Check initial fullscreen state
+    if (!document.fullscreenElement) {
+      setIsFullScreenRequired(true);
+    }
 
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -223,6 +265,7 @@ export default function ExamPage() {
       document.removeEventListener("contextmenu", handleContextMenu);
       document.removeEventListener("copy", handleCopy);
       document.removeEventListener("paste", handlePaste);
+      document.removeEventListener("keydown", handleKeyDown);
       clearInterval(timer);
     };
   }, [handleViolation]);
@@ -287,6 +330,19 @@ export default function ExamPage() {
       navigate("/result");
     } catch (err) {
       toast.error("Failed to submit exam");
+    }
+  };
+
+  const enterFullScreen = async () => {
+    try {
+      if (document.documentElement.requestFullscreen) {
+        await document.documentElement.requestFullscreen();
+      } else if (document.documentElement.webkitRequestFullscreen) {
+        await document.documentElement.webkitRequestFullscreen();
+      }
+      setIsFullScreenRequired(false);
+    } catch (err) {
+      toast.error("Failed to enter full screen. Please check your browser settings.");
     }
   };
 
@@ -542,6 +598,52 @@ export default function ExamPage() {
           </div>
         </aside>
       </main>
+
+      {/* Full Screen Enforcement Overlay */}
+      {isFullScreenRequired && (
+        <div className="fixed inset-0 bg-slate-900/90 backdrop-blur-md z-[9999] flex items-center justify-center p-6 text-center">
+          <div className="bg-white rounded-3xl p-10 max-w-lg shadow-2xl animate-in zoom-in-95 duration-300">
+            <div className="h-20 w-20 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mx-auto mb-8">
+              <AlertTriangle className="h-10 w-10" />
+            </div>
+            <h2 className="text-2xl font-bold text-slate-900 mb-4">Full Screen Required</h2>
+            <p className="text-slate-500 mb-10 leading-relaxed">
+              To ensure exam integrity, you must remain in full screen mode. 
+              Exiting full screen mode is considered a security violation.
+            </p>
+            <button
+              onClick={enterFullScreen}
+              className="w-full bg-[#2563EB] hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-blue-500/25 text-sm uppercase tracking-widest"
+            >
+              Enter Full Screen
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Warning Modal (Pre-violation) */}
+      {isWarningModalOpen && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-in fade-in duration-300">
+          <div className="bg-white rounded-[24px] shadow-2xl w-full max-w-[480px] overflow-hidden animate-in zoom-in-95 duration-300">
+            <div className="p-10 text-center">
+              <div className="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mb-6 mx-auto">
+                <AlertTriangle className="h-8 w-8 text-amber-500" />
+              </div>
+              <h3 className="text-[22px] font-bold text-slate-900 mb-3">Security Warning</h3>
+              <p className="text-slate-500 text-[15px] leading-relaxed mb-8">
+                System detected a potential violation (tab switch or window minimize). 
+                Please focus on the exam window. This is warning <b>{warningCount}/2</b>.
+              </p>
+              <button 
+                onClick={() => setIsWarningModalOpen(false)}
+                className="w-full py-3.5 bg-amber-500 text-white rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-amber-600 transition-all shadow-lg shadow-amber-500/20"
+              >
+                I Understand
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Violation Modal */}
       <ViolationModal

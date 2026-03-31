@@ -297,13 +297,22 @@ export default function CompanyHeader() {
               {userEmail}
             </p>
           </div>
-          <div className="h-12 w-12 bg-[#3B82F6] rounded-full flex items-center justify-center text-white font-bold text-[16px] shadow-lg shadow-blue-500/20 ring-4 ring-blue-50">
-            {companyName
-              .split(" ")
-              .map((n) => n[0])
-              .join("")
-              .toUpperCase()
-              .slice(0, 2)}
+          <div className="h-12 w-12 bg-[#3B82F6] rounded-full flex items-center justify-center text-white font-bold text-[16px] shadow-lg shadow-blue-500/20 ring-4 ring-blue-50 overflow-hidden">
+            {profile?.logo_url ? (
+              <img
+                src={profile.logo_url}
+                alt="Logo"
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              companyName
+                .split(" ")
+                .filter(Boolean)
+                .map((n) => n[0])
+                .join("")
+                .toUpperCase()
+                .slice(0, 2)
+            )}
           </div>
         </div>
       </div>
