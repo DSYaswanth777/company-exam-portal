@@ -216,6 +216,13 @@ export default function CompanyDriveDetail() {
     const file = event.target.files[0];
     if (!file) return;
 
+    // Simple extension check
+    if (!file.name.endsWith('.csv')) {
+      toast.error("Please upload a valid CSV file. Refer to the template for the correct format.");
+      event.target.value = "";
+      return;
+    }
+
     setIsUploading(true);
     const formData = new FormData();
     formData.append("file", file);
@@ -236,7 +243,8 @@ export default function CompanyDriveDetail() {
         setIsUploading(false);
       }, 500);
     } catch (err) {
-      toast.error(getErrorMessage(err));
+      toast.error(getErrorMessage(err) + ". Please refer to the template for the correct format.");
+      event.target.value = "";
       setIsUploading(false);
     }
   };
@@ -460,7 +468,7 @@ export default function CompanyDriveDetail() {
                           Questions
                         </p>
                         <p className="text-[13px] font-bold text-[#111827] uppercase">
-                          {questions.length} / {drive.question_count || 0}
+                          {questions.length}
                         </p>
                       </div>
                     </div>
@@ -548,7 +556,7 @@ export default function CompanyDriveDetail() {
                                   <span className="text-[13px] font-[700] text-[#111827]">
                                     {target.college_name ||
                                       target.custom_college_name ||
-                                      "N/A"}
+                                      "All Colleges"}
                                   </span>
                                 </div>
                                 <div className="flex gap-2 items-center">
@@ -558,7 +566,7 @@ export default function CompanyDriveDetail() {
                                   <span className="text-[13px] font-[700] text-[#111827] uppercase">
                                     {target.group_name ||
                                       target.custom_student_group_name ||
-                                      "N/A"}
+                                      "All Groups"}
                                   </span>
                                 </div>
                                 <div className="flex gap-2 items-center">
@@ -566,7 +574,7 @@ export default function CompanyDriveDetail() {
                                     BATCH:
                                   </span>
                                   <span className="text-[13px] font-[700] text-[#111827]">
-                                    {target.batch_year || "N/A"}
+                                    {target.batch_year || "Any Batch"}
                                   </span>
                                 </div>
                               </div>
@@ -655,10 +663,14 @@ export default function CompanyDriveDetail() {
                         </h3>
                       </div>
                       <div className="flex gap-4">
-                        <button className="flex items-center gap-2 bg-white/5 border border-white/10 text-white px-6 py-2.5 rounded-xl font-semibold text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">
+                        <a 
+                          href="/sample_questions.csv" 
+                          download 
+                          className="flex items-center gap-2 bg-white/5 border border-white/10 text-white px-6 py-2.5 rounded-xl font-semibold text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all"
+                        >
                           <Download className="h-3.5 w-3.5" />
                           TEMPLATE
-                        </button>
+                        </a>
                         <button
                           onClick={() =>
                             document.getElementById("questionsFile").click()
@@ -769,10 +781,14 @@ export default function CompanyDriveDetail() {
                         </h3>
                       </div>
                       <div className="flex gap-4">
-                        <button className="flex items-center gap-2 bg-white/5 border border-white/10 text-white px-6 py-2.5 rounded-xl font-semibold text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">
+                        <a 
+                          href="/sample_students.csv" 
+                          download 
+                          className="flex items-center gap-2 bg-white/5 border border-white/10 text-white px-6 py-2.5 rounded-xl font-semibold text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all"
+                        >
                           <Download className="h-3.5 w-3.5" />
                           TEMPLATE
-                        </button>
+                        </a>
                         <button
                           onClick={() =>
                             document.getElementById("studentsFile").click()
@@ -1009,18 +1025,22 @@ export default function CompanyDriveDetail() {
                                 <td className="px-8 py-6 text-center w-[160px]">
                                   <span
                                     className={`inline-flex items-center justify-center px-4 py-1.5 rounded-full text-[12px] font-[600] border border-solid ${
-                                      res.exam_submitted_at
-                                        ? "bg-[#ecfdf5] text-[#10b981] border-[#d1fae5]"
-                                        : res.exam_started_at
-                                          ? "bg-[#eff6ff] text-[#3b82f6] border-[#bfdbfe]"
-                                          : "bg-slate-50 text-slate-500 border-slate-200"
+                                      res.is_disqualified
+                                        ? "bg-red-50 text-red-600 border-red-100"
+                                        : res.exam_submitted_at
+                                          ? "bg-[#ecfdf5] text-[#10b981] border-[#d1fae5]"
+                                          : res.exam_started_at
+                                            ? "bg-[#eff6ff] text-[#3b82f6] border-[#bfdbfe]"
+                                            : "bg-slate-50 text-slate-500 border-slate-200"
                                     }`}
                                   >
-                                    {res.exam_submitted_at
-                                      ? "Completed"
-                                      : res.exam_started_at
-                                        ? "In Progress"
-                                        : "Not Started"}
+                                    {res.is_disqualified
+                                      ? "Disqualified"
+                                      : res.exam_submitted_at
+                                        ? "Completed"
+                                        : res.exam_started_at
+                                          ? "In Progress"
+                                          : "Not Started"}
                                   </span>
                                 </td>
                               </tr>

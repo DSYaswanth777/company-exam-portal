@@ -31,7 +31,7 @@ function App() {
               <Route path="/disqualified" element={<DisqualifiedPage />} />
               <Route
                 path="/"
-                element={<Navigate to="/instructions" replace />}
+                element={<Navigate to="/login" replace />}
               />
             </Routes>
             <Toaster position="top-right" reverseOrder={false} />

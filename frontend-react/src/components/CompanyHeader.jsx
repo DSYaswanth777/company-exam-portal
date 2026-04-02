@@ -58,13 +58,15 @@ export default function CompanyHeader() {
 
   const getTimeAgo = (dateString) => {
     const now = new Date();
+    // Assuming backend sends UTC, parse as UTC
     const past = new Date(dateString);
     const diffInMs = now - past;
-    const diffInMins = Math.floor(diffInMs / (1000 * 60));
+    const diffInSecs = Math.floor(diffInMs / 1000);
+    const diffInMins = Math.floor(diffInSecs / 60);
     const diffInHours = Math.floor(diffInMins / 60);
     const diffInDays = Math.floor(diffInHours / 24);
 
-    if (diffInMins < 1) return "JUST NOW";
+    if (diffInSecs < 30) return "JUST NOW";
     if (diffInMins < 60) return `${diffInMins} MINS AGO`;
     if (diffInHours < 24) return `${diffInHours} HOURS AGO`;
     return `${diffInDays} DAYS AGO`;
@@ -203,7 +205,7 @@ export default function CompanyHeader() {
                             {notification.type || "NOTIFICATION"}
                             </span>
                           </div>
-                          <p className="text-[13px] text-slate-400 font-medium leading-relaxed truncate pr-4">
+                          <p className="text-[13px] text-slate-400 font-medium leading-relaxed pr-4">
                             {notification.message}
                           </p>
                           <div className="flex items-center gap-2 mt-2">

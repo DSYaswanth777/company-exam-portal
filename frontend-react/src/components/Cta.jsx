@@ -9,11 +9,17 @@ export default function CTA() {
             </h2>
   
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button className="w-full sm:w-auto px-8 py-3 bg-white text-blue-600  rounded-xl hover:bg-blue-50 transition-colors duration-300 shadow-lg">
+              <button 
+                onClick={() => window.location.href = "/company/register"}
+                className="w-full sm:w-auto px-8 py-3 bg-white text-blue-600 font-bold rounded-xl hover:bg-blue-50 transition-colors duration-300 shadow-lg"
+              >
                 Start Free Trial
               </button>
               
-              <button className="w-full sm:w-auto px-8 py-3 bg-white/10 text-white  rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-300 backdrop-blur-sm">
+              <button 
+                onClick={() => window.location.href = "mailto:sales@example.com"}
+                className="w-full sm:w-auto px-8 py-3 bg-white/10 text-white font-bold rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-300 backdrop-blur-sm"
+              >
                 Contact Sales
               </button>
             </div>

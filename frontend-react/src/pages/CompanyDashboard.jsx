@@ -369,9 +369,6 @@ export default function CompanyDashboard() {
                           <span className="bg-[#F8FAFC] text-[#64748B] px-4 py-1.5 rounded-[8px] font-extrabold text-[10px] uppercase tracking-widest border border-slate-100 shadow-sm">
                             {drive.category || "TECHNICAL"}
                           </span>
-                          <span className="bg-[#F8FAFC] text-[#64748B] px-4 py-1.5 rounded-[8px] font-extrabold text-[10px] uppercase tracking-widest border border-slate-100 shadow-sm">
-                            ENGINEERING
-                          </span>
                         </div>
 
                         {/* Info Grid */}

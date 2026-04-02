@@ -37,6 +37,7 @@ import {
   Loader2,
   Eye,
   Ban,
+  Settings,
 } from "lucide-react";
 import { TbTargetArrow } from "react-icons/tb";
 import { IoIosFlash } from "react-icons/io";
@@ -2388,7 +2389,11 @@ export default function AdminDashboard() {
           setStudentsSearch={setStudentsSearch}
         />
         <main className="flex-1 overflow-y-auto p-10 custom-scrollbar">
-          {activeTab === "overview" && renderOverview()}
+          {activeTab === "overview" && (statsLoading ? (
+            <div className="flex items-center justify-center py-40">
+              <div className="animate-spin h-12 w-12 border-[6px] border-blue-600 border-t-transparent rounded-full shadow-lg shadow-blue-200"></div>
+            </div>
+          ) : renderOverview())}
           {activeTab === "companies" && renderCompanies()}
           {activeTab === "students" && renderStudentsDB()}
           {activeTab === "ongoing_exams" && renderOngoingExams()}

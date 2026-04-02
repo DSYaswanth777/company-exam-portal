@@ -127,13 +127,13 @@ console.log(drive)
       "{{student_name}}": "John Doe",
       "{{roll_number}}": "2024001",
       "{{drive_title}}": emailStatus?.drive_title || "Premium Assessment",
-      "{{company_name}}": "Partner AI",
+      "{{company_name}}": drive?.company_name || "Partner AI",
       "{{password}}": "temp_xyz_789",
-      "{{login_url}}": window.location.origin + "/student-login",
+      "{{login_url}}": "https://student-portal-url.com/login", // This should be the real student portal URL
       "{{start_time}}": examStatus?.scheduled_start
         ? formatDateUTC(examStatus.scheduled_start)
         : formatDateUTC(new Date().toISOString()),
-      "{{duration}}": "60",
+      "{{duration}}": examStatus?.duration_minutes || "60",
     };
 
     Object.entries(sampleData).forEach(([key, value]) => {

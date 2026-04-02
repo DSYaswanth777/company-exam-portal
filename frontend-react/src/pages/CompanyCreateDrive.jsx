@@ -294,12 +294,20 @@ export default function CompanyCreateDrive() {
               Setup Progress
             </span>
             <div className="flex gap-1.5">
-              {(driveId ? [1, 1, 1, 1] : [1, 1, 1, 0]).map((active, i) => (
-                <div
-                  key={i}
-                  className={`h-1.5 w-10 rounded-full ${active ? "bg-blue-600" : "bg-slate-100"}`}
-                ></div>
-              ))}
+              {[1, 2, 3, 4].map((step) => {
+                let active = false;
+                if (step === 1) active = !!formData.title;
+                if (step === 2) active = !!formData.window_start && !!formData.window_end;
+                if (step === 3) active = formData.targets.some(t => t.college_id || t.custom_college_name);
+                if (step === 4) active = !!driveId;
+                
+                return (
+                  <div
+                    key={step}
+                    className={`h-1.5 w-10 rounded-full ${active ? "bg-blue-600" : "bg-slate-100"}`}
+                  ></div>
+                );
+              })}
             </div>
           </div>
         </header>
@@ -456,16 +464,21 @@ export default function CompanyCreateDrive() {
                   <Clock className="h-4 w-4" />
                 </div>
                 <p className="text-[18px] font-[400] text-[#713F12]">
-                  The exam active window is of{" "}
-                  {formData.window_start && formData.window_end
-                    ? Math.round(
-                        (parseISO(formData.window_end) -
-                          parseISO(formData.window_start)) /
-                          (1000 * 60 * 60),
-                      )
-                    : 24}{" "}
-                  hrs and the exam itself will run for{" "}
-                  {formData.exam_duration_minutes} mins.
+                  {formData.window_start && formData.window_end ? (
+                    <>
+                      The exam window will be open for{" "}
+                      <span className="font-bold">
+                        {Math.round(
+                          (parseISO(formData.window_end) - parseISO(formData.window_start)) / (1000 * 60 * 60)
+                        )}
+                      </span>{" "}
+                      hours. Candidates can start their{" "}
+                      <span className="font-bold">{formData.exam_duration_minutes}</span>-minute exam 
+                      anytime within this period.
+                    </>
+                  ) : (
+                    "Please select the start and end time for the exam window."
+                  )}
                 </p>
               </div>
 

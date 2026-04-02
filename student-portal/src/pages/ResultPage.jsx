@@ -15,6 +15,11 @@ export default function ResultPage() {
       navigate("/login");
       return;
     }
+    // Clear exam-related data from localStorage
+    localStorage.removeItem("exam_session");
+    localStorage.removeItem("exam_started");
+    localStorage.removeItem("answers");
+    
     loadResult();
   }, [student, navigate]);
 
