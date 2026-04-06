@@ -73,10 +73,13 @@ export default function AdminHeader({
         const res = await adminService.getNotifications();
         const data = res.data || [];
         setNotifications(data);
-        
-        // Filter out read notifications from localStorage
+
+        // Calculate unread count based on is_read flag and localStorage backup
         const readIds = JSON.parse(localStorage.getItem("admin_read_notifications") || "[]");
-        const unread = data.filter(n => !readIds.includes(n.id));
+        const unread = data.filter(n => {
+          if (n.is_read !== undefined) return !n.is_read;
+          return !readIds.includes(n.id);
+        });
         setUnreadCount(unread.length);
       } catch (err) {
         console.error("Failed to fetch notification count:", err);
@@ -84,7 +87,7 @@ export default function AdminHeader({
     };
 
     fetchNotifications();
-    
+
     // Optional: Refresh count every 5 minutes
     const interval = setInterval(fetchNotifications, 5 * 60 * 1000);
     return () => clearInterval(interval);
