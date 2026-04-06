@@ -170,7 +170,10 @@ export default function AdminDashboard() {
       loadDashboardStats();
       loadRecentActivity();
     }
-    if (activeTab === "companies" || activeTab === "active_companies") {
+    
+    // Load companies for overview, companies, and active_companies tabs
+    const companyTabs = ["overview", "companies", "active_companies"];
+    if (companyTabs.includes(activeTab)) {
       loadCompanies();
     }
   }, [statusFilter, activeTab]);
@@ -453,8 +456,13 @@ export default function AdminDashboard() {
   const loadCompanies = async () => {
     setIsLoading(true);
     try {
-      const filter =
-        activeTab === "active_companies" ? "approved" : statusFilter;
+      let filter = statusFilter;
+      if (activeTab === "active_companies") {
+        filter = "approved";
+      } else if (activeTab === "overview") {
+        filter = "all"; // Always show all status summary in overview
+      }
+      
       const res = await adminService.getCompanies(filter);
       setCompaniesList(res.data || []);
     } catch (err) {
@@ -791,7 +799,7 @@ export default function AdminDashboard() {
                       Subscription Expiry
                     </p>
                     <p className="text-[13px] font-semibold text-slate-700">
-                      {company.expiry_date ? formatDate(company.expiry_date) : "N/A"}
+                      {company.plan_expires_at ? formatDate(company.plan_expires_at) : "N/A"}
                     </p>
                   </div>
                   <button 
