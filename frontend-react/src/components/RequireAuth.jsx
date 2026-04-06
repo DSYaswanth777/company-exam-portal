@@ -2,9 +2,6 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function RequireAuth({ children, allowedTypes = [] }) {
-  // Temporary bypass for UI development
-  return children;
-
   const { user } = useAuth();
 
   // Special check for student path if allowedTypes includes 'student'

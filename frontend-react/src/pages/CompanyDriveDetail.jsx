@@ -700,14 +700,24 @@ export default function CompanyDriveDetail() {
                         <AlertCircle className="h-4 w-4" />
                         Warning: This action cannot be undone
                       </p>
-                      <button
-                        onClick={() =>
-                          document.getElementById("questionsFile").click()
-                        }
-                        className="bg-[#2563EB] text-white px-8 py-3.5 rounded-xl font-bold text-[12px] uppercase tracking-wider hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20"
-                      >
-                        BULK IMPORT
-                      </button>
+                        <div className="flex gap-4">
+                        <a 
+                          href="/sample_questions.csv" 
+                          download 
+                          className="bg-white border border-slate-200 text-slate-600 px-8 py-3.5 rounded-xl font-bold text-[12px] uppercase tracking-wider hover:bg-slate-50 transition-all shadow-sm flex items-center gap-2"
+                        >
+                          <Download className="h-4 w-4" />
+                          DOWNLOAD TEMPLATE
+                        </a>
+                        <button
+                          onClick={() =>
+                            document.getElementById("questionsFile").click()
+                          }
+                          className="bg-[#2563EB] text-white px-8 py-3.5 rounded-xl font-bold text-[12px] uppercase tracking-wider hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20"
+                        >
+                          BULK IMPORT
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
@@ -818,14 +828,24 @@ export default function CompanyDriveDetail() {
                         <AlertCircle className="h-4 w-4" />
                         Warning: This action cannot be undone
                       </p>
-                      <button
-                        onClick={() =>
-                          document.getElementById("studentsFile").click()
-                        }
-                        className="bg-[#2563EB] text-white px-8 py-3.5 rounded-xl font-bold text-[12px] uppercase tracking-wider hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20"
-                      >
-                        BULK IMPORT
-                      </button>
+                        <div className="flex gap-4">
+                        <a 
+                          href="/sample_students.csv" 
+                          download 
+                          className="bg-white border border-slate-200 text-slate-600 px-8 py-3.5 rounded-xl font-bold text-[12px] uppercase tracking-wider hover:bg-slate-50 transition-all shadow-sm flex items-center gap-2"
+                        >
+                          <Download className="h-4 w-4" />
+                          DOWNLOAD TEMPLATE
+                        </a>
+                        <button
+                          onClick={() =>
+                            document.getElementById("studentsFile").click()
+                          }
+                          className="bg-[#2563EB] text-white px-8 py-3.5 rounded-xl font-bold text-[12px] uppercase tracking-wider hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/20"
+                        >
+                          BULK IMPORT
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
@@ -864,10 +884,10 @@ export default function CompanyDriveDetail() {
                               <td className="px-10 py-6">
                                 <div className="space-y-0.5">
                                   <p className="text-[11px] font-semibold text-slate-900">
-                                    {s.college_name || "N/A"}
+                                    {s.college_name || "-"}
                                   </p>
                                   <p className="text-[10px] font-medium text-slate-400">
-                                    {s.group_name || "N/A"}
+                                    {s.group_name || "-"}
                                   </p>
                                 </div>
                               </td>
@@ -1017,7 +1037,7 @@ export default function CompanyDriveDetail() {
                                   {res.roll_number}
                                 </td>
                                 <td className="px-8 py-6 text-[14px] font-[500] text-[#64748b] text-center w-[120px]">
-                                  {res.college_name || "N/A"}
+                                  {res.college_name || "-"}
                                 </td>
                                 <td className="px-8 py-6 text-[14px] font-[700] text-[#111827] text-center w-[140px]">
                                   {res.percentage || 0}%
@@ -1104,10 +1124,10 @@ export default function CompanyDriveDetail() {
                     Institutional Data
                   </p>
                   <p className="text-sm font-medium text-white">
-                    {selectedStudent.college_name || "N/A"}
+                    {selectedStudent.college_name || "-"}
                   </p>
                   <p className="text-sm font-medium text-slate-400 uppercase text-[10px]">
-                    {selectedStudent.student_group_name || "N/A"}
+                    {selectedStudent.student_group_name || "-"}
                   </p>
                 </div>
               </div>

@@ -15,7 +15,7 @@ export default function AdminSidebar({ activeTab, setActiveTab, onLogout }) {
     { id: "overview", label: "Dashboard", icon: LayoutDashboard },
     {
       id: "companies",
-      label: "Company Approvals",
+      label: "Company Management",
       icon: "/icons/companyApprovals.png",
     },
     { id: "data_management", label: "Data Management", icon: Database },

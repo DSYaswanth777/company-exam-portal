@@ -317,6 +317,8 @@ export default function AdminDashboard() {
       // Now filter for ongoing
       const ongoing = drivesData.filter(
         (d) =>
+          d.status === "live" ||
+          d.status === "ongoing" ||
           statusMap[d.id]?.exam_state === "ongoing" ||
           statusMap[d.id]?.exam_state === "live",
       );
@@ -675,7 +677,7 @@ export default function AdminDashboard() {
         tab: "active_companies",
       },
       {
-        label: "Approved Drives",
+        label: "Drive Management",
         value: dashboardStats?.drives?.active || "0",
         change: "+5%",
         icon: Rocket,
@@ -691,15 +693,6 @@ export default function AdminDashboard() {
         color: "text-emerald-500",
         bg: "bg-emerald-50/50",
         tab: "ongoing_exams",
-      },
-      {
-        label: "Registered Students",
-        value: dashboardStats?.students?.total || "0",
-        change: "+22%",
-        icon: Users,
-        color: "text-purple-500",
-        bg: "bg-purple-50/50",
-        tab: "students",
       },
     ];
 
@@ -786,7 +779,7 @@ export default function AdminDashboard() {
                 </div>
                 <div>
                   <h4 className="text-[16px] font-bold text-slate-900 leading-tight">
-                    {company.name}
+                    {company.name || company.company_name}
                   </h4>
                   <p className="text-slate-500 text-[12px] mt-1">
                     Registered: {formatDate(company.created_at)}
@@ -1533,7 +1526,7 @@ export default function AdminDashboard() {
             </button>
             <div>
               <h2 className="text-2xl font-[600] text-slate-800 tracking-tight">
-                Drive Monitoring
+                Drive Management
               </h2>
               <p className="text-slate-400 font-[300] text-[14px] mt-1 pr-10">
                 Real-time oversight of all examination drives.
@@ -2395,7 +2388,6 @@ export default function AdminDashboard() {
             </div>
           ) : renderOverview())}
           {activeTab === "companies" && renderCompanies()}
-          {activeTab === "students" && renderStudentsDB()}
           {activeTab === "ongoing_exams" && renderOngoingExams()}
           {(activeTab === "active_drives" || activeTab === "drives") &&
             renderActiveDrivesTable()}

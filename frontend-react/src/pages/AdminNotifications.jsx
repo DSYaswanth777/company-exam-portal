@@ -45,10 +45,10 @@ const AdminNotifications = () => {
     setIsLoading(true);
     try {
       const res = await adminService.getNotifications();
-      // Add a dummy is_read property for demonstration if missing
-      const data = (res.data || []).map((n, idx) => ({
+      const readIds = JSON.parse(localStorage.getItem("admin_read_notifications") || "[]");
+      const data = (res.data || []).map((n) => ({
         ...n,
-        is_read: n.is_read !== undefined ? n.is_read : idx > 2 // Dummy logic: first 3 are unread
+        is_read: n.is_read !== undefined ? n.is_read : readIds.includes(n.id)
       }));
       setNotifications(data);
     } catch (err) {
@@ -142,9 +142,12 @@ const AdminNotifications = () => {
               <div className="absolute top-full right-0 mt-1 w-64 bg-white rounded-2xl shadow-2xl border border-slate-100 py-3 z-50 animate-in fade-in zoom-in-95 duration-200">
                 <button 
                   onClick={() => {
+                    const allIds = notifications.map(n => n.id);
+                    localStorage.setItem("admin_read_notifications", JSON.stringify(allIds));
                     setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
                     setIsMenuOpen(false);
                     toast.success("All marked as read");
+                    // Force refresh header count if needed (usually happens on interval)
                   }}
                   className="w-full px-6 py-3 flex items-center gap-4 hover:bg-slate-50 transition-colors text-left group"
                 >
@@ -205,7 +208,7 @@ const AdminNotifications = () => {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-1.5 single-line-group">
                       <h3 className="text-[17px] font-[500] text-slate-900 truncate tracking-tight">
-                        {notif.company_name || "System Message"}
+                        {notif.is_outgoing ? `To: ${notif.company_name}` : (notif.company_name || "System Message")}
                       </h3>
                       <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border ${
                         notif.type?.toLowerCase() === "registration" 

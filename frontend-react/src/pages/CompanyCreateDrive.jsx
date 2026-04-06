@@ -296,10 +296,10 @@ export default function CompanyCreateDrive() {
             <div className="flex gap-1.5">
               {[1, 2, 3, 4].map((step) => {
                 let active = false;
-                if (step === 1) active = !!formData.title;
-                if (step === 2) active = !!formData.window_start && !!formData.window_end;
-                if (step === 3) active = formData.targets.some(t => t.college_id || t.custom_college_name);
-                if (step === 4) active = !!driveId;
+                if (step === 1) active = true; // Always blue since we are in Basic Details
+                if (step === 2) active = !!formData.title && !!formData.category; 
+                if (step === 3) active = !!formData.window_start && !!formData.window_end && (formData.window_start !== format(new Date(), "yyyy-MM-dd'T'HH:mm") || !!driveId);
+                if (step === 4) active = formData.targets.some(t => t.college_id || t.custom_college_name) || !!driveId;
                 
                 return (
                   <div
@@ -517,13 +517,16 @@ export default function CompanyCreateDrive() {
                     className="p-8 bg-slate-50 rounded-[24px] border border-slate-100 space-y-6 relative"
                   >
                     {formData.targets.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => removeTarget(idx)}
-                        className="absolute top-6 right-6 text-[12px] font-[500] text-red-400 uppercase tracking-widest hover:text-red-600"
-                      >
-                        Remove
-                      </button>
+                      <div className="flex justify-end pr-4">
+                        <button
+                          type="button"
+                          onClick={() => removeTarget(idx)}
+                          className="text-[12px] font-[600] text-red-500 uppercase tracking-widest hover:text-red-700 transition-colors flex items-center gap-1 bg-red-50 px-3 py-1 rounded-lg"
+                        >
+                          <X className="h-3 w-3" />
+                          Remove
+                        </button>
+                      </div>
                     )}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div className="space-y-3">
