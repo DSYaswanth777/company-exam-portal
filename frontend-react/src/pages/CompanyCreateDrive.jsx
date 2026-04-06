@@ -85,7 +85,7 @@ export default function CompanyCreateDrive() {
     title: "",
     description: "",
     category: "Technical MCQ",
-    exam_duration_minutes: 60,
+    exam_duration_minutes: "",
     window_start: "",
     window_end: "",
     targets: [
@@ -112,15 +112,6 @@ export default function CompanyCreateDrive() {
     loadReferenceData();
     if (driveId) {
       loadDriveData();
-    } else {
-      // Prefill for new drive
-      const now = new Date();
-      setFormData((prev) => ({
-        ...prev,
-        window_start: format(now, "yyyy-MM-dd'T'HH:mm"),
-        window_end: format(addHours(now, 24), "yyyy-MM-dd'T'HH:mm"),
-        exam_duration_minutes: 60,
-      }));
     }
   }, [driveId]);
 
@@ -299,7 +290,7 @@ export default function CompanyCreateDrive() {
                 let active = false;
                 if (step === 1) active = true; // Always blue since we are in Basic Details
                 if (step === 2) active = !!formData.title && !!formData.category; 
-                if (step === 3) active = !!formData.window_start && !!formData.window_end && (formData.window_start !== format(new Date(), "yyyy-MM-dd'T'HH:mm") || !!driveId);
+                if (step === 3) active = !!formData.window_start && !!formData.window_end; 
                 if (step === 4) active = formData.targets.some(t => t.college_id || t.custom_college_name) || !!driveId;
                 
                 return (
@@ -460,28 +451,24 @@ export default function CompanyCreateDrive() {
                 </div>
               </div>
 
-              <div className="bg-[#FDE047]/30 border-l-2 border-[#EAB308] rounded-xl p-8 flex items-center gap-8">
-                <div className="h-8 w-8 bg-[#EAB308] rounded-xl flex items-center justify-center text-slate-900 shadow-lg shadow-yellow-500/20">
-                  <Clock className="h-4 w-4" />
+              {formData.window_start && formData.window_end && (
+                <div className="bg-[#FDE047]/30 border-l-2 border-[#EAB308] rounded-xl p-8 flex items-center gap-8">
+                  <div className="h-8 w-8 bg-[#EAB308] rounded-xl flex items-center justify-center text-slate-900 shadow-lg shadow-yellow-500/20">
+                    <Clock className="h-4 w-4" />
+                  </div>
+                  <p className="text-[18px] font-[400] text-[#713F12]">
+                    The exam window will be open for{" "}
+                    <span className="font-bold">
+                      {Math.round(
+                        (parseISO(formData.window_end) - parseISO(formData.window_start)) / (1000 * 60 * 60)
+                      )}
+                    </span>{" "}
+                    hours. Candidates can start their{" "}
+                    <span className="font-bold">{formData.exam_duration_minutes}</span>-minute exam 
+                    anytime within this period.
+                  </p>
                 </div>
-                <p className="text-[18px] font-[400] text-[#713F12]">
-                  {formData.window_start && formData.window_end ? (
-                    <>
-                      The exam window will be open for{" "}
-                      <span className="font-bold">
-                        {Math.round(
-                          (parseISO(formData.window_end) - parseISO(formData.window_start)) / (1000 * 60 * 60)
-                        )}
-                      </span>{" "}
-                      hours. Candidates can start their{" "}
-                      <span className="font-bold">{formData.exam_duration_minutes}</span>-minute exam 
-                      anytime within this period.
-                    </>
-                  ) : (
-                    "Please select the start and end time for the exam window."
-                  )}
-                </p>
-              </div>
+              )}
 
             </div>
 
