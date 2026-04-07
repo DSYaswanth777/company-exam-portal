@@ -3,6 +3,7 @@ import { Bell, User, LogOut, ChevronDown, Building2, Ticket, Clock, Inbox, MoreV
 import { useAuth } from "../contexts/AuthContext";
 import companyService from "../services/companyService";
 import { useNavigate } from "react-router-dom";
+import { getFullUrl } from "../utils/urlHelper";
 
 export default function CompanyHeader() {
   const { user, logout } = useAuth();
@@ -76,7 +77,7 @@ export default function CompanyHeader() {
     if (logoUrl) {
       return (
         <div className="h-10 w-10 bg-white rounded-xl flex items-center justify-center border border-slate-100 p-1 overflow-hidden shadow-sm">
-          <img src={logoUrl} alt="Company Logo" className="h-full w-full object-contain" />
+          <img src={getFullUrl(logoUrl)} alt="Company Logo" className="h-full w-full object-contain" />
         </div>
       );
     }
@@ -302,7 +303,7 @@ export default function CompanyHeader() {
           <div className="h-12 w-12 bg-[#3B82F6] rounded-full flex items-center justify-center text-white font-bold text-[16px] shadow-lg shadow-blue-500/20 ring-4 ring-blue-50 overflow-hidden">
             {profile?.logo_url ? (
               <img
-                src={profile.logo_url}
+                src={getFullUrl(profile.logo_url)}
                 alt="Logo"
                 className="h-full w-full object-cover"
               />

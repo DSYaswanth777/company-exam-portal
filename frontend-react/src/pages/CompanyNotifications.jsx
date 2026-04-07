@@ -19,6 +19,7 @@ import companyService from "../services/companyService";
 import { toast } from "react-hot-toast";
 import CompanySidebar from "../components/CompanySidebar";
 import CompanyHeader from "../components/CompanyHeader";
+import { getFullUrl } from "../utils/urlHelper";
 
 const CompanyNotifications = () => {
   const [notifications, setNotifications] = useState([]);
@@ -91,7 +92,7 @@ const CompanyNotifications = () => {
       return (
         <div className="h-10 w-10 bg-white rounded-xl flex items-center justify-center border border-slate-100 p-1 overflow-hidden shadow-sm">
           <img
-            src={logoUrl}
+            src={getFullUrl(logoUrl)}
             alt="Company Logo"
             className="h-full w-full object-contain"
           />

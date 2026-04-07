@@ -41,6 +41,7 @@ import {
 } from "lucide-react";
 import { TbTargetArrow } from "react-icons/tb";
 import { IoIosFlash } from "react-icons/io";
+import { getFullUrl } from "../utils/urlHelper";
 import maintainenceNotice from "/icons/maintainenceNotice.png"
 import featureRelease from "/icons/featureRelease.png"
 import platformImprovement from "/icons/platformImprovement.png"
@@ -774,7 +775,7 @@ export default function AdminDashboard() {
                 <div className="flex justify-between items-start mb-6">
                   <div className="h-12 w-12 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100">
                     {company.logo_url ? (
-                      <img src={company.logo_url} alt="" className="h-8 w-8 object-contain" />
+                      <img src={getFullUrl(company.logo_url)} alt="" className="h-8 w-8 object-contain" />
                     ) : (
                       <Building2 className="h-6 w-6 text-slate-400" />
                     )}
