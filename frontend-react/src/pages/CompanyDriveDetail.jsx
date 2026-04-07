@@ -1185,32 +1185,16 @@ export default function CompanyDriveDetail() {
                     </span>
                   </p>
                 </div>
-                <div
-                  className={`p-6 rounded-xl border flex flex-col justify-center ${
-                    selectedStudent.violation_count > 0
-                      ? "bg-red-50/50 border-red-100"
-                      : "bg-slate-50 border-slate-100"
-                  }`}
-                >
-                  <p
-                    className={`text-[10px] font-semibold uppercase tracking-widest mb-4 ${
-                      selectedStudent.violation_count > 0
-                        ? "text-red-400"
-                        : "text-slate-400"
-                    }`}
-                  >
-                    Anomalies Detected
-                  </p>
-                  <p
-                    className={`text-4xl font-semibold tracking-tight ${
-                      selectedStudent.violation_count > 0
-                        ? "text-red-600"
-                        : "text-slate-900"
-                    }`}
-                  >
-                    {selectedStudent.violation_count}
-                  </p>
-                </div>
+                  {selectedStudent.violation_count > 0 && (
+                    <div className="bg-red-50/50 p-6 rounded-xl border border-red-100 flex flex-col justify-center">
+                      <p className="text-[10px] font-semibold uppercase tracking-widest mb-4 text-red-400">
+                        Anomalies Detected
+                      </p>
+                      <p className="text-4xl font-semibold tracking-tight text-red-600">
+                        Yes
+                      </p>
+                    </div>
+                  )}
               </div>
 
               {/* Detailed Violations */}

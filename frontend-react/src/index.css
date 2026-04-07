@@ -36,7 +36,14 @@
 }
 .rs-input-group[data-inside=true] .rs-input{
   padding: 20px;
+
   background-color: var(--bg-secondary);
+}
+.rs-input-group[data-inside=true]{
+  background-color: var(--bg-secondary) !important;
+}
+.rs-input-group{
+  border: none !important;
 }
 /* Smooth transitions for theme changes */
 * {
