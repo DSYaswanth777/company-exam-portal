@@ -53,7 +53,7 @@ export default function Navbar() {
                   to="/company/login"
                   className="text-sm font-[500] text-slate-700 hover:text-slate-900"
                 >
-                  Company Login
+                  Login
                 </Link>
                 <Link
                   to="/company/register"

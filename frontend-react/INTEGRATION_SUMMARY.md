@@ -11,7 +11,7 @@ The frontend-react application has been successfully integrated with the backend
 **Files Updated:**
 
 - `src/pages/AdminLogin.jsx` - Admin login with username/password
-- `src/pages/CompanyLogin.jsx` - Company login with username/password
+- `src/pages/CompanyLogin.jsx` - Login with username/password
 - `src/pages/CompanyRegister.jsx` - Company registration with full form validation
 - `src/contexts/AuthContext.jsx` - JWT token management and user state
 - `src/lib/api.js` - Axios interceptor for token attachment
@@ -168,10 +168,10 @@ Company Name: Test Corp
 Username: testcorp
 Email: test@testcorp.com
 Password: password123
-Expected: Success message, redirect to company login after 1.2s
+Expected: Success message, redirect to Login after 1.2s
 ```
 
-### Company Login Test
+### Login Test
 
 ```
 Username: (any registered company username)

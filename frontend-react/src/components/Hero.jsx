@@ -2,17 +2,10 @@ import { NavLink } from "react-router-dom";
 
 export default function Hero() {
   return (
-    <section
-      className="relative pt-20 pb-32 lg:pt-32 lg:pb-40 overflow-hidden"
-
-    >
-
-
+    <section className="relative pt-20 pb-32 lg:pt-32 lg:pb-40 overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap- items-center">  
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap- items-center">
           <div>
-    
-
             <h1
               className="text-[68px] font-[700] tracking-tight mb-6 leading-tight"
               style={{ color: "var(--text-primary)" }}
@@ -33,11 +26,11 @@ export default function Hero() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-10">
-            <NavLink
+              <NavLink
                 to="/company/login"
                 className="inline-flex text-[16px] items-center justify-center px-6 py-3 border-2 border-slate-200 hover:border-blue-400 hover:text-white  rounded-xl hover:bg-slate-800 transition-all duration-300"
               >
-                Company Login
+                Login
               </NavLink>
               <NavLink
                 to="/company/register"
@@ -45,10 +38,8 @@ export default function Hero() {
               >
                 <span className="flex items-center gap-2">
                   Get Started Free
-               
                 </span>
               </NavLink>
-         
             </div>
 
             <div
@@ -77,7 +68,7 @@ export default function Hero() {
           </div>
 
           <div className="relative hidden lg:block">
-          <img src="dashboard.png" alt="dashboard" className="w-full" />
+            <img src="dashboard.png" alt="dashboard" className="w-full" />
           </div>
         </div>
       </div>

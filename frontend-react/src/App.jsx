@@ -78,7 +78,7 @@ const App = () => {
       const pathTitleMap = {
         "/": "Assessflow | Hiring Platform",
         "/admin/login": "Admin Login | Assessflow",
-        "/company/login": "Company Login | Assessflow",
+        "/company/login": "Login | Assessflow",
         "/company/register": "Company Registration | Assessflow",
         "/admin": "Admin Dashboard | Assessflow",
         "/admin-dashboard": "Admin Dashboard | Assessflow",
