@@ -159,7 +159,7 @@ export default function CompanyDashboard() {
         <main className="flex-1 overflow-auto p-12">
           <div className="max-w-7xl mx-auto space-y-12 animate-in fade-in duration-700">
             {/* Welcome Banner */}
-            <div className="relative overflow-hidden bg-gradient-to-r from-[#2563EB] to-[#3B82F6] rounded-[32px] p-8 text-white shadow-xl">
+            <div className="relative overflow-hidden bg-[#2563EB] rounded-[32px] p-8 text-white shadow-xl">
               <div className="relative z-10 flex justify-between items-center">
                 <div>
                   <h1 className="text-[36px] font-[600] tracking-tight mb-2">
@@ -170,18 +170,18 @@ export default function CompanyDashboard() {
                   </p>
                 </div>
 
-                {/* Growth Card */}
+                {/* Plan Tier Display */}
                 <div className="flex justify-center items-center gap-3">
                   <div className="bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/20 flex items-center gap-6 min-w-[180px]">
                     <div>
                       <p className="text-[12px] font-bold uppercase tracking-widest text-blue-100 mb-1">
-                        THIS MONTH
+                        PLAN TIER
                       </p>
-                      <span className="text-[30px] font-[600]">+24%</span>
+                      <span className="text-[24px] font-[700] uppercase tracking-wider">{stats?.plan || "FREE"}</span>
                     </div>
                   </div>
                   <div className="h-16 w-16 bg-white/20 rounded-[18px] flex items-center justify-center">
-                    <TrendingUp className="h-8 w-8 text-white" />
+                    <Zap className="h-8 w-8 text-white fill-white" />
                   </div>
                 </div>
               </div>
@@ -304,14 +304,14 @@ export default function CompanyDashboard() {
                     >
                       {/* Left Status Color Bar */}
                       <div
-                        className={`absolute left-0 top-0 bottom-0 w-[6px] border-r-2 ${
+                        className={`absolute left-0 top-0 bottom-0 w-[8px] ${
                           drive.status === "live"
-                            ? "bg-[#16A34A] border-[#15803D]"
+                            ? "bg-[#16A34A]"
                             : drive.status === "upcoming"
-                              ? "bg-[#3B82F6] border-[#2563EB]"
+                              ? "bg-[#3B82F6]"
                               : drive.status === "draft"
-                                ? "bg-[#EA580C] border-[#C2410C]"
-                                : "bg-[#DC2626] border-[#B91C1C]"
+                                ? "bg-[#EA580C]"
+                                : "bg-[#DC2626]"
                         }`}
                       ></div>
 

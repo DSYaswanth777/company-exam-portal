@@ -430,11 +430,11 @@ export default function CompanyDriveDetail() {
 
                     {/* Card 2: Duration */}
                     <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.05)] flex flex-col items-center justify-center gap-4">
-                      <div className="h-14 w-14 bg-white shadow-[0_4px_12px_rgba(34,197,94,0.12)] rounded-full flex items-center justify-center text-green-500">
+                      <div className="h-14 w-14 bg-emerald-50 shadow-[0_4px_12px_rgba(16,185,129,0.12)] rounded-full flex items-center justify-center text-[#16A34A]">
                         <Clock className="h-6 w-6" strokeWidth={2} />
                       </div>
                       <div className="text-center space-y-2">
-                        <p className="text-[13px] font-semibold text-green-500">
+                        <p className="text-[13px] font-semibold text-[#16A34A]">
                           Duration
                         </p>
                         <p className="text-[13px] font-bold text-[#111827] uppercase">
@@ -919,7 +919,10 @@ export default function CompanyDriveDetail() {
                           max="100"
                           value={minPercentage}
                           onChange={(e) => setMinPercentage(e.target.value)}
-                          className="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#1565C0]"
+                          className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#2563EB]"
+                          style={{
+                            background: `linear-gradient(to right, #2563EB ${minPercentage}%, #f1f5f9 ${minPercentage}%)`
+                          }}
                         />
                         <button
                           onClick={loadResults}
@@ -1027,19 +1030,19 @@ export default function CompanyDriveDetail() {
                                 }}
                                 className="cursor-pointer hover:bg-slate-50 transition-colors"
                               >
-                                <td className="px-8 py-6 text-[14px] font-[500] text-[#64748b]">
+                                <td className="px-8 py-6 text-[14px] font-[600] text-[#64748b]">
                                   {res.name || "Taylor"}
                                 </td>
-                                <td className="px-8 py-6 text-[14px] font-[700] text-[#111827]">
+                                <td className="px-8 py-6 text-[14px] font-[600] text-[#111827]">
                                   {res.email}
                                 </td>
-                                <td className="px-8 py-6 text-[14px] font-[700] text-[#111827] text-center w-[160px]">
+                                <td className="px-8 py-6 text-[14px] font-[600] text-[#111827] text-center w-[160px]">
                                   {res.roll_number}
                                 </td>
-                                <td className="px-8 py-6 text-[14px] font-[500] text-[#64748b] text-center w-[120px]">
+                                <td className="px-8 py-6 text-[14px] font-[600] text-[#64748b] text-center w-[120px]">
                                   {res.college_name || "-"}
                                 </td>
-                                <td className="px-8 py-6 text-[14px] font-[700] text-[#111827] text-center w-[140px]">
+                                <td className="px-8 py-6 text-[14px] font-[600] text-[#111827] text-center w-[140px]">
                                   {res.percentage || 0}%
                                 </td>
                                 <td className="px-8 py-6 text-center w-[160px]">

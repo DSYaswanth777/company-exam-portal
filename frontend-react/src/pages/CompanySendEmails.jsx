@@ -366,7 +366,7 @@ console.log(drive)
                             )
                           }
                           placeholder="e.g. Assessment Invitation for {{drive_title}}"
-                          className="w-full px-8 py-3 mt-2 bg-[#0F172A] border-none rounded-[20px] focus:outline-none focus:ring-4 focus:ring-blue-600/20 text-white font-[500] text-lg placeholder:text-slate-500"
+                          className="w-full px-8 py-3 mt-2 bg-[#0F172A] border-none rounded-[20px] focus:outline-none focus:ring-4 focus:ring-blue-600/20 text-[#CBD5E1] font-[500] text-lg placeholder:text-slate-500"
                           required
                         />
                       </div>
@@ -381,7 +381,7 @@ console.log(drive)
                             handleConfigChange("body_template", e.target.value)
                           }
                           rows="12"
-                          className="w-full px-8 py-8 mt-2 bg-[#0F172A] border-none rounded-[24px] focus:outline-none focus:ring-4 focus:ring-blue-600/20 text-white font-[500] text-md leading-relaxed resize-none placeholder:text-slate-500"
+                          className="w-full px-8 py-8 mt-2 bg-[#0F172A] border-none rounded-[24px] focus:outline-none focus:ring-4 focus:ring-blue-600/20 text-[#CBD5E1] font-[500] text-md leading-relaxed resize-none placeholder:text-slate-500"
                           placeholder="Craft your secure invitation message here..."
                           required
                         />

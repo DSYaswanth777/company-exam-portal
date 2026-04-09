@@ -122,7 +122,7 @@ export default function WaitingRoom() {
       color: "text-gray-600",
     },
     {
-      text: "Warning: Excessive violation will result in disqualification.",
+      text: "Alerts: Excessive violations will result in disqualification.",
       color: "text-red-500 font-semibold",
     },
   ];

@@ -15,7 +15,7 @@ export default function AdminSidebar({ activeTab, setActiveTab, onLogout }) {
     { id: "overview", label: "Dashboard", icon: LayoutDashboard },
     {
       id: "companies",
-      label: "Company Management",
+      label: "Company Approvals",
       icon: "/icons/companyApprovals.png",
     },
     { id: "data_management", label: "Data Management", icon: Database },
@@ -70,7 +70,7 @@ export default function AdminSidebar({ activeTab, setActiveTab, onLogout }) {
                   }`}
                 />
               )}
-              <span className="font-[500] text-[16px] tracking-tight">
+              <span className="font-[500] text-[16px] tracking-tight whitespace-nowrap">
                 {item.label}
               </span>
               {activeTab === item.id && (

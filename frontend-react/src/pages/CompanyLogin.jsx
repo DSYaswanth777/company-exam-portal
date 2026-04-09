@@ -58,7 +58,7 @@ export default function CompanyLogin() {
         <div className="px-10 py-12">
           <div className="text-center mb-10">
             <h1 className="text-3xl font-semibold text-[#1e293b] tracking-tight mb-2">
-              Company Login
+              Login
             </h1>
             <p className="text-slate-500 font-medium text-sm">
               Enter your credentials to access your dashboard

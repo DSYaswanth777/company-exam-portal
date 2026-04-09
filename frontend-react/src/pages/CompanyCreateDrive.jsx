@@ -452,11 +452,11 @@ export default function CompanyCreateDrive() {
               </div>
 
               {formData.window_start && formData.window_end && (
-                <div className="bg-[#FDE047]/30 border-l-2 border-[#EAB308] rounded-xl p-8 flex items-center gap-8">
-                  <div className="h-8 w-8 bg-[#EAB308] rounded-xl flex items-center justify-center text-slate-900 shadow-lg shadow-yellow-500/20">
-                    <Clock className="h-4 w-4" />
+                <div className="bg-[#FDE047] border-l-4 border-[#EAB308] rounded-2xl p-8 flex items-center gap-8 shadow-sm">
+                  <div className="h-12 w-12 bg-white rounded-xl flex items-center justify-center text-[#EAB308] shadow-sm">
+                    <Clock className="h-6 w-6" />
                   </div>
-                  <p className="text-[18px] font-[400] text-[#713F12]">
+                  <p className="text-[18px] font-[500] text-[#713F12]">
                     The exam window will be open for{" "}
                     <span className="font-bold">
                       {Math.round(

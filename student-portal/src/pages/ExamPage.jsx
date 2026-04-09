@@ -12,14 +12,14 @@ export default function ExamPage() {
   const { student } = useAuth();
   const navigate = useNavigate();
   const [violationCount, setViolationCount] = useState(0);
-  const [warningCount, setWarningCount] = useState(0);
+  const [alertCount, setAlertCount] = useState(0);
   const [isViolationModalOpen, setIsViolationModalOpen] = useState(false);
-  const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
   const [isFullScreenRequired, setIsFullScreenRequired] = useState(false);
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [activeQuestion, setActiveQuestion] = useState(1);
   const [selectedOptions, setSelectedOptions] = useState({});
-  const [markedQuestions, setMarkedQuestions] = useState({});
+  const [markedQuestions, setMarkedQuestions] = useState(SafeStorage.getItem("marked_questions") || {});
   const [notAnsweredQuestions, setNotAnsweredQuestions] = useState({});
   const [examData, setExamData] = useState(null);
   const [questions, setQuestions] = useState([]);
@@ -97,7 +97,7 @@ export default function ExamPage() {
     }
   };
 
-  // Sync answers with SafeStorage
+  // Sync answers and marks with SafeStorage
   useEffect(() => {
     if (questions.length > 0) {
       const answersToSave = {};
@@ -108,18 +108,19 @@ export default function ExamPage() {
       if (Object.keys(answersToSave).length > 0) {
         SafeStorage.setItem("exam_answers", answersToSave);
       }
+      SafeStorage.setItem("marked_questions", markedQuestions);
     }
-  }, [selectedOptions, questions]);
+  }, [selectedOptions, markedQuestions, questions]);
 
   const currentQuestion = questions[activeQuestion - 1] || null;
 
   // Violation Detection Logic
   const handleViolation = useCallback(
     async (type) => {
-      // First, give 2 warnings for tab switching/fullscreen exit
-      if ((type === "tab_switch" || type === "fullscreen_exit") && warningCount < 2) {
-        setWarningCount(prev => prev + 1);
-        setIsWarningModalOpen(true);
+      // First, give 2 alerts for tab switching/fullscreen exit
+      if ((type === "tab_switch" || type === "fullscreen_exit") && alertCount < 2) {
+        setAlertCount(prev => prev + 1);
+        setIsAlertModalOpen(true);
         return;
       }
 
@@ -149,7 +150,7 @@ export default function ExamPage() {
         setIsViolationModalOpen(true);
       }
     },
-    [violationCount, warningCount, navigate],
+    [violationCount, alertCount, navigate],
   );
 
   useEffect(() => {
@@ -326,6 +327,7 @@ export default function ExamPage() {
 
       await studentService.submitExam(answers);
       SafeStorage.removeItem("exam_answers");
+      SafeStorage.removeItem("marked_questions");
       toast.success("Exam submitted successfully!");
       navigate("/result");
     } catch (err) {
@@ -542,9 +544,14 @@ export default function ExamPage() {
                   <button
                     key={num}
                     onClick={() => setActiveQuestion(num)}
-                    className={`h-11 w-11 rounded-xl flex items-center justify-center font-bold text-sm transition-all border-2 ${stateClass}`}
+                    className={`h-11 w-11 rounded-xl flex items-center justify-center font-bold text-sm transition-all border-2 relative ${stateClass}`}
                   >
                     {num}
+                    {isMarked && (
+                      <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-orange-500 text-[10px] text-white shadow-sm ring-2 ring-white">
+                        🚩
+                      </span>
+                    )}
                   </button>
                 );
               })}
@@ -621,21 +628,21 @@ export default function ExamPage() {
         </div>
       )}
 
-      {/* Warning Modal (Pre-violation) */}
-      {isWarningModalOpen && (
+      {/* Alert Modal (Pre-violation) */}
+      {isAlertModalOpen && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-in fade-in duration-300">
           <div className="bg-white rounded-[24px] shadow-2xl w-full max-w-[480px] overflow-hidden animate-in zoom-in-95 duration-300">
             <div className="p-10 text-center">
               <div className="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mb-6 mx-auto">
                 <AlertTriangle className="h-8 w-8 text-amber-500" />
               </div>
-              <h3 className="text-[22px] font-bold text-slate-900 mb-3">Security Warning</h3>
+              <h3 className="text-[22px] font-bold text-slate-900 mb-3">Security Alert</h3>
               <p className="text-slate-500 text-[15px] leading-relaxed mb-8">
                 System detected a potential violation (tab switch or window minimize). 
-                Please focus on the exam window. This is warning <b>{warningCount}/2</b>.
+                Please focus on the exam window. This is alert <b>{alertCount}/2</b>.
               </p>
               <button 
-                onClick={() => setIsWarningModalOpen(false)}
+                onClick={() => setIsAlertModalOpen(false)}
                 className="w-full py-3.5 bg-amber-500 text-white rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-amber-600 transition-all shadow-lg shadow-amber-500/20"
               >
                 I Understand

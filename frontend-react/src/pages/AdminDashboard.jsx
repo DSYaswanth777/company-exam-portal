@@ -1800,7 +1800,7 @@ export default function AdminDashboard() {
                 .map((company) => (
                   <tr
                     key={company.id}
-                    className="hover:bg-slate-50/50 transition-colors group"
+                    className="bg-white hover:bg-slate-50/50 transition-colors group"
                   >
                     <td className="px-8 py-4">
                       <div className="flex items-center gap-4">
@@ -2323,7 +2323,7 @@ export default function AdminDashboard() {
               {filteredCompanies.map((company) => (
                 <tr
                   key={company.id}
-                  className="hover:bg-slate-50/50 transition-colors group"
+                  className="bg-white hover:bg-slate-50/50 transition-colors group"
                 >
                   <td className="px-8 py-4">
                     <p className="font-semibold text-slate-900">

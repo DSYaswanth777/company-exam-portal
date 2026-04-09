@@ -10,8 +10,8 @@ const VIOLATION_THRESHOLDS = {
   fullscreen_exit: 3,
   right_click: 3,
   screenshot: 1,
-  copy: null, // Warning only
-  paste: null, // Warning only
+  copy: null, // Alert only
+  paste: null, // Alert only
 };
 
 export const useAntiCheat = (onDisqualified, isExamActive) => {
@@ -104,7 +104,7 @@ export const useAntiCheat = (onDisqualified, isExamActive) => {
           const reason = `Exceeded ${violationType.replace("_", " ")} limit.`;
           disqualifyStudent(violationType, reason);
         } else {
-          // Show warning for violations that haven't exceeded threshold
+          // Show alert for violations that haven't exceeded threshold
           if (threshold !== null) {
             const remaining = threshold - newCount;
             console.log(`Remaining attempts: ${remaining}`);
@@ -122,10 +122,10 @@ export const useAntiCheat = (onDisqualified, isExamActive) => {
                 " ",
               )} detected! ${remaining} attempt(s) remaining.`;
               console.warn(message);
-              toast.warning(message);
+              toast.error(message);
             }
           } else {
-            // Warning only violations
+            // Alert only violations
             const message = `⚠️ ${violationType.replace(
               "_",
               " ",

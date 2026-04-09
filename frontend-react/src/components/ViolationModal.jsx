@@ -8,37 +8,37 @@ export default function ViolationModal({ isOpen, onClose, violationCount }) {
     switch (violationCount) {
       case 1:
         return {
-          title: "First Violation",
-          remaining: "3 violations remaining before disqualification.",
-          buttonText: "Continue Exam",
+          title: "First Alert",
+          remaining: "3 alerts remaining before disqualification.",
+          buttonText: "Continue Assessment",
           buttonClass: "bg-blue-600 hover:bg-blue-700 shadow-blue-500/30",
         };
       case 2:
         return {
-          title: "Violation #2",
-          remaining: "2 violations remaining before disqualification.",
-          buttonText: "Continue Exam",
+          title: "Alert #2",
+          remaining: "2 alerts remaining before disqualification.",
+          buttonText: "Continue Assessment",
           buttonClass: "bg-blue-600 hover:bg-blue-700 shadow-blue-500/30",
         };
       case 3:
         return {
-          title: "Violation #3",
-          remaining: "1 violation remaining before disqualification.",
-          buttonText: "Continue Exam",
+          title: "Alert #3",
+          remaining: "1 alert remaining before disqualification.",
+          buttonText: "Continue Assessment",
           buttonClass: "bg-blue-600 hover:bg-blue-700 shadow-blue-500/30",
         };
       case 4:
         return {
-          title: "Final Violation",
-          remaining: "No warnings left. Proceed carefully.",
-          buttonText: "Continue Exam",
+          title: "Final Alert",
+          remaining: "No alerts left. Proceed with extreme caution.",
+          buttonText: "Return to Exam",
           buttonClass: "bg-red-600 hover:bg-red-700 shadow-red-500/30",
         };
       default:
         return {
-          title: "Violation Detected",
+          title: "Security Alert",
           remaining: "Please maintain full-screen mode and stay on the tab.",
-          buttonText: "Continue Exam",
+          buttonText: "Continue Assessment",
           buttonClass: "bg-blue-600 hover:bg-blue-700 shadow-blue-500/30",
         };
     }
@@ -47,56 +47,61 @@ export default function ViolationModal({ isOpen, onClose, violationCount }) {
   const data = getViolationData();
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-      <div className="w-full max-w-lg bg-white rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
-        <div className="p-8 md:p-12">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-4 animate-in fade-in duration-300">
+      <div className="w-full max-w-[520px] bg-white rounded-[32px] shadow-[0_32px_128px_-16px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden animate-in zoom-in-95 duration-300">
+        <div className="p-10 md:p-12">
           {/* Header with Icon */}
-          <div className="flex items-center gap-6 mb-8">
+          <div className="flex items-center gap-6 mb-10">
             <div
-              className={`h-16 w-16 rounded-xl flex items-center justify-center shrink-0 ${violationCount === 4 ? "bg-red-50" : "bg-orange-50"}`}
+              className={`h-16 w-16 rounded-2xl flex items-center justify-center shrink-0 shadow-sm ${violationCount >= 4 ? "bg-red-50" : "bg-amber-50"}`}
             >
               <AlertCircle
-                className={`h-10 w-10 ${violationCount === 4 ? "text-red-500" : "text-orange-500"}`}
+                className={`h-10 w-10 ${violationCount >= 4 ? "text-red-500" : "text-amber-500"}`}
               />
             </div>
             <div>
-              <h2 className="text-3xl font-semibold text-gray-900 leading-tight">
+              <h2 className="text-3xl font-bold text-slate-900 tracking-tight leading-tight">
                 {data.title}
               </h2>
-              <p className="text-gray-500 font-semibold uppercase tracking-wider text-xs mt-1">
-                Violation Detected
+              <p className="text-slate-400 font-bold uppercase tracking-[0.2em] text-[10px] mt-2">
+                Security Alert System
               </p>
             </div>
           </div>
 
-          {/* Warning Content */}
-          <div className="space-y-6 mb-10">
-            <p className="text-gray-600 text-lg leading-relaxed font-medium">
-              {violationCount === 4
-                ? "This is your final warning. Any further violation will result in immediate disqualification."
-                : `You switched tabs or exited full screen. This is warning #${violationCount}.`}
+          {/* Alert Content */}
+          <div className="space-y-8 mb-12">
+            <p className="text-slate-600 text-lg leading-relaxed font-medium">
+              {violationCount >= 4
+                ? "This is your final alert. Any further violation will result in immediate disqualification."
+                : `System detected a tab switch or full screen exit. This is alert #${violationCount}.`}
             </p>
 
-            <div className="flex items-center gap-3 py-3 px-4 bg-white border border-gray-100 rounded-xl">
-              <AlertCircle className="h-5 w-5 text-red-500" />
-              <p className="text-red-500 font-bold text-sm">{data.remaining}</p>
+            <div className={`flex items-center gap-4 py-4 px-6 bg-white border rounded-2xl transition-colors ${violationCount >= 4 ? 'border-red-100 bg-red-50/30' : 'border-amber-100 bg-amber-50/30'}`}>
+              <AlertCircle className={`h-6 w-6 shrink-0 ${violationCount >= 4 ? 'text-red-500' : 'text-amber-500'}`} />
+              <p className={`font-bold text-sm leading-tight ${violationCount >= 4 ? 'text-red-600' : 'text-amber-600'}`}>
+                {data.remaining}
+              </p>
             </div>
 
-            <div className="bg-blue-50 rounded-xl p-6 border-l-4 border-orange-400">
-              <p className="text-gray-600 text-sm leading-relaxed font-medium">
-                Note:{" "}
-                {violationCount === 4
-                  ? "Your activities are being recorded. Please adhere to the exam rules."
-                  : "Please maintain full-screen mode and stay on the active exam tab."}
-              </p>
+            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+              <div className="flex gap-3">
+                <div className="h-2 w-2 rounded-full bg-blue-500 mt-2 shrink-0 animate-pulse" />
+                <p className="text-slate-500 text-sm leading-relaxed font-medium">
+                  <span className="text-slate-900 font-bold">Standard Protocol:</span>{" "}
+                  {violationCount >= 4
+                    ? "Your activities are strictly being recorded. Please adhere to the honor code to finish your test."
+                    : "Please maintain full-screen mode and focus on the current browser tab."}
+                </p>
+              </div>
             </div>
           </div>
 
           {/* Action Button */}
-          <div className="flex justify-end">
+          <div className="flex">
             <button
               onClick={onClose}
-              className={`flex items-center gap-2 text-white font-bold py-4 px-10 rounded-xl transition-all shadow-lg active:scale-[0.98] ${data.buttonClass}`}
+              className={`w-full flex items-center justify-center gap-3 text-white font-bold py-5 rounded-2xl transition-all duration-300 shadow-xl hover:scale-[1.02] active:scale-[0.98] uppercase tracking-widest text-xs ${data.buttonClass}`}
             >
               {data.buttonText}
               <ArrowRight className="h-5 w-5" />

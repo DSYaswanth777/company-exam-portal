@@ -81,78 +81,56 @@ const ActionModal = ({
   const config = configs[type] || configs.approve;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/20" onClick={onClose} />
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-300">
+      {/* Backdrop with premium blur */}
+      <div 
+        className="absolute inset-0 bg-slate-900/40 backdrop-blur-md transition-opacity" 
+        onClick={onClose} 
+      />
 
-      {/* Card */}
+      {/* Modal Card */}
       <div
-        className="relative w-full bg-white rounded-xl overflow-hidden"
-        style={{
-          maxWidth: "420px",
-          padding: "28px 28px 24px 28px",
-          boxShadow: "0 4px 32px 0 rgba(30,40,80,0.10)",
-        }}
+        className="relative w-full max-w-[440px] bg-white rounded-[32px] overflow-hidden shadow-[0_20px_70px_-10px_rgba(0,0,0,0.15)] border border-slate-100 animate-in zoom-in-95 duration-300"
       >
-        {/* Icon */}
-        <div
-          className={`flex items-center justify-center rounded-xl mb-5 ${config.iconBg}`}
-          style={{ width: 44, height: 44 }}
-        >
-          {config.icon}
-        </div>
-
-        {/* Title */}
-        <h2
-          className="text-slate-900 font-bold mb-2"
-          style={{
-            fontSize: "18px",
-            lineHeight: "1.3",
-            letterSpacing: "-0.01em",
-          }}
-        >
-          {config.title}
-        </h2>
-
-        {/* Description */}
-        <p
-          className="text-slate-500 mb-7"
-          style={{ fontSize: "14px", lineHeight: "1.6" }}
-        >
-          {config.description}
-        </p>
-
-        {/* Buttons */}
-        <div className="flex items-center gap-3">
-          <button
-            onClick={onClose}
-            disabled={isLoading}
-            className="flex-1 font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-colors disabled:opacity-50 cursor-pointer"
-            style={{
-              borderRadius: "14px",
-              padding: "15px 0",
-              fontSize: "15px",
-            }}
+        <div className="p-10">
+          {/* Icon Header */}
+          <div
+            className={`flex items-center justify-center rounded-2xl mb-8 ${config.iconBg} w-14 h-14 shadow-sm`}
           >
-            Cancel
-          </button>
-          <button
-            onClick={onConfirm}
-            disabled={isLoading}
-            className={`flex-1 font-semibold text-white ${config.confirmBg} transition-colors disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2`}
-            style={{
-              borderRadius: "14px",
-              padding: "15px 0",
-              fontSize: "15px",
-              boxShadow: "0 6px 20px 0 rgba(59,130,246,0.35)",
-            }}
-          >
-            {isLoading ? (
-              <div className="h-4 w-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-            ) : (
-              config.confirmLabel
-            )}
-          </button>
+            {config.icon}
+          </div>
+
+          {/* Text Content */}
+          <div className="space-y-4 mb-10">
+            <h2 className="text-2xl font-bold text-slate-900 tracking-tight leading-tight">
+              {config.title}
+            </h2>
+            <p className="text-[15px] text-slate-500 leading-relaxed font-medium">
+              {config.description}
+            </p>
+          </div>
+
+          {/* Premium Actions */}
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <button
+              onClick={onClose}
+              disabled={isLoading}
+              className="w-full sm:flex-1 h-14 flex items-center justify-center font-bold text-slate-500 bg-slate-50 hover:bg-slate-100 rounded-2xl transition-all duration-200 disabled:opacity-50 cursor-pointer text-[15px] uppercase tracking-wider"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={onConfirm}
+              disabled={isLoading}
+              className={`w-full sm:flex-1 h-14 flex items-center justify-center font-bold text-white ${config.confirmBg} rounded-2xl transition-all duration-300 shadow-xl ${config.confirmShadow} hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 cursor-pointer text-[15px] uppercase tracking-wider gap-2`}
+            >
+              {isLoading ? (
+                <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                config.confirmLabel
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>

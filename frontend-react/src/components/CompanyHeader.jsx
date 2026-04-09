@@ -98,14 +98,24 @@ export default function CompanyHeader() {
 
   return (
     <header className="h-24 bg-white border-b border-slate-100 flex items-center justify-between px-12 sticky top-0 z-40">
-      {/* Title & Subtitle */}
-      <div>
-        <h1 className="text-[24px] font-bold text-[#1E293B] tracking-tight">
-          Company Portal
+      {/* Identity Section (Logo & Company Name) */}
+      <div className="flex items-center gap-4">
+        {profile?.logo_url ? (
+          <div className="h-12 w-12 bg-white rounded-xl shadow-sm border border-slate-100 p-2 overflow-hidden flex items-center justify-center">
+            <img
+              src={getFullUrl(profile.logo_url)}
+              alt="Company Logo"
+              className="h-full w-full object-contain"
+            />
+          </div>
+        ) : (
+          <div className="h-12 w-12 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-blue-500/20">
+            {companyName?.slice(0, 1).toUpperCase() || "C"}
+          </div>
+        )}
+        <h1 className="text-[20px] font-bold text-[#1E293B] tracking-tight">
+          {companyName || "Company Portal"}
         </h1>
-        <p className="text-[#64748B] text-[14px] font-medium mt-1">
-          Manage your exam drives and assessments
-        </p>
       </div>
 
       {/* Right Section */}
