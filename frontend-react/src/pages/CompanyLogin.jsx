@@ -139,12 +139,12 @@ export default function CompanyLogin() {
             >
               Create Account
             </Link>
-            <Link
+            {/* <Link
               to="/admin/login"
               className="text-sm font-bold text-slate-400 hover:text-slate-600 transition-colors tracking-tight"
             >
               Admin Login
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>
