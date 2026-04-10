@@ -18,7 +18,7 @@ export default function CompanyHeader() {
   const dropdownMenuRef = useRef(null);
 
   // Real data from profile or fallback to claims
-  const companyName = profile?.company_name || user?.claims?.company_name || user?.claims?.username || "";
+  const companyName = profile?.username || user?.claims?.username || user?.claims?.username || "";
   const userEmail = profile?.email || user?.email || user?.claims?.email || "";
 
   useEffect(() => {
@@ -114,7 +114,7 @@ export default function CompanyHeader() {
           </div>
         )}
         <h1 className="text-[20px] font-bold text-[#1E293B] tracking-tight">
-          {companyName || "Company Portal"}
+          {profile?.company_name || "Company Portal"}
         </h1>
       </div>
 

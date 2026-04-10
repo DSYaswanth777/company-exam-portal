@@ -38,6 +38,15 @@ import {
   Eye,
   Ban,
   Settings,
+  HelpCircle,
+  Activity,
+  Award,
+  Calendar,
+  FileText,
+  FileQuestion,
+  Briefcase,
+  BarChart3,
+  Mail,
 } from "lucide-react";
 import { TbTargetArrow } from "react-icons/tb";
 import { IoIosFlash } from "react-icons/io";
@@ -2802,261 +2811,307 @@ export default function AdminDashboard() {
 
       {/* Drive Detail Modal */}
       {driveDetailModal.open && driveDetailData && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-gray-100 dark:bg-slate-700 px-6 py-4 flex justify-between items-center border-b border-gray-200 dark:border-slate-600">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                Drive Details
-              </h3>
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 md:p-8 animate-in fade-in duration-300">
+          <div className="bg-white rounded-[32px] shadow-2xl max-w-5xl w-full max-h-[92vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-300">
+            {/* Header */}
+            <div className="px-8 py-6 flex justify-between items-center border-b border-slate-100 bg-slate-100/50">
+              <div className="flex items-center gap-4">
+                <div className="h-12 w-12 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-600/20">
+                  <BarChart3 className="h-6 w-6" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-slate-900 leading-tight">
+                    Drive Insights
+                  </h3>
+                  <p className="text-sm font-medium text-slate-400 mt-0.5 uppercase tracking-wider">
+                    D-{driveDetailData.id?.toString().slice(0, 8) || "N/A"}
+                  </p>
+                </div>
+              </div>
               <button
                 onClick={() => {
                   setDriveDetailModal({ ...driveDetailModal, open: false });
                   setShowAllQuestions(false);
                   setShowAllStudents(false);
                 }}
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 text-2xl font-semibold"
+                className="h-10 w-10 flex items-center justify-center rounded-full hover:bg-slate-50 text-slate-400 hover:text-slate-600 transition-all"
               >
-                ×
+                <X className="h-6 w-6" />
               </button>
             </div>
-            <div className="p-6">
-              <div className="mb-6">
-                <h4 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
-                  {driveDetailData.title}
-                </h4>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Company
-                    </p>
-                    <p className="font-semibold text-gray-900 dark:text-white">
-                      {driveDetailData.company_name || "N/A"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Description
-                    </p>
-                    <p className="font-semibold text-gray-900 dark:text-white">
-                      {driveDetailData.description || "N/A"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Exam Duration
-                    </p>
-                    <p className="font-semibold text-gray-900 dark:text-white">
-                      {driveDetailData.exam_duration_minutes ||
-                        driveDetailData.duration_minutes}{" "}
-                      minutes
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Status
-                    </p>
-                    <p>{getStatusBadge(driveDetailData.status)}</p>
-                  </div>
-                </div>
 
-                {/* Window and Actual Times */}
-                <div className="grid grid-cols-2 gap-4 mt-4 p-4 bg-blue-50 dark:bg-slate-700 rounded-lg border-2 border-blue-300">
-                  <div>
-                    <p className="text-sm font-semibold text-blue-900 dark:text-blue-300">
-                      📅 Scheduled Window{" "}
-                      <span className="text-xs font-normal text-blue-600">
-                        (UTC)
-                      </span>
-                    </p>
-                    <p className="text-xs text-gray-700 dark:text-gray-300 mt-1 font-medium">
-                      Start:{" "}
-                      {driveDetailData.window_start
-                        ? formatDateIST(driveDetailData.window_start)
-                        : "Not set"}
-                    </p>
-                    <p className="text-xs text-gray-700 dark:text-gray-300 font-medium">
-                      End:{" "}
-                      {driveDetailData.window_end
-                        ? formatDateIST(driveDetailData.window_end)
-                        : "Not set"}
-                    </p>
+            <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+              <div className="max-w-4xl mx-auto space-y-12">
+                
+                {/* Section: Basic Information */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                    <h4 className="text-[13px] font-bold text-slate-900 uppercase tracking-[0.1em]">
+                      Basic Information
+                    </h4>
                   </div>
-                  <div>
-                    <p className="text-sm font-semibold text-green-900 dark:text-green-300">
-                      ✅ Actual Window{" "}
-                      <span className="text-xs font-normal text-green-600">
-                        (Live - UTC)
-                      </span>
-                    </p>
-                    <p className="text-xs text-gray-700 dark:text-gray-300 mt-1 font-medium">
-                      Start:{" "}
-                      {driveDetailData.actual_window_start
-                        ? formatDateIST(driveDetailData.actual_window_start)
-                        : "⏳ Not started"}
-                    </p>
-                    <p className="text-xs text-gray-700 dark:text-gray-300 font-medium">
-                      End:{" "}
-                      {driveDetailData.actual_window_end
-                        ? formatDateIST(driveDetailData.actual_window_end)
-                        : "⏳ Not ended"}
-                    </p>
-                    {driveDetailData.actual_window_start &&
-                      driveDetailData.actual_window_end && (
-                        <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-2 italic">
-                          Duration:{" "}
-                          {(() => {
-                            const start = new Date(
-                              driveDetailData.actual_window_start,
-                            );
-                            const end = new Date(
-                              driveDetailData.actual_window_end,
-                            );
-                            const diffMs = end - start;
-                            const diffHours = Math.floor(diffMs / 3600000);
-                            const diffMins = Math.floor(
-                              (diffMs % 3600000) / 60000,
-                            );
-                            return `${diffHours}h ${diffMins}m`;
-                          })()}
+                  
+                  <div className="bg-slate-100/50 border border-slate-100 rounded-[24px] p-8 shadow-sm">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-y-8 gap-x-12">
+                      <div className="col-span-2 space-y-2">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          Drive Name
                         </p>
-                      )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Statistics */}
-              <div className="mb-6">
-                <h5 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
-                  Statistics
-                </h5>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="bg-blue-50 dark:bg-slate-700 p-4 rounded-lg">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Questions
-                    </p>
-                    <p className="text-2xl font-semibold text-blue-600 dark:text-blue-400">
-                      {driveDetailData.questions?.length || 0}
-                    </p>
-                  </div>
-                  <div className="bg-green-50 dark:bg-slate-700 p-4 rounded-lg">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Students
-                    </p>
-                    <p className="text-2xl font-semibold text-green-600 dark:text-green-400">
-                      {driveDetailData.students?.length || 0}
-                    </p>
-                  </div>
-                  <div className="bg-purple-50 dark:bg-slate-700 p-4 rounded-lg">
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Total Points
-                    </p>
-                    <p className="text-2xl font-semibold text-purple-600 dark:text-purple-400">
-                      {driveDetailData.total_points || 0}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Targets Section */}
-              {driveDetailData.targets &&
-                driveDetailData.targets.length > 0 && (
-                  <div className="mb-6">
-                    <h5 className="text-lg font-bold text-gray-900 dark:text-white mb-3">
-                      Target Groups
-                    </h5>
-                    <div className="flex flex-wrap gap-2">
-                      {driveDetailData.targets.map((target, idx) => (
-                        <span
-                          key={idx}
-                          className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm font-medium"
-                        >
-                          {target.college_name} - {target.student_group_name}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-              {/* Questions Section */}
-              {driveDetailData.questions &&
-                driveDetailData.questions.length > 0 && (
-                  <div className="mb-6">
-                    <h5 className="text-lg font-bold text-gray-900 dark:text-white mb-3">
-                      Questions ({driveDetailData.questions.length})
-                    </h5>
-                    <div className="max-h-64 overflow-y-auto bg-gray-50 dark:bg-slate-700 rounded-lg p-4">
-                      {driveDetailData.questions
-                        .slice(0, showAllQuestions ? undefined : 10)
-                        .map((q, idx) => (
-                          <div
-                            key={idx}
-                            className="mb-3 pb-3 border-b border-gray-200 dark:border-slate-600 last:border-b-0"
-                          >
-                            <p className="font-semibold text-gray-900 dark:text-white">
-                              {idx + 1}. {q.question_text}
+                        <h2 className="text-2xl font-bold text-slate-900">
+                          {driveDetailData.title}
+                        </h2>
+                      </div>
+                      <div className="space-y-6">
+                        <div className="flex justify-between items-start">
+                          <div className="space-y-2">
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                              Status
                             </p>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                              Points: {q.points}
+                            <span className={`inline-flex px-3 py-1 rounded-full text-[10px] font-bold border ${
+                              driveDetailData.status === 'live' || driveDetailData.status === 'ongoing' 
+                                ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
+                                : 'bg-slate-50 text-slate-500 border-slate-100'
+                            } uppercase tracking-widest`}>
+                              {driveDetailData.status || 'Draft'}
+                            </span>
+                          </div>
+                          <div className="space-y-2 text-right">
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                              Duration
+                            </p>
+                            <p className="text-sm font-bold text-slate-800">
+                              {driveDetailData.exam_duration_minutes || driveDetailData.duration_minutes || 0} mins
                             </p>
                           </div>
-                        ))}
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          Company
+                        </p>
+                        <p className="text-sm font-bold text-blue-600 hover:underline cursor-pointer">
+                          {driveDetailData.company_name || "NexGen Cloud Solutions"}
+                        </p>
+                      </div>
+
+                      <div className="col-span-2 space-y-2">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          Target Groups
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {driveDetailData.targets && driveDetailData.targets.length > 0 ? (
+                            driveDetailData.targets.map((target, idx) => (
+                              <span key={idx} className="px-4 py-1.5 bg-white border border-slate-200 rounded-full text-[11px] font-bold text-slate-600 uppercase tracking-tight">
+                                {target.college_name || target.custom_college_name} - {target.group_name || target.student_group_name || target.custom_student_group_name}
+                              </span>
+                            ))
+                          ) : (
+                            <span className="text-sm text-slate-400 italic">No target groups defined</span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="col-span-3 space-y-2">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          Description
+                        </p>
+                        <p className="text-sm leading-relaxed text-slate-500 max-w-2xl font-medium">
+                          {driveDetailData.description || "No description provided for this assessment."}
+                        </p>
+                      </div>
                     </div>
-                    {driveDetailData.questions.length > 10 && (
-                      <button
+                  </div>
+                </div>
+
+                {/* Section: Schedule Information */}
+                <div className="space-y-6 ">
+                  <div className="flex items-center gap-3">
+                    <div className="w-1.5 h-6 bg-blue-600 rounded-full" />
+                    <h4 className="text-[13px] font-bold text-slate-900 uppercase tracking-[0.1em]">
+                      Schedule Information
+                    </h4>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Scheduled Window */}
+                    <div className="bg-slate-100/50 border border-blue-100 rounded-[24px] p-6 shadow-sm overflow-hidden relative">
+                      <div className="absolute top-0 right-0 p-4">
+                        <Clock className="h-5 w-5 text-blue-300" />
+                      </div>
+                      <p className="text-[11px] font-bold text-blue-500 uppercase tracking-widest mb-6">
+                        Scheduled Window (UTC)
+                      </p>
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Starts</p>
+                          <p className="text-sm font-bold text-slate-800">
+                            {driveDetailData.window_start ? formatDateIST(driveDetailData.window_start) : "N/A"}
+                          </p>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Ends</p>
+                          <p className="text-sm font-bold text-slate-800">
+                            {driveDetailData.window_end ? formatDateIST(driveDetailData.window_end) : "N/A"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Actual Window */}
+                    <div className="bg-emerald-50 border border-emerald-100 rounded-[24px] p-6 shadow-sm overflow-hidden relative">
+                      <div className="absolute top-0 right-0 p-4">
+                        <Activity className="h-5 w-5 text-emerald-300" />
+                      </div>
+                      <p className="text-[11px] font-bold text-emerald-500 uppercase tracking-widest mb-6">
+                        Actual Window (Live - UTC)
+                      </p>
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Starts</p>
+                          <p className="text-sm font-bold text-slate-800">
+                            {driveDetailData.actual_window_start ? formatDateIST(driveDetailData.actual_window_start) : "⏳ Not started"}
+                          </p>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Ends</p>
+                          <p className="text-sm font-bold text-slate-800">
+                            {driveDetailData.actual_window_end ? formatDateIST(driveDetailData.actual_window_end) : "⏳ Not ended"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Stats Row */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="bg-white border border-slate-100 rounded-[20px] p-6 text-center space-y-2 shadow-sm">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em]">Total Questions</p>
+                    <p className="text-3xl font-black text-slate-900">{driveDetailData.questions?.length || 0}</p>
+                  </div>
+                  <div className="bg-white border border-slate-100 rounded-[20px] p-6 text-center space-y-2 shadow-sm">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em]">Total Students</p>
+                    <p className="text-3xl font-black text-slate-900">{driveDetailData.students?.length || 0}</p>
+                  </div>
+                  <div className="bg-white border border-slate-100 rounded-[20px] p-6 text-center space-y-2 shadow-sm">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em]">Total Points</p>
+                    <p className="text-3xl font-black text-slate-900">{driveDetailData.total_points || 0}</p>
+                  </div>
+                </div>
+
+                {/* Left and Right Lists Column Layout */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {/* Left Column: Questions */}
+                  <div className="space-y-6 bg-slate-100/50 p-8 rounded-2xl">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-1.5 h-6 bg-orange-500 rounded-full" />
+                        <h4 className="text-[13px] font-bold text-slate-900 uppercase tracking-[0.1em]">
+                          Questions ({driveDetailData.questions?.length || 0})
+                        </h4>
+                      </div>
+                      <button 
                         onClick={() => setShowAllQuestions(!showAllQuestions)}
-                        className="mt-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm rounded-lg font-semibold transition"
+                        className="text-[11px] font-bold text-blue-600 uppercase tracking-wider hover:underline"
                       >
-                        {showAllQuestions
-                          ? "Show Less"
-                          : `Show ${
-                              driveDetailData.questions.length - 10
-                            } More Questions`}
+                        {showAllQuestions ? 'Collapse' : 'Show All'}
                       </button>
-                    )}
-                  </div>
-                )}
-
-              {/* Students Section */}
-              {driveDetailData.students &&
-                driveDetailData.students.length > 0 && (
-                  <div className="mb-6">
-                    <h5 className="text-lg font-bold text-gray-900 dark:text-white mb-3">
-                      Students ({driveDetailData.students.length})
-                    </h5>
-                    <div className="max-h-64 overflow-y-auto bg-gray-50 dark:bg-slate-700 rounded-lg p-4">
-                      {driveDetailData.students
-                        .slice(0, showAllStudents ? undefined : 20)
-                        .map((s, idx) => (
-                          <div
-                            key={idx}
-                            className="mb-2 pb-2 border-b border-gray-200 dark:border-slate-600 last:border-b-0 text-sm"
-                          >
-                            <p className="font-semibold text-gray-900 dark:text-white">
-                              {s.name} ({s.roll_number})
-                            </p>
-                            <p className="text-gray-600 dark:text-gray-400">
-                              {s.email}
-                            </p>
-                          </div>
-                        ))}
                     </div>
-                    {driveDetailData.students.length > 20 && (
-                      <button
-                        onClick={() => setShowAllStudents(!showAllStudents)}
-                        className="mt-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-sm rounded-lg font-semibold transition"
-                      >
-                        {showAllStudents
-                          ? "Show Less"
-                          : `Show ${
-                              driveDetailData.students.length - 20
-                            } More Students`}
-                      </button>
-                    )}
-                  </div>
-                )}
 
-              {/* Action Buttons */}
-              <div className="flex flex-wrap gap-3 pt-6 border-t border-gray-200 dark:border-slate-700">
+                    <div className="space-y-4">
+                      {driveDetailData.questions && driveDetailData.questions.length > 0 ? (
+                        driveDetailData.questions
+                          .slice(0, showAllQuestions ? undefined : 6)
+                          .map((q, idx) => (
+                            <div key={idx} className="bg-white border border-slate-100 rounded-[20px] p-6 space-y-4 shadow-sm hover:border-slate-200 transition-all">
+                              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Question {idx + 1}</p>
+                              <p className="text-[13px] font-bold text-slate-700 leading-relaxed">
+                                {q.question_text}
+                              </p>
+                              <div className="inline-flex px-3 py-1 bg-blue-50 rounded-lg">
+                                <span className="text-[10px] font-bold text-blue-600 uppercase tracking-wider">{q.points || 0} Points</span>
+                              </div>
+                            </div>
+                          ))
+                      ) : (
+                        <div className="py-12 flex flex-col items-center gap-4 border-2 border-dashed border-slate-100 rounded-[24px]">
+                          <FileQuestion className="h-10 w-10 text-slate-200" />
+                          <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">No questions found</p>
+                        </div>
+                      )}
+                      
+                      {!showAllQuestions && driveDetailData.questions?.length > 6 && (
+                        <button 
+                          onClick={() => setShowAllQuestions(true)}
+                          className="w-full py-4 border border-slate-100 rounded-[20px] text-[11px] font-bold text-slate-400 uppercase tracking-widest hover:bg-slate-50 transition-all"
+                        >
+                          Load More Questions
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Right Column: Students */}
+                  <div className="space-y-6  bg-slate-100/50 p-8 rounded-2xl">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-1.5 h-6 bg-purple-500 rounded-full" />
+                        <h4 className="text-[13px] font-bold text-slate-900 uppercase tracking-[0.1em]">
+                          Students ({driveDetailData.students?.length || 0})
+                        </h4>
+                      </div>
+                      <button className="text-[11px] font-bold text-blue-600 uppercase tracking-wider hover:underline">
+                        Export
+                      </button>
+                    </div>
+
+                    <div className="space-y-4">
+                      {driveDetailData.students && driveDetailData.students.length > 0 ? (
+                        driveDetailData.students
+                          .slice(0, showAllStudents ? undefined : 6)
+                          .map((s, idx) => (
+                            <div key={idx} className="bg-white border border-slate-100 rounded-[20px] p-4 flex items-center justify-between shadow-sm hover:border-slate-200 transition-all">
+                              <div className="flex items-center gap-4">
+                                <div className="h-12 w-12 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center text-slate-400 font-bold text-sm">
+                                  {s.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
+                                </div>
+                                <div>
+                                  <p className="text-sm font-bold text-slate-800">{s.name}</p>
+                                  <p className="text-[11px] font-medium text-slate-400 mt-0.5">{s.email}</p>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{s.roll_number || s.student_id || "STUD001"}</p>
+                              </div>
+                            </div>
+                          ))
+                      ) : (
+                        <div className="py-12 flex flex-col items-center gap-4 border-2 border-dashed border-slate-100 rounded-[24px]">
+                          <Users className="h-10 w-10 text-slate-200" />
+                          <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">No students found</p>
+                        </div>
+                      )}
+
+                      {!showAllStudents && driveDetailData.students?.length > 6 && (
+                        <button 
+                          onClick={() => setShowAllStudents(true)}
+                          className="w-full py-4 border border-slate-100 rounded-[20px] text-[11px] font-bold text-slate-400 uppercase tracking-widest hover:bg-slate-50 transition-all"
+                        >
+                          Load More Students
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="px-8 py-6 border-t border-slate-100 flex items-center justify-between bg-slate-50/30">
+              <div className="flex gap-3">
                 {driveDetailData.status === "approved" && (
                   <button
                     onClick={() =>
@@ -3066,30 +3121,30 @@ export default function AdminDashboard() {
                         action: "suspend",
                       })
                     }
-                    className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg font-semibold transition"
+                    className="px-6 py-2.5 bg-orange-50 text-orange-600 border border-orange-100 rounded-xl font-bold text-[11px] uppercase tracking-widest hover:bg-orange-100 transition-all"
                   >
-                    Suspend
+                    Suspend Drive
                   </button>
                 )}
                 {driveDetailData.status === "suspended" && (
                   <button
                     onClick={() => reactivateDrive(driveDetailData.id)}
-                    className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition"
+                    className="px-6 py-2.5 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-xl font-bold text-[11px] uppercase tracking-widest hover:bg-emerald-100 transition-all"
                   >
                     Reactivate
                   </button>
                 )}
-                <button
-                  onClick={() => {
-                    setDriveDetailModal({ ...driveDetailModal, open: false });
-                    setShowAllQuestions(false);
-                    setShowAllStudents(false);
-                  }}
-                  className="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded-lg font-semibold transition ml-auto"
-                >
-                  Close
-                </button>
               </div>
+              <button
+                onClick={() => {
+                  setDriveDetailModal({ ...driveDetailModal, open: false });
+                  setShowAllQuestions(false);
+                  setShowAllStudents(false);
+                }}
+                className="px-8 py-3 bg-white border border-slate-200 rounded-xl font-bold text-[11px] text-slate-600 uppercase tracking-[0.15em] hover:bg-slate-50 transition-all shadow-sm"
+              >
+                Close Details
+              </button>
             </div>
           </div>
         </div>
