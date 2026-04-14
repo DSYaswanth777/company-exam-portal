@@ -101,7 +101,7 @@ export default function CompanyHeader() {
       {/* Identity Section (Logo & Company Name) */}
       <div className="flex items-center gap-4">
         {profile?.logo_url ? (
-          <div className="h-12 w-12 bg-white rounded-xl shadow-sm border border-slate-100 p-2 overflow-hidden flex items-center justify-center">
+          <div className="h-16 w-20 bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex items-center justify-center">
             <img
               src={getFullUrl(profile.logo_url)}
               alt="Company Logo"
@@ -310,7 +310,7 @@ export default function CompanyHeader() {
               {userEmail}
             </p>
           </div>
-          <div className="h-12 w-12 bg-[#3B82F6] rounded-full flex items-center justify-center text-white font-bold text-[16px] shadow-lg shadow-blue-500/20 ring-4 ring-blue-50 overflow-hidden">
+          {/* <div className="h-12 w-12 bg-[#3B82F6] rounded-full flex items-center justify-center text-white font-bold text-[16px] shadow-lg shadow-blue-500/20 ring-4 ring-blue-50 overflow-hidden">
             {profile?.logo_url ? (
               <img
                 src={getFullUrl(profile.logo_url)}
@@ -326,7 +326,7 @@ export default function CompanyHeader() {
                 .toUpperCase()
                 .slice(0, 2)
             )}
-          </div>
+          </div> */}
         </div>
       </div>
     </header>

@@ -3,8 +3,8 @@ import { NavLink, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 const NAV_ITEMS = [
-  { to: "/", label: "Home" },
-  { to: "/", label: "Pricing" },
+  { to: "/", label: "Home", end: true },
+  { to: "/#pricing", label: "Pricing" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ];
@@ -31,8 +31,9 @@ export default function Navbar() {
           <nav className="hidden md:flex items-center gap-8">
             {NAV_ITEMS.map((item) => (
               <NavLink
-                key={item.to}
+                key={item.label}
                 to={item.to}
+                end={item.end}
                 className={({ isActive }) =>
                   `text-sm font-[500] transition-colors ${
                     isActive
@@ -51,13 +52,13 @@ export default function Navbar() {
               <>
                 <Link
                   to="/company/login"
-                  className="text-sm font-[500] text-slate-700 hover:text-slate-900"
+                  className="text-sm font-[500] text-slate-700 hover:text-blue-600 transition-all duration-300 transform hover:scale-105"
                 >
                   Login
                 </Link>
                 <Link
                   to="/company/register"
-                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-[500] rounded-lg transition-all shadow-md"
+                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-[500] rounded-lg transition-all shadow-md hover:shadow-xl hover:shadow-blue-500/50 transform hover:scale-105"
                 >
                   Register
                 </Link>

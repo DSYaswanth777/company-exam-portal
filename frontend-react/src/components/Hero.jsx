@@ -28,7 +28,7 @@ export default function Hero() {
             <div className="flex flex-col sm:flex-row gap-4 mb-10">
               <NavLink
                 to="/company/login"
-                className="inline-flex text-[16px] items-center justify-center px-6 py-3 border-2 border-slate-200 hover:border-blue-400 hover:text-white  rounded-xl hover:bg-slate-800 transition-all duration-300"
+                className="inline-flex text-[16px] items-center justify-center px-6 py-3 border-2 border-slate-200 text-slate-700 hover:border-blue-400 hover:text-blue-600 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/10"
               >
                 Login
               </NavLink>

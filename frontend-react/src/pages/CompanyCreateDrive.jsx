@@ -24,11 +24,12 @@ import { getErrorMessage } from "../utils/errorHelpers";
 import { convertUTCToInputIST, convertInputISTToUTC } from "../utils/timezone";
 
 const rsuiteCustomStyles = `
-  .rsuite-select-container .rs-picker-toggle.rs-btn {
+  .rsuite-select-container .rs-picker-toggle.rs-btn,
+  .rsuite-datepicker-container .rs-picker-toggle.rs-btn {
     height: 56px !important;
     display: flex;
     align-items: center;
-    background-color: #ffffff !important;
+    background-color: #F8FAFC !important;
     border: 2px solid #D1D5DB !important;
     border-radius: 16px !important;
     font-family: inherit !important;
@@ -36,34 +37,55 @@ const rsuiteCustomStyles = `
     font-weight: 500 !important;
     color: #111827 !important;
     padding-left: 12px !important;
+    transition: all 0.2s ease-in-out !important;
   }
   .rsuite-select-container .rs-picker-toggle:hover,
-  .rsuite-select-container .rs-picker-toggle:focus,
-  .rsuite-select-container .rs-picker-focused .rs-picker-toggle {
+  .rsuite-datepicker-container .rs-picker-toggle:hover {
     border-color: #1565C0 !important;
-    box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.1) !important;
+    background-color: #ffffff !important;
   }
-  .rsuite-select-container .rs-picker-toggle-placeholder {
+  .rsuite-select-container .rs-picker-focused .rs-picker-toggle,
+  .rsuite-datepicker-container .rs-picker-focused .rs-picker-toggle {
+    border-color: #1565C0 !important;
+    box-shadow: 0 0 0 4px rgba(21, 101, 192, 0.1) !important;
+    background-color: #ffffff !important;
+  }
+  .rsuite-select-container .rs-picker-toggle-placeholder,
+  .rsuite-datepicker-container .rs-picker-toggle-placeholder {
     color: #9CA3AF !important;
     font-weight: 500 !important;
   }
-  .rsuite-select-container .rs-picker-toggle-caret {
+  .rsuite-select-container .rs-picker-toggle-caret,
+  .rsuite-datepicker-container .rs-picker-toggle-caret {
     top: 18px !important;
     right: 12px !important;
     color: #9CA3AF !important;
+    font-size: 16px !important;
   }
-  .rs-picker-select-menu {
-    border-radius: 12px !important;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+  .rs-picker-select-menu, .rs-picker-check-menu, .rs-calendar {
+    border-radius: 20px !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
     border: 1px solid #E5E7EB !important;
+    padding: 8px !important;
+    margin-top: 8px !important;
   }
   .rs-picker-select-menu-item {
     font-size: 13px !important;
-    padding: 10px 16px !important;
+    padding: 12px 16px !important;
+    border-radius: 12px !important;
+    margin-bottom: 2px !important;
+    font-weight: 500 !important;
   }
   .rs-picker-select-menu-item-active {
     color: #1565C0 !important;
     background-color: #F0F7FF !important;
+  }
+  .rs-calendar-header-title, .rs-calendar-table-cell-content {
+      font-weight: 600 !important;
+  }
+  .rs-calendar-table-cell-selected .rs-calendar-table-cell-content {
+      background-color: #1565C0 !important;
+      border-radius: 10px !important;
   }
 `;
 
@@ -344,19 +366,25 @@ export default function CompanyCreateDrive() {
                   <label className="text-[12px] font-[600] text-[#9CA3AF]  uppercase">
                     Category
                   </label>
-                  <div className="relative">
-                    <select
+                  <div className="relative rsuite-select-container">
+                    <SelectPicker
                       name="category"
+                      data={[
+                        { label: "Technical MCQ", value: "Technical MCQ" },
+                        { label: "Aptitude MCQ", value: "Aptitude MCQ" },
+                        { label: "HR MCQ", value: "HR MCQ" },
+                        { label: "Coding MCQ", value: "Coding MCQ" },
+                      ]}
                       value={formData.category}
-                      onChange={handleInputChange}
-                      className="w-full h-[56px] px-3 pe-10 py-2 bg-[#F8FAFC] border-2 mt-2 border-[#D1D5DB] rounded-[16px] focus:ring-2 focus:ring-blue-600/10 focus:border-[#1565C0] transition-all outline-none font-medium text-[14px] text-[#111827] appearance-none"
-                    >
-                      <option value="Technical MCQ">Technical MCQ</option>
-                      <option value="Aptitude MCQ">Aptitude MCQ</option>
-                      <option value="HR MCQ">HR MCQ</option>
-                      <option value="Coding MCQ">Coding MCQ</option>
-                    </select>
-                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-0.5 h-4 w-4 text-slate-400 pointer-events-none" />
+                      onChange={(value) =>
+                        setFormData((prev) => ({ ...prev, category: value }))
+                      }
+                      placeholder="Select Category"
+                      className="w-full mt-2"
+                      searchable={false}
+                      cleanable={false}
+                      style={{ width: "100%" }}
+                    />
                   </div>
                 </div>
                 <div className="md:col-span-2 space-y-1.5">

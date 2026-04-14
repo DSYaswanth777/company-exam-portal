@@ -474,7 +474,10 @@ export default function AdminDashboard() {
       }
       
       const res = await adminService.getCompanies(filter);
-      setCompaniesList(res.data || []);
+      const sortedCompanies = (res.data || []).sort((a, b) => 
+        new Date(b.created_at) - new Date(a.created_at)
+      );
+      setCompaniesList(sortedCompanies);
     } catch (err) {
       toast.error(getErrorMessage(err));
     } finally {
@@ -726,7 +729,7 @@ export default function AdminDashboard() {
         </header>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {stats.map((stat, idx) => (
             <div
               key={idx}
@@ -838,15 +841,15 @@ export default function AdminDashboard() {
               Priority Administrative Actions
             </h3>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
-              {
-                label: "Target Students",
-                icon: TbTargetArrow,
-                bg: "bg-blue-50",
-                color: "text-blue-600",
-                tab: "students",
-              },
+              // {
+              //   label: "Target Students",
+              //   icon: TbTargetArrow,
+              //   bg: "bg-blue-50",
+              //   color: "text-blue-600",
+              //   tab: "students",
+              // },
               {
                 label: "Verify Companies",
                 icon: ShieldCheck,
@@ -1782,10 +1785,10 @@ export default function AdminDashboard() {
                   Organization
                 </th>
                 <th className="px-8 py-4 text-left text-[14px] font-semibold uppercase tracking-[0.1em]">
-                  Admin/CEO
+                  Email ID
                 </th>
                 <th className="px-8 py-4 text-left text-[14px] font-semibold uppercase tracking-[0.1em]">
-                  Sector
+                  Plan Expiry Date
                 </th>
                 <th className="px-8 py-4 text-center text-[14px] font-semibold uppercase tracking-[0.1em]">
                   Drives
@@ -1833,7 +1836,7 @@ export default function AdminDashboard() {
                     </td>
                     <td className="px-8 py-4">
                       <span className="bg-slate-50 text-slate-400 px-4 py-1.5 rounded-xl text-[10px] font-semibold uppercase tracking-widest border border-slate-100">
-                        GENERAL
+                        {company.plan_expires_at ? formatDate(company.plan_expires_at) : "N/A"}
                       </span>
                     </td>
                     <td className="px-8 py-4 text-center">
@@ -1974,7 +1977,9 @@ export default function AdminDashboard() {
                 <th className="px-8 py-4 text-left text-[14px] font-semibold uppercase tracking-[0.1em]">
                   Status
                 </th>
-
+                <th className="px-8 py-4 text-left text-[14px] font-semibold uppercase tracking-[0.1em]">
+                  Resolution Notes
+                </th>
                 <th className="px-8 py-4 text-right text-[14px] font-semibold uppercase tracking-[0.1em] last:rounded-tr-xl">
                   Last Update
                 </th>
@@ -2032,6 +2037,11 @@ export default function AdminDashboard() {
                     >
                       {ticket.status}
                     </span>
+                  </td>
+                  <td className="px-8 py-4">
+                     <p className="text-[14px] font-[400] text-slate-500 truncate max-w-[200px]" title={ticket.resolution_notes}>
+                        {ticket.resolution_notes || "-"}
+                     </p>
                   </td>
 
                   <td className="px-8 py-4 text-right text-[14px] font-[400] text-slate-400">
